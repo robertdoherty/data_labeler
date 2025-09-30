@@ -1,0 +1,6 @@
+langchain>=0.3.27
+langchain-google-genai>=2.0.10
+langchain-core>=0.3.72
+praw>=7.0.0
+tenacity>=8.1.0
+google-generativeai>=0.8.3
