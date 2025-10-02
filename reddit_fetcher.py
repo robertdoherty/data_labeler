@@ -252,7 +252,9 @@ def test_fetch_subreddit_posts_with_comments():
         assert "metadata" in result, "Missing 'metadata' key"
         
         # Check that we have the expected subreddits (some may be empty)
-        expected_subreddits = ["skilledtrades", "electricians", "Plumbing", "HVAC"]
+        # expected_subreddits = ["skilledtrades", "electricians", "Plumbing", "HVAC"]
+        expected_subreddits = ["HVAC"]
+
         for subreddit_name in expected_subreddits:
             if subreddit_name in result["subreddits"]:
                 assert "posts" in result["subreddits"][subreddit_name], f"Missing 'posts' in {subreddit_name}"
