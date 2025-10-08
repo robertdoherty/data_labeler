@@ -244,3 +244,27 @@ def process_breaks_to_solutions(raw_file: str, labels_file: str, out_file: str) 
     # Write to disk
     return write_json(solved, out_file)
 
+
+# CLI interface when run directly
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Solution Labeler - Find solutions from comments for BREAK posts")
+    parser.add_argument("--raw", "-r", required=True, help="Path to reddit_research_data_*.json")
+    parser.add_argument("--labels", "-l", required=True, help="Path to labeled_posts_*.json")
+    parser.add_argument("--output", "-o", required=True, help="Path for output solutions_*.json")
+    
+    args = parser.parse_args()
+    
+    print(f"🔍 Loading BREAK labels from: {args.labels}")
+    print(f"📋 Loading raw posts from: {args.raw}")
+    print(f"🤖 Processing with LLM...")
+    
+    output_file = process_breaks_to_solutions(
+        raw_file=args.raw,
+        labels_file=args.labels,
+        out_file=args.output
+    )
+    
+    print(f"✅ Solutions written to: {output_file}")
+

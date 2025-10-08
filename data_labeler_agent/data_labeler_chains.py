@@ -102,7 +102,9 @@ from langchain_core.prompts import ChatPromptTemplate
 SOLUTION_PROMPT = ChatPromptTemplate.from_messages([
     ("system", 
 """
-You are a careful HVAC forum analyst. Use ONLY the provided post context and comments.
+You are an HVAC technician tasked with diagnosing and repairing a system malfunction. 
+
+Given a post with a system malfunction outlined, you are to use the provided comments json to determine the best solution to the problem. Use ONLY the provided post context and comments.
 If evidence is weak, conflicting, unsafe, or not clearly tied to the symptoms, answer exactly: "No clear solution."
 Do NOT invent facts or fixes.
 
@@ -120,8 +122,8 @@ DISQUALIFIERS (hard reject)
 - “Call a professional” with no actionable fix
 - Dangerous instructions (e.g., bypassing safeties)
 
-SELECTION (no math, qualitative only)
-- Consider at most {max_comments} comments that best satisfy the rubric (you decide which; prefer diversity of independent voices).
+SELECTION 
+- Consider the comments that best satisfy the rubric
 - Group comments by the specific action they propose (normalize verbs/objects).
 - Prefer, in order:
   1) Actions explicitly confirmed by the OP as helping or fixing the issue (unless unsafe or inconsistent).
@@ -131,22 +133,22 @@ SELECTION (no math, qualitative only)
 - If no single action clearly stands out under the rubric, return "No clear solution."
 
 OUTPUT (STRICT JSON, no extra text)
-{
+{{
   "post_id": "string",
-  "solution": {
+  "solution": {{
     "summary": "string (or 'No clear solution.')",
     "confidence": 0.0,               // conservative 0..1; lower when any doubt remains
     "evidence_count": 0,              // number of comments you actually relied on
     "title": "string"
-  },
-  "raw_comments": [
-    {
+  }},
+  "raw_comments_used": [
+    {{
       "reddit_id": "string",
       "text": "string",
       "ups": 0
-    }
+    }}
   ]
-}
+}}
 
 VALIDATION
 - Return ONLY valid JSON (no markdown).
