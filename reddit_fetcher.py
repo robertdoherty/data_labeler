@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 import logging
 from typing import List, Dict, Optional, Any
 import json
+import html
 
 
 # <<< Import tenacity for retries
@@ -44,6 +45,78 @@ def get_comments_with_retry(submission):
     return submission.comments.list()
 # >>> END NEW ADDITION
 
+
+
+# -------------------------------------------------
+# Image URL helpers (simple and robust for PRAW)
+# -------------------------------------------------
+def _is_image_url(url: Optional[str]) -> bool:
+    if not url:
+        return False
+    base = url.lower().split("?")[0]
+    return base.endswith((".jpg", ".jpeg", ".png", ".gif", ".webp"))
+
+
+def _html_unescape(u: Optional[str]) -> Optional[str]:
+    return html.unescape(u) if isinstance(u, str) else u
+
+
+def _dedupe_preserve_order(urls: List[str]) -> List[str]:
+    seen: set[str] = set()
+    out: List[str] = []
+    for u in urls:
+        if u and u not in seen:
+            seen.add(u)
+            out.append(u)
+    return out
+
+
+def extract_image_urls_from_submission(submission) -> List[str]:
+    """
+    Extract canonical image URLs from a submission using PRAW fields.
+    Covers direct image links, preview images, and galleries.
+    """
+    urls: List[str] = []
+
+    # 1) Direct image link
+    try:
+        direct_url = getattr(submission, "url", None)
+        if _is_image_url(direct_url):
+            urls.append(direct_url)
+    except Exception:
+        pass
+
+    # 2) Preview full-size image
+    try:
+        prev = getattr(submission, "preview", None)
+        if prev and isinstance(prev, dict):
+            images = prev.get("images") or []
+            if images:
+                src = images[0].get("source") or {}
+                u = src.get("url")
+                if u:
+                    urls.append(_html_unescape(u))
+    except Exception:
+        pass
+
+    # 3) Gallery items
+    try:
+        if getattr(submission, "is_gallery", False):
+            md = getattr(submission, "media_metadata", {}) or {}
+            gd = getattr(submission, "gallery_data", {}) or {}
+            for it in gd.get("items", []):
+                mid = it.get("media_id")
+                if not mid:
+                    continue
+                m = md.get(mid) or {}
+                s = (m.get("s") or {})
+                u = s.get("u") or s.get("gif") or s.get("mp4")
+                if u and _is_image_url(u):
+                    urls.append(_html_unescape(u))
+    except Exception:
+        pass
+
+    return _dedupe_preserve_order(urls)
 
 
 def initialize_reddit(client_id: str, client_secret: str, user_agent: str, request_timeout: int = 30) -> Optional[praw.Reddit]:
@@ -152,6 +225,14 @@ def fetch_subreddit_posts_with_comments(
                     "is_stickied": submission.stickied,
                     "comments": []
                 }
+
+                # Add image URLs (if present) using PRAW fields
+                try:
+                    image_urls = extract_image_urls_from_submission(submission)
+                except Exception as _img_err:
+                    logging.debug(f"Could not extract image URLs for post {submission.id}: {_img_err}")
+                    image_urls = []
+                post_data["image_urls"] = image_urls
                 
                 # Fetch comments using existing helper function
                 try:
