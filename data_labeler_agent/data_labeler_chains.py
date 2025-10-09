@@ -51,22 +51,32 @@ def build_llm() -> ChatGoogleGenerativeAI:
 # The exact prompt from the original file
 LABELER_PROMPT: ChatPromptTemplate = ChatPromptTemplate.from_messages([
     ("system", """
-Given a JSON array of reddit posts, select posts  that describe a specific HVAC malfunction (equipment not working, degraded performance, error codes, leaks, trips, unsuual noise/odors)m that likely requires diagnosis or repair)
+Given a JSON array of reddit posts, select posts that describe a specific HVAC malfunction (equipment not working, degraded performance, error codes, leaks, trips, unusual noise/odors) that likely requires diagnosis or repair.
 
 For each post
 1. Label as BREAK or NON_BREAK
-2. If break, extract fields: asset_family, symptoms[], model_text, error_codes, has_images, brand
-3. Provide per field confidence 0.0-1.0 only if not NULL
+2. If BREAK, extract fields with conservative confidence (0.0–1.0). Use null when unsure:
+   - asset_family: one of {rtu, split_ac, heat_pump, mini_split, furnace, air_handler, boiler, chiller, cooling_tower, controls, other}
+   - subtype_form_factor: short descriptor (e.g., packaged RTU, ductless wall, cassette, ducted, gas furnace condensing)
+   - brand: manufacturer string if present (e.g., Carrier)
+   - model_text: the exact printed/typed model string(s) if present
+   - model_family_slug: normalized family/series slug if confident; e.g., carrier.48tc.2015_2022
+   - indoor_model_id: for splits (ID from label/text if present)
+   - outdoor_model_id: for splits (ID from label/text if present)
+   - symptoms: list of short, concrete symptoms/failure modes
+   - error_codes: list of error codes if present (e.g., E3, 33)
+   - has_images: boolean if post includes images
+   For any field you cannot extract with confidence, set the field and its confidence to null.
 
 Fields you may use per post:
 {{title, body, score, num_comments, upvote_ratio}}
 
-Decusion rubric (apply all):
+Decision rubric (apply all):
 1. BREAK only if it mentions a concrete symptom or failure mode (e.g., no cooling, tripping breaker, fan won't spin)
-2. Reject posts that are brand comparisons, purhcase/quote questions, new installs, or non-HVAC topics
-3. asset_family includes {{ac, furnance, heat_pump, mini_split, air_handler, other}}
-4. Use null when unsure. Prefer precisison over recall
-5. IF NON_BREAK, only fill in id, break_label, and break_confidence, null other fields
+2. Reject posts that are brand comparisons, purchase/quote questions, new installs, or non-HVAC topics
+3. asset_family must be from the allowed set above; choose other when unclear
+4. Prefer precision over recall; use null when unsure
+5. IF NON_BREAK, only fill in id, break_label, and break_confidence; set other fields to null
 
 
 Output format (strict JSON, no extra text):
@@ -76,17 +86,25 @@ Output format (strict JSON, no extra text):
       "id": "<post id>",
       "break_label": "BREAK | NON_BREAK",
       "break_confidence": "0.0|0.2|0.4|0.51|0.65|0.8|0.9",
-      "asset_family": "ac|furnace|heat_pump|mini_split|air_handler|other|null",
+      "asset_family": "rtu|split_ac|heat_pump|mini_split|furnace|air_handler|boiler|chiller|cooling_tower|controls|other|null",
       "asset_family_confidence": "...",
-      "symptoms": ["..."],
-      "symptoms_confidence": "...",
+      "subtype_form_factor": "...",
+      "subtype_form_factor_confidence": "...",
+      "brand": "Carrier",
+      "brand_confidence": "...",
       "model_text": "IM-500X 2019",
       "model_text_confidence": "...",
+      "model_family_slug": "carrier.48tc.2015_2022",
+      "model_family_slug_confidence": "...",
+      "indoor_model_id": "...",
+      "indoor_model_id_confidence": "...",
+      "outdoor_model_id": "...",
+      "outdoor_model_id_confidence": "...",
+      "symptoms": ["..."],
+      "symptoms_confidence": "...",
       "error_codes": ["E3"],
       "error_codes_confidence": "...",
-      "has_images": true,
-      "brand_hint": "Carrier",
-      "brand_hint_confidence": "...",
+      "has_images": true
     }}
   ]
 }}
