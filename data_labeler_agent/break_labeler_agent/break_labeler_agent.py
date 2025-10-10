@@ -112,7 +112,11 @@ class BreakLabelerAgent:
             if not output_filename.endswith('.json'):
                 output_filename += '.json'
 
-            output_path = os.path.join(self.output_dir, output_filename)
+            # Use output_filename as-is if it's already an absolute path or includes directory
+            if os.path.isabs(output_filename) or os.path.dirname(output_filename):
+                output_path = output_filename
+            else:
+                output_path = os.path.join(self.output_dir, output_filename)
 
             # Persist results
             with open(output_path, 'w', encoding='utf-8') as f:
