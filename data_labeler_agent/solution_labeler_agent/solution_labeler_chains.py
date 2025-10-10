@@ -75,25 +75,22 @@ SELECTION
 OUTPUT (STRICT JSON, no extra text)
 {{
   "post_id": "string",
-  "solution": {{
-    "summary": "string (or 'No clear solution.')",
-    "confidence": 0.0,               // conservative 0..1; lower when any doubt remains
-    "evidence_count": 0,              // number of comments you actually relied on
-    "title": "string"
-  }},
-  "raw_comments_used": [
-    {{
-      "reddit_id": "string",
-      "text": "string",
-      "ups": 0
-    }}
-  ]
+  "solution_report": {{
+    "summary": "string",                 // "" when unknown or "No clear solution." if unclear
+    "steps": ["string"],                 // [] when none
+    "parts_needed": [                     // [] when none
+      {{"name": "string"}}
+    ],
+    "evidence_refs": ["comment_id"],    // [] when none; ids only
+    "confidence": 0.0                    // conservative 0..1; lower when any doubt remains
+  }}
 }}
 
 VALIDATION
 - Return ONLY valid JSON (no markdown).
 - Use ONLY provided content; do not fabricate IDs or text.
-- If unclear or unsafe, answer "No clear solution."
+- If unclear or unsafe, set summary to "No clear solution.", keep arrays empty, and confidence low.
+- Follow type conventions: strings => "" when unknown; arrays => []; floats 0.0-1.0.
 """
     ),
     ("human",
