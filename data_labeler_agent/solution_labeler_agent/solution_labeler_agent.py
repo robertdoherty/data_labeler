@@ -8,6 +8,12 @@ import json
 import os
 from typing import Dict, Any, List, Optional
 
+try:
+    # Threshold for accepting comment-derived fields
+    from config import COMMENT_ENRICHMENT_MIN_CONFIDENCE
+except Exception:
+    COMMENT_ENRICHMENT_MIN_CONFIDENCE = 0.6
+
 
 def load_break_labels(labels_file: str) -> Dict[str, Dict[str, Any]]:
     """
@@ -33,8 +39,9 @@ def load_break_labels(labels_file: str) -> Dict[str, Dict[str, Any]]:
         if not post_id:
             continue
         
-        # Only include BREAK posts
-        if result.get("break_label") == "BREAK":
+        # Only include BREAK posts (nested under error_report)
+        error_report = result.get("error_report") or {}
+        if error_report.get("break_label") == "BREAK":
             break_labels[post_id] = result
     
     return break_labels
@@ -109,6 +116,141 @@ def enrich_breaks_with_posts(break_labels: Dict[str, Dict[str, Any]],
     return enriched
 
 
+def _ensure_nested(labels: Dict[str, Any]) -> Dict[str, Any]:
+    """Ensure nested structures exist with default shapes."""
+    if not isinstance(labels, dict):
+        labels = {}
+    labels.setdefault("error_report", {})
+    labels.setdefault("system_info", {})
+    labels.setdefault("_evidence", {})
+    labels.setdefault("_provenance", {})
+    labels.setdefault("_conflicts", [])
+    # Default arrays
+    labels["error_report"].setdefault("symptoms", [])
+    labels["error_report"].setdefault("error_codes", [])
+    return labels
+
+
+def _dedupe_preserve_order(items: List[Any]) -> List[Any]:
+    seen = set()
+    out: List[Any] = []
+    for it in items:
+        if it not in seen:
+            seen.add(it)
+            out.append(it)
+    return out
+
+
+def _append_evidence(labels: Dict[str, Any], field: str, ids: List[str]):
+    ev = labels.setdefault("_evidence", {})
+    cur = list(ev.get(field, []))
+    if ids:
+        cur.extend(ids)
+        ev[field] = _dedupe_preserve_order(cur)
+
+
+def _record_provenance(labels: Dict[str, Any], field: str, provenance: Optional[str]):
+    if not provenance:
+        return
+    prov = labels.setdefault("_provenance", {})
+    prov[field] = provenance
+
+
+def _record_conflict(labels: Dict[str, Any], field: str, base_val: Any, new_val: Any):
+    labels.setdefault("_conflicts", []).append({
+        "field": field,
+        "base": base_val,
+        "comments": new_val,
+    })
+
+
+def _merge_error_report_delta(labels: Dict[str, Any], delta: Dict[str, Any]) -> None:
+    er = labels.setdefault("error_report", {})
+    # Only OP-derived fields should be accepted; enforced by caller via provenance check
+    evidence_by = delta.get("evidence_refs_by_field") or {}
+    prov_by = delta.get("provenance_by_field") or {}
+    conf_by = delta.get("field_confidence_by_field") or {}
+
+    for field in ("symptoms", "error_codes"):
+        items = delta.get(field) or []
+        provenance = prov_by.get(field)
+        conf = float(conf_by.get(field, 0.0) or 0.0)
+        if not items:
+            continue
+        if provenance not in ("op_comment", "op_edit"):
+            continue
+        if conf < COMMENT_ENRICHMENT_MIN_CONFIDENCE:
+            continue
+        base_items = list(er.get(field) or [])
+        base_items.extend(items)
+        er[field] = _dedupe_preserve_order(base_items)
+        _append_evidence(labels, field, evidence_by.get(field) or [])
+        _record_provenance(labels, field, provenance)
+
+
+def _merge_system_info_delta(labels: Dict[str, Any], delta: Dict[str, Any]) -> None:
+    si = labels.setdefault("system_info", {})
+    evidence_by = delta.get("evidence_refs_by_field") or {}
+    prov_by = delta.get("provenance_by_field") or {}
+    conf_by = delta.get("field_confidence_by_field") or {}
+
+    string_fields = [
+        "asset_family",
+        "asset_subtype",
+        "brand",
+        "model_text",
+        "model_family_id",
+        "indoor_model_id",
+        "outdoor_model_id",
+    ]
+
+    for field in string_fields:
+        new_val = delta.get(field)
+        if not new_val:
+            continue
+        provenance = prov_by.get(field)
+        conf = float(conf_by.get(field, 0.0) or 0.0)
+        if provenance not in ("op_comment", "op_edit"):
+            continue
+        if conf < COMMENT_ENRICHMENT_MIN_CONFIDENCE:
+            continue
+        base_val = si.get(field, "")
+        if not base_val:
+            si[field] = new_val
+            _record_provenance(labels, field, provenance)
+            _append_evidence(labels, field, evidence_by.get(field) or [])
+        elif base_val != new_val:
+            # OP-only override allowed; record conflict then override
+            _record_conflict(labels, field, base_val, new_val)
+            si[field] = new_val
+            _record_provenance(labels, field, provenance)
+            _append_evidence(labels, field, evidence_by.get(field) or [])
+
+    # Model resolution confidence: take max
+    try:
+        new_conf = float(delta.get("model_resolution_confidence", 0.0) or 0.0)
+    except Exception:
+        new_conf = 0.0
+    try:
+        base_conf = float(si.get("model_resolution_confidence", 0.0) or 0.0)
+    except Exception:
+        base_conf = 0.0
+    si["model_resolution_confidence"] = max(base_conf, new_conf)
+
+
+def _merge_enrichment_into_labels(labels: Dict[str, Any], enrichment: Dict[str, Any]) -> Dict[str, Any]:
+    labels = _ensure_nested(labels)
+    if not isinstance(enrichment, dict):
+        return labels
+    er_delta = enrichment.get("error_report_delta") or {}
+    si_delta = enrichment.get("system_info_delta") or {}
+    if er_delta:
+        _merge_error_report_delta(labels, er_delta)
+    if si_delta:
+        _merge_system_info_delta(labels, si_delta)
+    return labels
+
+
 def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     """
     Iterate through all BREAK posts and call build_solution_labeler_chain for each.
@@ -139,9 +281,10 @@ def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, 
             user_id = post.get("author", "")
             comments = post.get("comments", [])
             
-            # Build problem diagnosis from labels
-            symptoms = labels.get("symptoms", [])
-            asset_family = labels.get("asset_family")
+            # Build problem diagnosis from labels (nested)
+            labels = _ensure_nested(labels)
+            symptoms = labels.get("error_report", {}).get("symptoms", [])
+            asset_family = labels.get("system_info", {}).get("asset_family")
             problem_diagnosis = f"asset_family={asset_family}; symptoms={symptoms}" if asset_family or symptoms else "unknown"
             
             # Convert comments to JSON string for the LLM
@@ -180,12 +323,24 @@ def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, 
                 else:
                     solution = {"raw": solution_text}
             
-            # Append solution to the current record
-            rec["solution"] = solution
+            # Extract solution_report and optional enrichment deltas
+            solution_report = solution.get("solution_report") if isinstance(solution, dict) else None
+            if solution_report is None:
+                # Back-compat or raw: store under solution_report as best-effort
+                solution_report = {"summary": str(solution)}
+
+            # Merge enrichment deltas into labels with OP-only policy and threshold
+            enrichment_block = solution.get("enrichment") if isinstance(solution, dict) else None
+            if isinstance(enrichment_block, dict):
+                labels = _merge_enrichment_into_labels(labels, enrichment_block)
+                rec["labels"] = labels
+
+            # Append solution report to the current record
+            rec["solution_report"] = solution_report
             
         except Exception as e:
             # Per-post error isolation
-            rec["solution"] = {
+            rec["solution_report"] = {
                 "summary": "No clear solution.",
                 "error": str(e),
                 "confidence": 0.0

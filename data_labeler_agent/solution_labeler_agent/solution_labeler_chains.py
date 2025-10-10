@@ -45,6 +45,7 @@ SOLUTION_PROMPT = ChatPromptTemplate.from_messages([
 You are an HVAC technician tasked with diagnosing and repairing a system malfunction. 
 
 Given a post with a system malfunction outlined, you are to use the provided comments json to determine the best solution to the problem. Use ONLY the provided post context and comments.
+Comments are provided in chronological order; preserve order when referencing evidence. Prioritize the OP (user: {user_id}) and OP edits; for enrichment, only include OP-derived facts.
 If evidence is weak, conflicting, unsafe, or not clearly tied to the symptoms, answer exactly: "No clear solution."
 Do NOT invent facts or fixes.
 
@@ -78,17 +79,54 @@ OUTPUT (STRICT JSON, no extra text)
   "solution_report": {{
     "summary": "string",                 // "" when unknown or "No clear solution." if unclear
     "steps": ["string"],                 // [] when none
-    "parts_needed": [                     // [] when none
-      {{"name": "string"}}
+    "parts_needed": [                     // [] when none; provide granular fields when available
+      {{
+        "model": "string",              // "" when unknown
+        "part": "string",               // "" when unknown
+        "sku": "string"                 // "" when unknown
+      }}
     ],
     "evidence_refs": ["comment_id"],    // [] when none; ids only
     "confidence": 0.0                    // conservative 0..1; lower when any doubt remains
-  }}
+  }},
+  "enrichment": {
+    "error_report_delta": {
+      "symptoms": ["string"],
+      "error_codes": ["string"],
+      "evidence_refs_by_field": {
+        "symptoms": ["comment_id"],
+        "error_codes": ["comment_id"]
+      },
+      "provenance_by_field": {           // "op_comment" | "op_edit" | "commenter" (apply OP-only downstream)
+        "symptoms": "op_comment",
+        "error_codes": "op_comment"
+      },
+      "field_confidence_by_field": {     // 0.0..1.0 per field (use threshold)
+        "symptoms": 0.0,
+        "error_codes": 0.0
+      }
+    },
+    "system_info_delta": {
+      "asset_family": "string",
+      "asset_subtype": "string",
+      "brand": "string",
+      "model_text": "string",
+      "model_family_id": "string",
+      "indoor_model_id": "string",
+      "outdoor_model_id": "string",
+      "model_resolution_confidence": 0.0,
+      "evidence_refs_by_field": { "brand": ["comment_id"], "model_text": ["comment_id"] },
+      "provenance_by_field": { "brand": "op_comment|op_edit|commenter", "model_text": "op_comment|op_edit|commenter" },
+      "field_confidence_by_field": { "brand": 0.0, "model_text": 0.0 }
+    }
+  }
 }}
 
 VALIDATION
 - Return ONLY valid JSON (no markdown).
 - Use ONLY provided content; do not fabricate IDs or text.
+- Use reddit_id for comment identifiers in evidence arrays.
+- Preserve chronological ordering; do not reorder evidence_refs.
 - If unclear or unsafe, set summary to "No clear solution.", keep arrays empty, and confidence low.
 - Follow type conventions: strings => "" when unknown; arrays => []; floats 0.0-1.0.
 """
