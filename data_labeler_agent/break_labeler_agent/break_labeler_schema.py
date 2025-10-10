@@ -1,5 +1,5 @@
 from typing import List, Literal, Optional
-from pydantic import BaseModel, Field, conlist, confloat
+from pydantic import BaseModel, Field, confloat
 from langchain.output_parsers import PydanticOutputParser
 
 AssetFamily = Literal[
@@ -47,7 +47,7 @@ class BreakItem(BaseModel):
     system_info: SystemInfo
 
 class BreakOutput(BaseModel):
-    results: conlist(BreakItem, min_items=1)
+    results: List[BreakItem] = Field(..., min_length=1)
 
 parser = PydanticOutputParser(pydantic_object=BreakOutput)
 # You can add parser.get_format_instructions() to the prompt if you prefer structured guidance.

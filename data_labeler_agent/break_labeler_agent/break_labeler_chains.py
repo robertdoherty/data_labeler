@@ -17,7 +17,7 @@ except ImportError:
     from break_labeler_schema import parser, BreakOutput
 
 # Add parent directory to path for imports
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
@@ -26,7 +26,8 @@ try:
 except ImportError:
     try:
         import importlib.util
-        spec = importlib.util.spec_from_file_location("local_secrets", os.path.join(parent_dir, "local_secrets.py"))
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        spec = importlib.util.spec_from_file_location("local_secrets", os.path.join(repo_root, "local_secrets.py"))
         local_secrets = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(local_secrets)
         GEMINI_API_KEY = local_secrets.GEMINI_API_KEY
@@ -84,8 +85,6 @@ Type rules (CRITICAL - must follow exactly):
 - break_label: MUST be exactly "BREAK" or "NON_BREAK"
 - asset_family: MUST be one of the allowed values OR empty string ""
 - All confidence fields MUST be present with float values 0.0-1.0
-
-{format_instructions}
 
 Output (one object per input post):
 {{

@@ -25,20 +25,20 @@ if parent_dir not in sys.path:
 
 try:
     # Relative import when used as a package
-    from .data_labeler_chains import build_data_labeler_chain
+    from .break_labeler_chains import build_data_labeler_chain
 except ImportError:
     # Fallback when run directly
-    from data_labeler_chains import build_data_labeler_chain
+    from break_labeler_chains import build_data_labeler_chain
 
 
-class DataLabelerAgent:
+class BreakLabelerAgent:
     """
     Agent for labeling Reddit posts for HVAC break/non-break and extracting fields
     """
 
     def __init__(self, output_dir: str = "output", log_level: int = logging.INFO):
         """
-        Initialize the DataLabelerAgent
+        Initialize the BreakLabelerAgent
 
         Args:
             output_dir: Directory for input/output files
@@ -50,7 +50,7 @@ class DataLabelerAgent:
 
         # History of label runs
         self.label_history: List[Dict[str, Any]] = []
-        logging.info(f"DataLabelerAgent initialized with output_dir: {self.output_dir}")
+        logging.info(f"BreakLabelerAgent initialized with output_dir: {self.output_dir}")
 
     def _setup_logging(self, log_level: int):
         """Setup logging configuration"""
@@ -59,7 +59,7 @@ class DataLabelerAgent:
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             handlers=[
                 logging.StreamHandler(),
-                logging.FileHandler(os.path.join(self.output_dir, 'data_labeler_agent.log'))
+                logging.FileHandler(os.path.join(self.output_dir, 'break_labeler_agent.log'))
             ]
         )
 
@@ -67,7 +67,7 @@ class DataLabelerAgent:
                         output_filename: Optional[str] = None,
                         subreddits: Optional[List[str]] = None) -> Dict[str, Any]:
         """
-        Label Reddit JSON data using the LLM chain
+        Label Reddit JSON data for break/non-break using the LLM chain
 
         Args:
             reddit_data: Reddit data as JSON string or dict
@@ -77,7 +77,7 @@ class DataLabelerAgent:
             Dict with labeling results and metadata
         """
         start_time = datetime.now()
-        logging.info("Starting Reddit data labeling...")
+        logging.info("Starting Reddit data labeling for break/non-break...")
 
         try:
             # Parse reddit_data to dict
@@ -108,7 +108,7 @@ class DataLabelerAgent:
             # Determine output filename
             if not output_filename:
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                output_filename = f"labeled_posts_{timestamp}.json"
+                output_filename = f"break_labeled_posts_{timestamp}.json"
             if not output_filename.endswith('.json'):
                 output_filename += '.json'
 
@@ -178,7 +178,7 @@ class DataLabelerAgent:
             # Default labeled filename derived from input
             if not output_filename:
                 base_name = os.path.basename(json_file_path)
-                base_name = base_name.replace("reddit_research_data_", "labeled_posts_")
+                base_name = base_name.replace("reddit_research_data_", "break_labeled_posts_")
                 base_name = base_name.replace(".json", ".json")
                 output_filename = base_name
 
@@ -196,11 +196,11 @@ class DataLabelerAgent:
 
     def label_latest_data(self, subreddits: Optional[List[str]] = None) -> Dict[str, Any]:
         """
-        Find and label the most recent Reddit data file in output_dir
+        Find and label the most recent Reddit data file in output_dir for break/non-break
         """
         logging.info("Looking for latest Reddit data file...")
         try:
-            pattern = os.path.join(self.output_dir, "reddit_research_data_*.json")
+            pattern = os.path.join(self.output_dir, "break_labeled_posts_*.json")
             files = glob.glob(pattern)
 
             if not files:
@@ -239,7 +239,7 @@ class DataLabelerAgent:
     def print_status(self):
         """Print current status and available files"""
         print(f"\n{'='*60}")
-        print(f"🏷️  DataLabelerAgent Status")
+        print(f"🏷️  BreakLabelerAgent Status")
         print(f"{'='*60}")
         print(f"📁 Output Directory: {self.output_dir}")
         print(f"🏷️  Label Runs: {len(self.label_history)}")
@@ -321,7 +321,7 @@ class DataLabelerAgent:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="DataLabelerAgent - Label HVAC-related Reddit posts")
+    parser = argparse.ArgumentParser(description="BreakLabelerAgent - Label HVAC-related Reddit posts for break/non-break")
     parser.add_argument("file", nargs="?", help="Input JSON file path")
     parser.add_argument("--input", "-i", help="Input JSON file path")
     parser.add_argument("--output", "-o", help="Output labeled JSON file path")
@@ -334,7 +334,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    agent = DataLabelerAgent(output_dir=args.output_dir)
+    agent = BreakLabelerAgent(output_dir=args.output_dir)
 
     try:
         if args.status:
@@ -375,10 +375,10 @@ if __name__ == "__main__":
             print("Please specify an action:")
             parser.print_help()
             print("\nExamples:")
-            print("  python data_labeler_agent.py '99. output/reddit_research_data_2025-09-05.json'")
-            print("  python data_labeler_agent.py --subs hvacadvice,HVAC '99. output/reddit_research_data_2025-09-05.json'")
-            print("  python data_labeler_agent.py --latest")
-            print("  python data_labeler_agent.py --status")
+            print("  python break_labeler_agent.py '99. output/reddit_research_data_2025-09-05.json'")
+            print("  python break_labeler_agent.py --subs hvacadvice,HVAC '99. output/reddit_research_data_2025-09-05.json'")
+            print("  python break_labeler_agent.py --latest")
+            print("  python break_labeler_agent.py --status")
     except Exception as e:
         print(f"❌ Error: {e}")
         import sys as _sys

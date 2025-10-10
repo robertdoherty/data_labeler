@@ -86,7 +86,7 @@ OUTPUT (STRICT JSON, no extra text)
         "sku": "string"                 // "" when unknown
       }}
     ],
-    "evidence_refs": ["comment_id"],    // [] when none; ids only
+    "evidence_refs": ["id"],            // [] when none; use the comment id value (id or reddit_id)
     "confidence": 0.0                    // conservative 0..1; lower when any doubt remains
   }},
   "enrichment": {
@@ -94,8 +94,8 @@ OUTPUT (STRICT JSON, no extra text)
       "symptoms": ["string"],
       "error_codes": ["string"],
       "evidence_refs_by_field": {
-        "symptoms": ["comment_id"],
-        "error_codes": ["comment_id"]
+        "symptoms": ["id"],            // use comment id value (id or reddit_id)
+        "error_codes": ["id"]
       },
       "provenance_by_field": {           // "op_comment" | "op_edit" | "commenter" (apply OP-only downstream)
         "symptoms": "op_comment",
@@ -115,7 +115,7 @@ OUTPUT (STRICT JSON, no extra text)
       "indoor_model_id": "string",
       "outdoor_model_id": "string",
       "model_resolution_confidence": 0.0,
-      "evidence_refs_by_field": { "brand": ["comment_id"], "model_text": ["comment_id"] },
+      "evidence_refs_by_field": { "brand": ["id"], "model_text": ["id"] },
       "provenance_by_field": { "brand": "op_comment|op_edit|commenter", "model_text": "op_comment|op_edit|commenter" },
       "field_confidence_by_field": { "brand": 0.0, "model_text": 0.0 }
     }
@@ -125,7 +125,7 @@ OUTPUT (STRICT JSON, no extra text)
 VALIDATION
 - Return ONLY valid JSON (no markdown).
 - Use ONLY provided content; do not fabricate IDs or text.
-- Use reddit_id for comment identifiers in evidence arrays.
+- For evidence arrays, include only the comment id value present in input (id or reddit_id). Do not include text.
 - Preserve chronological ordering; do not reorder evidence_refs.
 - If unclear or unsafe, set summary to "No clear solution.", keep arrays empty, and confidence low.
 - Follow type conventions: strings => "" when unknown; arrays => []; floats 0.0-1.0.
