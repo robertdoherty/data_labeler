@@ -264,9 +264,9 @@ def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, 
     """
     # Import the chain builder
     try:
-        from .data_labeler_chains import build_solution_labeler_chain
+        from .solution_labeler_chains import build_solution_labeler_chain
     except ImportError:
-        from data_labeler_chains import build_solution_labeler_chain
+        from solution_labeler_chains import build_solution_labeler_chain
     
     chain = build_solution_labeler_chain()
     

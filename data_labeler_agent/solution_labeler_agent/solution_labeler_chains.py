@@ -11,7 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableSequence
 
 # Add parent directory to path for imports
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
@@ -20,7 +20,8 @@ try:
 except ImportError:
     try:
         import importlib.util
-        spec = importlib.util.spec_from_file_location("local_secrets", os.path.join(parent_dir, "local_secrets.py"))
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        spec = importlib.util.spec_from_file_location("local_secrets", os.path.join(repo_root, "local_secrets.py"))
         local_secrets = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(local_secrets)
         GEMINI_API_KEY = local_secrets.GEMINI_API_KEY
@@ -89,24 +90,24 @@ OUTPUT (STRICT JSON, no extra text)
     "evidence_refs": ["id"],            // [] when none; use the comment id value (id or reddit_id)
     "confidence": 0.0                    // conservative 0..1; lower when any doubt remains
   }},
-  "enrichment": {
-    "error_report_delta": {
+  "enrichment": {{
+    "error_report_delta": {{
       "symptoms": ["string"],
       "error_codes": ["string"],
-      "evidence_refs_by_field": {
+      "evidence_refs_by_field": {{
         "symptoms": ["id"],            // use comment id value (id or reddit_id)
         "error_codes": ["id"]
-      },
-      "provenance_by_field": {           // "op_comment" | "op_edit" | "commenter" (apply OP-only downstream)
+      }},
+      "provenance_by_field": {{           // "op_comment" | "op_edit" | "commenter" (apply OP-only downstream)
         "symptoms": "op_comment",
         "error_codes": "op_comment"
-      },
-      "field_confidence_by_field": {     // 0.0..1.0 per field (use threshold)
+      }},
+      "field_confidence_by_field": {{     // 0.0..1.0 per field (use threshold)
         "symptoms": 0.0,
         "error_codes": 0.0
-      }
-    },
-    "system_info_delta": {
+      }}
+    }},
+    "system_info_delta": {{
       "asset_family": "string",
       "asset_subtype": "string",
       "brand": "string",
@@ -115,11 +116,11 @@ OUTPUT (STRICT JSON, no extra text)
       "indoor_model_id": "string",
       "outdoor_model_id": "string",
       "model_resolution_confidence": 0.0,
-      "evidence_refs_by_field": { "brand": ["id"], "model_text": ["id"] },
-      "provenance_by_field": { "brand": "op_comment|op_edit|commenter", "model_text": "op_comment|op_edit|commenter" },
-      "field_confidence_by_field": { "brand": 0.0, "model_text": 0.0 }
-    }
-  }
+      "evidence_refs_by_field": {{ "brand": ["id"], "model_text": ["id"] }},
+      "provenance_by_field": {{ "brand": "op_comment|op_edit|commenter", "model_text": "op_comment|op_edit|commenter" }},
+      "field_confidence_by_field": {{ "brand": 0.0, "model_text": 0.0 }}
+    }}
+  }}
 }}
 
 VALIDATION
