@@ -63,15 +63,18 @@ NON_BREAK examples:
 Fields available per post: title, body, score, num_comments, upvote_ratio, media(if present).
 
 Glossary:
+- break_label: "BREAK" or "NON_BREAK" classification
+- symptoms: array of symptom strings describing the malfunction
+- error_codes: controller codes/tokens (E5, 33, LPS)
+- quote_spans: 0-based [start,end) offsets into title/body supporting BREAK or a key field. Format: [{{"field":"title|body","start":int,"end":int}}]
 - asset_family: rtu | split_ac | heat_pump | mini_split | furnace | air_handler | boiler | chiller | cooling_tower | controls | tools | other | "" (empty string for unknown)
-- subtype_form_factor: physical/config form (e.g., packaged RTU, ductless wall, cassette, horizontal)
+- asset_subtype: physical/config form (e.g., packaged RTU, ductless wall, cassette, horizontal)
 - brand: manufacturer token as written (Carrier, Trane, Goodman)
 - model_text: verbatim model strings from text (no normalization)
-- model_family_slug: normalized brand+series (optional year bucket) ONLY if confident (e.g., carrier.48tc.2015_2022); else ""
+- model_family_id: normalized brand+series (optional year bucket) ONLY if confident (e.g., carrier.48tc.2015_2022); else ""
 - indoor_model_id / outdoor_model_id: for split/mini-split/heat-pump systems (verbatim IDs). For RTUs/furnaces, leave "".
-- error_codes: controller codes/tokens (E5, 33, LPS)
+- model_resolution_confidence: overall confidence in the model identification (0.0-1.0)
 - has_images: true if the post contains or explicitly references images
-- quote_spans: 0-based [start,end) offsets into title/body supporting BREAK or a key field. Format: [{{"field":"title|body","start":int,"end":int}}]
 
 Type rules (CRITICAL - must follow exactly):
 - Confidences are floats 0.0-1.0 (NOT strings, NOT null).
@@ -89,28 +92,33 @@ Output (one object per input post):
   "results": [
     {{
       "id": "<post id>",
-      "break_label": "BREAK" | "NON_BREAK",
-      "break_confidence": 0.0,
-      "asset_family": "",
-      "asset_family_confidence": 0.0,
-      "subtype_form_factor": "",
-      "subtype_form_factor_confidence": 0.0,
-      "brand": "",
-      "brand_confidence": 0.0,
-      "model_text": "",
-      "model_text_confidence": 0.0,
-      "model_family_slug": "",
-      "model_family_slug_confidence": 0.0,
-      "indoor_model_id": "",
-      "indoor_model_id_confidence": 0.0,
-      "outdoor_model_id": "",
-      "outdoor_model_id_confidence": 0.0,
-      "symptoms": [],
-      "symptoms_confidence": 0.0,
-      "error_codes": [],
-      "error_codes_confidence": 0.0,
-      "has_images": false,
-      "quote_spans": []
+      "error_report": {{
+        "break_label": "BREAK" | "NON_BREAK",
+        "break_confidence": 0.0,
+        "symptoms": [],
+        "symptoms_confidence": 0.0,
+        "error_codes": [],
+        "error_codes_confidence": 0.0,
+        "quote_spans": []
+      }},
+      "system_info": {{
+        "asset_family": "",
+        "asset_family_confidence": 0.0,
+        "asset_subtype": "",
+        "asset_subtype_confidence": 0.0,
+        "brand": "",
+        "brand_confidence": 0.0,
+        "model_text": "",
+        "model_text_confidence": 0.0,
+        "model_family_id": "",
+        "model_family_id_confidence": 0.0,
+        "indoor_model_id": "",
+        "indoor_model_id_confidence": 0.0,
+        "outdoor_model_id": "",
+        "outdoor_model_id_confidence": 0.0,
+        "model_resolution_confidence": 0.0,
+        "has_images": false
+      }}
     }}
   ]
 }}
