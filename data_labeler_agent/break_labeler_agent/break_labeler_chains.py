@@ -67,7 +67,6 @@ Glossary:
 - break_label: "BREAK" or "NON_BREAK" classification
 - symptoms: array of symptom strings describing the malfunction
 - error_codes: controller codes/tokens (E5, 33, LPS)
-- quote_spans: 0-based [start,end) offsets into title/body supporting BREAK or a key field. Format: [{{"field":"title|body","start":int,"end":int}}]
 - asset_family: rtu | split_ac | heat_pump | mini_split | furnace | air_handler | boiler | chiller | cooling_tower | controls | tools | other | "" (empty string for unknown)
 - asset_subtype: physical/config form (e.g., packaged RTU, ductless wall, cassette, horizontal)
 - brand: manufacturer token as written (Carrier, Trane, Goodman)
@@ -97,8 +96,7 @@ Output (one object per input post):
         "symptoms": [],
         "symptoms_confidence": 0.0,
         "error_codes": [],
-        "error_codes_confidence": 0.0,
-        "quote_spans": []
+        "error_codes_confidence": 0.0
       }},
       "system_info": {{
         "asset_family": "",
