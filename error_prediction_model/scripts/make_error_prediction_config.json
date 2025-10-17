@@ -10,7 +10,7 @@
   "phrase_compact": [
     {"pattern": "\\bcontactor\\s+chatter(ing)?\\b", "repl": "contactor_chatter"},
     {"pattern": "\\bvoltage\\s+drop\\b", "repl": "voltage_drop"},
-    {"pattern": "\\bbreaker\\s+on\\s+the\\s+transformer\\b", "repl": "transformer_breaker_trip"}
+    {"pattern": "\\b(breaker|trip|tripped)\\s+(on|at|by|the)\\s+transformer\\b", "repl": "transformer_breaker_trip"}
   ],
   "unit_patterns": [
     {"name": "volt", "pattern": "\\b(\\d{2,3})\\s?v\\b", "format": "<volt_\\1>"},

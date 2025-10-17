@@ -8,7 +8,7 @@
     },
     {
       "label": "dx.power_supply_transformer",
-      "any": ["breaker on transformer", "transformer weak", "transformer sags"],
+        "any": ["breaker on transformer", "transformer weak", "transformer sags", "transformer_breaker_trip"],
       "all": [],
       "notes": "transformer supply issue"
     },

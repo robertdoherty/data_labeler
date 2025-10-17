@@ -9,7 +9,7 @@ import json
 import re
 import os
 
-PUNCT_RE = re.compile(r"[,;:?!()<>]")
+PUNCT_RE = re.compile(r"[, :?!()<>]")
 WS_RE    = re.compile(r"\s+")
 
 def normalize(text: str, cfg: dict) -> tuple[str, list[str]]:
@@ -383,6 +383,48 @@ def run_build(in_path: str, out_jsonl: str, rules: dict, norm_cfg: dict) -> None
     write_json("gold/golden_examples.json", gold)
 
 
+def _prepare_rules_with_normalizer(rules: dict, norm_cfg: dict) -> dict:
+    """Return a copy of rules with phrases normalized via the same pipeline.
+
+    Ensures that `all` and `any` rule phrases match the tokenization and
+    normalization applied to x_symptoms, so substring checks are aligned.
+    """
+    prepared = {**rules}
+    ordered = list(rules.get("rules") or rules.get("ordered_rules") or [])
+    new_rules = []
+    for rule in ordered:
+        new_rule = dict(rule)
+        for key in ("all", "any", "phrases_all"):
+            if key in new_rule:
+                phrases = new_rule.get(key) or []
+                normed = []
+                for p in phrases:
+                    s, _ = normalize(str(p), norm_cfg)
+                    if s:
+                        normed.append(s)
+                # de-duplicate preserving order
+                seen = set()
+                uniq = []
+                for s in normed:
+                    if s not in seen:
+                        seen.add(s)
+                        uniq.append(s)
+                if key == "phrases_all":
+                    # map legacy key to `all`
+                    new_rule["all"] = uniq
+                    if key in new_rule:
+                        new_rule.pop(key, None)
+                else:
+                    new_rule[key] = uniq
+        new_rules.append(new_rule)
+    if "rules" in prepared:
+        prepared["rules"] = new_rules
+    else:
+        prepared["ordered_rules"] = new_rules
+    # normalize fallback form to string or id/score (leave as-is)
+    return prepared
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -419,4 +461,5 @@ if __name__ == "__main__":
     with open(args.norm_cfg_path, "r", encoding="utf-8") as f:
         cfg = json.load(f)
 
-    run_build(args.in_path, args.out_jsonl, rules, cfg)
+    prepared_rules = _prepare_rules_with_normalizer(rules, cfg)
+    run_build(args.in_path, args.out_jsonl, prepared_rules, cfg)

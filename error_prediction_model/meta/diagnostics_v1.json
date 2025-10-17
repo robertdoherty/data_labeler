@@ -1,0 +1,18 @@
+{
+    "version": 1,
+    "labels": [
+      "dx.electrical_low_voltage_chain",
+      "dx.power_supply_transformer",
+      "dx.control_open_or_short",
+      "dx.contactor_relay_fault",
+      "dx.airflow_restriction_or_ice",
+      "dx.refrigerant_leak_or_low_charge",
+      "dx.condensate_overflow_or_switch",
+      "dx.mechanical_drive_or_bearing",
+      "dx.sensor_or_safety_fault",
+      "dx.install_or_wiring_issue",
+      "dx.controls_board_or_comm",
+      "dx.other_or_unclear"
+    ]
+  }
+  
