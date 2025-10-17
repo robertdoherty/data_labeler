@@ -1,0 +1,268 @@
+{
+  "dx.other_or_unclear": [
+    {
+      "post_id": "reddit-1ntyv1g",
+      "text": "losing control voltage voltage_drop contactor_chatter pop the transformer_breaker_trip",
+      "equip": {
+        "family": "rtu",
+        "subtype": "",
+        "brand": "Aaon"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntxi7u",
+      "text": "poor water treatment fill was completely impacted with scale plant shut down",
+      "equip": {
+        "family": "cooling_tower",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntw9de",
+      "text": "leaks",
+      "equip": {
+        "family": "other",
+        "subtype": "heat exchanger",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntrulx",
+      "text": "e-5/e-96 errors freeze protection fault low refrigerant fault leak on the low side service valve",
+      "equip": {
+        "family": "mini_split",
+        "subtype": "",
+        "brand": "Hisense"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntm31t",
+      "text": "electrocution snake electrocuted by ac unit",
+      "equip": {
+        "family": "HVAC",
+        "subtype": "AC unit",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntloll",
+      "text": "water will overflow the furnace trap safeties not tripping",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntj4kf",
+      "text": "leak oil",
+      "equip": {
+        "family": "",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ntisxi",
+      "text": "furnace wouldn't turn on r was just broken off of the fan center terminal shaking",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nti7dv",
+      "text": "11 degree split across drier txv malfunctioning liquid line is colder than my suction 4 degree delta t 2 degree superheat 1.4 subcool",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "",
+        "brand": "Goodman"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nt22pa",
+      "text": "fuel leak air adjustment is extremely finicky over aired wrong nozzles incorrect pump pressures",
+      "equip": {
+        "family": "furnace",
+        "subtype": "oil burner",
+        "brand": "Beckett"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nsy32c",
+      "text": "failed valve compressor issue low compression readings leakage bypassing stuck in a bad position pulling super low amps outdoor unit doesn't drop temps to become cold evap temps pulling super low amps 5. amp_6 on 16.7 rla",
+      "equip": {
+        "family": "heat_pump",
+        "subtype": "",
+        "brand": "Trane"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nseulv",
+      "text": "flex condensate leaking",
+      "equip": {
+        "family": "mini_split",
+        "subtype": "cassette",
+        "brand": "LG"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ns8vap",
+      "text": "leak several leaks fan motor failed pressure burst holes compressor blew a pin several leaks in evaporator coil compressor blew an electrical terminal pin",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "",
+        "brand": "Daikin"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ns7vtu",
+      "text": "mystery noise noise as if it wants to speed up goes to the second speed engages what i assume is stage 2 as if it was a variable speed blower motor",
+      "equip": {
+        "family": "other",
+        "subtype": "range hood motor",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nruz1j",
+      "text": "no ac leak leak from evaporator coil",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": "Goodman"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nru76o",
+      "text": "leaking gas valve",
+      "equip": {
+        "family": "boiler",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nrdf52",
+      "text": "water not draining flooding no heat safety in the secondary was filling up both primaries were still completely closed but the secondaries were not.",
+      "equip": {
+        "family": "air_handler",
+        "subtype": "V coils",
+        "brand": "Carrier"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nrc9gu",
+      "text": "vacuum pump smoking vacuum pump ran with compressor oil smoked the apex seals",
+      "equip": {
+        "family": "tools",
+        "subtype": "vacuum pump",
+        "brand": "JB"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nr6v0d",
+      "text": "bearing seized",
+      "equip": {
+        "family": "other",
+        "subtype": "swamp cooler bearing",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nr6how",
+      "text": "roof leak issues rust created a hole water flows out",
+      "equip": {
+        "family": "rtu",
+        "subtype": "",
+        "brand": "Carrier"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nr1mf3",
+      "text": "too hot ac wasn't working",
+      "equip": {
+        "family": "other",
+        "subtype": "thermostat",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nr0x3y",
+      "text": "mnet com alarm",
+      "equip": {
+        "family": "mini_split",
+        "subtype": "",
+        "brand": "Mitsubishi"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nqm2na",
+      "text": "frame of the fan went hot zapped the owner arcing through the speed board speed board killing and burning it",
+      "equip": {
+        "family": "other",
+        "subtype": "exhaust fan",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nqjygi",
+      "text": "micron gauge jumping around microns don’t even move really microns go up gauge acts weird",
+      "equip": {
+        "family": "tools",
+        "subtype": "micron gauge",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nqiaam",
+      "text": "worn shaft shaft narrower at bearing running loose bearing issue",
+      "equip": {
+        "family": "other",
+        "subtype": "exhaust fan",
+        "brand": ""
+      },
+      "hits": []
+    }
+  ],
+  "dx.mechanical_drive_or_bearing": [
+    {
+      "post_id": "reddit-1ntihqy",
+      "text": "pulsating vibrating noticeable vibration subcooling being on the low side",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "",
+        "brand": "Coleman"
+      },
+      "hits": [
+        "dx.mechanical_drive_or_bearing"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "aliases": [
+    {"pattern": "\\bcontactors\\b", "repl": "contactor"},
+    {"pattern": "\\bspades\\b", "repl": "spade"},
+    {"pattern": "\\bfloat\\s+switch\\b", "repl": "float_switch"},
+    {"pattern": "\\bpan\\s+switch\\b", "repl": "pan_switch"},
+    {"pattern": "\\baaon\\b", "repl": "<brand_aaon>"},
+    {"pattern": "\\by\\s?call|y1\\b", "repl": "<y_call>"}
+  ],
+  "phrase_compact": [
+    {"pattern": "\\bcontactor\\s+chatter(ing)?\\b", "repl": "contactor_chatter"},
+    {"pattern": "\\bvoltage\\s+drop\\b", "repl": "voltage_drop"},
+    {"pattern": "\\bbreaker\\s+on\\s+the\\s+transformer\\b", "repl": "transformer_breaker_trip"}
+  ],
+  "unit_patterns": [
+    {"name": "volt", "pattern": "\\b(\\d{2,3})\\s?v\\b", "format": "<volt_\\1>"},
+    {"name": "amp",  "pattern": "\\b(\\d{1,3})\\s?(a|amp|amps)\\b", "format": "<amp_\\1>"},
+    {"name": "degf", "pattern": "\\b(\\d{2,3})\\s?°?\\s?f\\b", "format": "<degf_\\1>"}
+  ],
+  "max_len": 1500
+}
