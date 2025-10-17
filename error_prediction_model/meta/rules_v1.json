@@ -7,6 +7,13 @@
       "notes": "classic low-voltage through safeties"
     },
     {
+      "label": "dx.electrical_low_voltage_chain",
+      "any": ["contactor chatter", "voltage drop"],
+      "all": [],
+      "score": 0.6,
+      "notes": "softer catch for low-voltage signs"
+    },
+    {
       "label": "dx.power_supply_transformer",
         "any": ["breaker on transformer", "transformer weak", "transformer sags", "transformer_breaker_trip"],
       "all": [],
@@ -18,9 +25,67 @@
       "all": []
     },
     {
+      "label": "dx.condensate_overflow_or_switch",
+      "any": ["condensate", "drain", "overflow pan", "trap overflow", "condensate leaking", "drain clogged", "flex condensate"],
+      "all": [],
+      "score": 0.8,
+      "notes": "broader condensate/drain signals"
+    },
+    {
+      "label": "dx.condensate_overflow_or_switch",
+      "any": ["condensate", "drain", "overflow"],
+      "all": [],
+      "equip": {"family": "mini_split", "subtype": "cassette"},
+      "score": 0.85,
+      "notes": "mini-split cassette drain context"
+    },
+    {
       "label": "dx.mechanical_drive_or_bearing",
       "any": ["fan not spinning", "seized bearing", "bearing noise", "vibration"],
       "all": []
+    },
+    {
+      "label": "dx.mechanical_drive_or_bearing",
+      "all": ["bearing", "fan"],
+      "any": [],
+      "score": 0.9,
+      "notes": "bearing issue explicitly tied to fan"
+    },
+    {
+      "label": "dx.mechanical_drive_or_bearing",
+      "any": ["bearing", "vibration", "pulsating"],
+      "all": [],
+      "equip": {"subtype": ["exhaust fan", "range hood motor", "swamp cooler bearing"]},
+      "score": 0.85,
+      "notes": "fan-specific mechanical context"
+    },
+    {
+      "label": "dx.mechanical_drive_or_bearing",
+      "any": ["bearing", "seized bearing", "vibration", "vibrating", "pulsating", "mystery noise", "running loose"],
+      "all": [],
+      "score": 0.7,
+      "notes": "broader drive/bearing noises"
+    },
+    {
+      "label": "dx.controls_board_or_comm",
+      "any": ["control board", "speed board", "comm alarm", "mnet com"],
+      "all": [],
+      "score": 0.7,
+      "notes": "board/comm issues"
+    },
+    {
+      "label": "dx.refrigerant_leak_or_low_charge",
+      "any": ["low refrigerant", "low charge", "refrigerant leak", "leak from evaporator coil", "uv dye", "leak"],
+      "all": [],
+      "score": 0.6,
+      "notes": "refrigerant-side issues (generic 'leak' at lower score)"
+    },
+    {
+      "label": "dx.install_or_wiring_issue",
+      "any": ["wiring", "wrong tap", "oversized contactor", "line set reused", "wiring issue"],
+      "all": [],
+      "score": 0.6,
+      "notes": "install/wiring hints"
     }
   ],
   "fallback": "dx.other_or_unclear"
