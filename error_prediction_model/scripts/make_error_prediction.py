@@ -380,7 +380,7 @@ def run_build(in_path: str, out_jsonl: str, rules: dict, norm_cfg: dict) -> None
         append_jsonl(out_jsonl, row)
         update_golden_examples(gold, label_id, post_id, x_symptoms, equip, fired_rules)
 
-    write_json("gold/golden_examples.json", gold)
+    write_json("error_prediction_model/gold/golden_examples.json", gold)
 
 
 def _prepare_rules_with_normalizer(rules: dict, norm_cfg: dict) -> dict:
