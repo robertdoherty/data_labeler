@@ -224,7 +224,13 @@ def map_label(x_symptoms: str, equip: dict, rules: dict) -> tuple[str, float, li
     if hits:
         hits.sort(key=lambda t: (-t[0], t[1]))
         best_score, _best_idx, best_id = hits[0]
-        fired_rules = [h[2] for h in hits]
+        # dedupe labels while preserving order
+        seen_labels: set[str] = set()
+        fired_rules: list[str] = []
+        for _score, _idx, label in hits:
+            if label not in seen_labels:
+                seen_labels.add(label)
+                fired_rules.append(label)
         return best_id, best_score, fired_rules
 
     fallback = rules.get("fallback", {})
@@ -322,11 +328,18 @@ def update_golden_examples(
     """
     bucket = store.setdefault(label_id, [])
     if len(bucket) < cap_per_label:
+        # ensure hits unique
+        unique_hits: list[str] = []
+        seen: set[str] = set()
+        for h in fired_rules:
+            if h not in seen:
+                seen.add(h)
+                unique_hits.append(h)
         bucket.append({
             "post_id": post_id,
             "text": text,
             "equip": {k: equip.get(k,"") for k in ("family","subtype","brand")},
-            "hits": fired_rules,
+            "hits": unique_hits,
         })
 
 

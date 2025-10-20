@@ -26,6 +26,14 @@
     },
     {
       "label": "dx.condensate_overflow_or_switch",
+      "all": ["overflow", "trap"],
+      "any": [],
+      "equip": {"family": "furnace"},
+      "score": 0.9,
+      "notes": "furnace trap overflow phrasing (order-insensitive via token pair)"
+    },
+    {
+      "label": "dx.condensate_overflow_or_switch",
       "any": ["condensate", "drain", "overflow pan", "trap overflow", "condensate leaking", "drain clogged", "flex condensate"],
       "all": [],
       "score": 0.8,
@@ -75,10 +83,10 @@
     },
     {
       "label": "dx.refrigerant_leak_or_low_charge",
-      "any": ["low refrigerant", "low charge", "refrigerant leak", "leak from evaporator coil", "uv dye", "leak"],
+      "any": ["low refrigerant", "low charge", "refrigerant leak", "leak from evaporator coil", "uv dye"],
       "all": [],
-      "score": 0.6,
-      "notes": "refrigerant-side issues (generic 'leak' at lower score)"
+      "score": 0.7,
+      "notes": "refrigerant-side issues (removed generic 'leak')"
     },
     {
       "label": "dx.install_or_wiring_issue",
@@ -86,6 +94,57 @@
       "all": [],
       "score": 0.6,
       "notes": "install/wiring hints"
+    },
+    {
+      "label": "dx.fuel_delivery_or_burner_tuning",
+      "any": ["fuel leak", "oil leak"],
+      "all": [],
+      "equip": {"subtype": "oil burner"},
+      "score": 0.9,
+      "notes": "fuel medium specific"
+    },
+    {
+      "label": "dx.water_ingress_cabinet_or_roof",
+      "any": ["roof leak", "water ingress", "water flows out", "cabinet leak"],
+      "all": [],
+      "score": 0.8,
+      "notes": "water ingress separate from refrigerant"
+    },
+    {
+      "label": "dx.tools_vacuum_or_gauges",
+      "any": ["micron gauge", "microns", "vacuum gauge"],
+      "all": [],
+      "score": 0.7,
+      "notes": "tool behavior category"
+    },
+    {
+      "label": "dx.tools_misuse_or_maintenance",
+      "any": ["vacuum pump smoking", "vacuum pump ran with compressor oil", "apex seals"],
+      "all": [],
+      "score": 0.85,
+      "notes": "tool misuse/maintenance incidents"
+    },
+    {
+      "label": "dx.safety_incident_or_electrical_contact",
+      "any": ["electrocution", "zapped", "snake electrocuted"],
+      "all": [],
+      "score": 0.9,
+      "notes": "safety incidents not diagnoses"
+    },
+    {
+      "label": "dx.compressor_or_valve_fault",
+      "any": ["low compression", "bypassing valve", "reversing valve", "stuck valve", "bypassing", "valve bypassing"],
+      "all": [],
+      "score": 0.8,
+      "notes": "compressor/valve specific indicators"
+    },
+    {
+      "label": "dx.compressor_or_valve_fault",
+      "all": ["low", "amps"],
+      "any": [],
+      "equip": {"family": "heat_pump"},
+      "score": 0.75,
+      "notes": "heat pump context for low amps + suspected valve/compressor issue"
     }
   ],
   "fallback": "dx.other_or_unclear"

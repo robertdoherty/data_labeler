@@ -9,7 +9,6 @@
         "brand": "Aaon"
       },
       "hits": [
-        "dx.electrical_low_voltage_chain",
         "dx.electrical_low_voltage_chain"
       ]
     }
@@ -26,20 +25,20 @@
       "hits": []
     },
     {
-      "post_id": "reddit-1ntm31t",
-      "text": "electrocution; snake electrocuted by ac unit",
+      "post_id": "reddit-1ntw9de",
+      "text": "leaks",
       "equip": {
-        "family": "HVAC",
-        "subtype": "AC unit",
+        "family": "other",
+        "subtype": "heat exchanger",
         "brand": ""
       },
       "hits": []
     },
     {
-      "post_id": "reddit-1ntloll",
-      "text": "water will overflow the furnace trap; safeties not tripping",
+      "post_id": "reddit-1ntj4kf",
+      "text": "leak; oil",
       "equip": {
-        "family": "furnace",
+        "family": "",
         "subtype": "",
         "brand": ""
       },
@@ -66,12 +65,22 @@
       "hits": []
     },
     {
-      "post_id": "reddit-1nrc9gu",
-      "text": "vacuum pump smoking; vacuum pump ran with compressor oil; smoked the apex seals",
+      "post_id": "reddit-1ns8vap",
+      "text": "leak; several leaks; fan motor failed; pressure burst holes; compressor blew a pin; several leaks in evaporator coil; compressor blew an electrical terminal pin",
       "equip": {
-        "family": "tools",
-        "subtype": "vacuum pump",
-        "brand": "JB"
+        "family": "split_ac",
+        "subtype": "",
+        "brand": "Daikin"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1nru76o",
+      "text": "leaking gas valve",
+      "equip": {
+        "family": "boiler",
+        "subtype": "",
+        "brand": ""
       },
       "hits": []
     },
@@ -84,31 +93,9 @@
         "brand": ""
       },
       "hits": []
-    },
-    {
-      "post_id": "reddit-1nqjygi",
-      "text": "micron gauge jumping around; microns don’t even move really; microns go up; gauge acts weird",
-      "equip": {
-        "family": "tools",
-        "subtype": "micron gauge",
-        "brand": ""
-      },
-      "hits": []
     }
   ],
   "dx.refrigerant_leak_or_low_charge": [
-    {
-      "post_id": "reddit-1ntw9de",
-      "text": "leaks",
-      "equip": {
-        "family": "other",
-        "subtype": "heat exchanger",
-        "brand": ""
-      },
-      "hits": [
-        "dx.refrigerant_leak_or_low_charge"
-      ]
-    },
     {
       "post_id": "reddit-1ntrulx",
       "text": "e-5/e-96 errors; freeze protection fault; low refrigerant fault; leak on the low side service valve",
@@ -116,54 +103,6 @@
         "family": "mini_split",
         "subtype": "",
         "brand": "Hisense"
-      },
-      "hits": [
-        "dx.refrigerant_leak_or_low_charge"
-      ]
-    },
-    {
-      "post_id": "reddit-1ntj4kf",
-      "text": "leak; oil",
-      "equip": {
-        "family": "",
-        "subtype": "",
-        "brand": ""
-      },
-      "hits": [
-        "dx.refrigerant_leak_or_low_charge"
-      ]
-    },
-    {
-      "post_id": "reddit-1nt22pa",
-      "text": "fuel leak; air adjustment is extremely finicky; over aired; wrong nozzles; incorrect pump pressures",
-      "equip": {
-        "family": "furnace",
-        "subtype": "oil burner",
-        "brand": "Beckett"
-      },
-      "hits": [
-        "dx.refrigerant_leak_or_low_charge"
-      ]
-    },
-    {
-      "post_id": "reddit-1nsy32c",
-      "text": "failed valve; compressor issue; low compression readings; leakage; bypassing; stuck in a bad position; pulling super low amps; outdoor unit doesn't drop temps to become cold evap temps; pulling super low amps 5. amp_6 on 16.7 rla",
-      "equip": {
-        "family": "heat_pump",
-        "subtype": "",
-        "brand": "Trane"
-      },
-      "hits": [
-        "dx.refrigerant_leak_or_low_charge"
-      ]
-    },
-    {
-      "post_id": "reddit-1ns8vap",
-      "text": "leak; several leaks; fan motor failed; pressure burst holes; compressor blew a pin; several leaks in evaporator coil; compressor blew an electrical terminal pin",
-      "equip": {
-        "family": "split_ac",
-        "subtype": "",
-        "brand": "Daikin"
       },
       "hits": [
         "dx.refrigerant_leak_or_low_charge"
@@ -180,29 +119,70 @@
       "hits": [
         "dx.refrigerant_leak_or_low_charge"
       ]
+    }
+  ],
+  "dx.safety_incident_or_electrical_contact": [
+    {
+      "post_id": "reddit-1ntm31t",
+      "text": "electrocution; snake electrocuted by ac unit",
+      "equip": {
+        "family": "HVAC",
+        "subtype": "AC unit",
+        "brand": ""
+      },
+      "hits": [
+        "dx.safety_incident_or_electrical_contact"
+      ]
     },
     {
-      "post_id": "reddit-1nru76o",
-      "text": "leaking gas valve",
+      "post_id": "reddit-1nqm2na",
+      "text": "frame of the fan went hot; zapped the owner; arcing through the speed board; speed board killing and burning it",
       "equip": {
-        "family": "boiler",
+        "family": "other",
+        "subtype": "exhaust fan",
+        "brand": ""
+      },
+      "hits": [
+        "dx.safety_incident_or_electrical_contact",
+        "dx.controls_board_or_comm"
+      ]
+    }
+  ],
+  "dx.condensate_overflow_or_switch": [
+    {
+      "post_id": "reddit-1ntloll",
+      "text": "water will overflow the furnace trap; safeties not tripping",
+      "equip": {
+        "family": "furnace",
         "subtype": "",
         "brand": ""
       },
       "hits": [
-        "dx.refrigerant_leak_or_low_charge"
+        "dx.condensate_overflow_or_switch"
       ]
     },
     {
-      "post_id": "reddit-1nr6how",
-      "text": "roof leak issues; rust created a hole; water flows out",
+      "post_id": "reddit-1nseulv",
+      "text": "flex condensate leaking",
       "equip": {
-        "family": "rtu",
-        "subtype": "",
+        "family": "mini_split",
+        "subtype": "cassette",
+        "brand": "LG"
+      },
+      "hits": [
+        "dx.condensate_overflow_or_switch"
+      ]
+    },
+    {
+      "post_id": "reddit-1nrdf52",
+      "text": "water not draining; flooding; no heat; safety in the secondary was filling up; both primaries were still completely closed but the secondaries were not.",
+      "equip": {
+        "family": "air_handler",
+        "subtype": "V coils",
         "brand": "Carrier"
       },
       "hits": [
-        "dx.refrigerant_leak_or_low_charge"
+        "dx.condensate_overflow_or_switch"
       ]
     }
   ],
@@ -216,7 +196,6 @@
         "brand": "Coleman"
       },
       "hits": [
-        "dx.mechanical_drive_or_bearing",
         "dx.mechanical_drive_or_bearing"
       ]
     },
@@ -241,7 +220,6 @@
         "brand": ""
       },
       "hits": [
-        "dx.mechanical_drive_or_bearing",
         "dx.mechanical_drive_or_bearing"
       ]
     },
@@ -254,36 +232,63 @@
         "brand": ""
       },
       "hits": [
-        "dx.mechanical_drive_or_bearing",
         "dx.mechanical_drive_or_bearing"
       ]
     }
   ],
-  "dx.condensate_overflow_or_switch": [
+  "dx.fuel_delivery_or_burner_tuning": [
     {
-      "post_id": "reddit-1nseulv",
-      "text": "flex condensate leaking",
+      "post_id": "reddit-1nt22pa",
+      "text": "fuel leak; air adjustment is extremely finicky; over aired; wrong nozzles; incorrect pump pressures",
       "equip": {
-        "family": "mini_split",
-        "subtype": "cassette",
-        "brand": "LG"
+        "family": "furnace",
+        "subtype": "oil burner",
+        "brand": "Beckett"
       },
       "hits": [
-        "dx.condensate_overflow_or_switch",
-        "dx.condensate_overflow_or_switch",
-        "dx.refrigerant_leak_or_low_charge"
+        "dx.fuel_delivery_or_burner_tuning"
       ]
-    },
+    }
+  ],
+  "dx.compressor_or_valve_fault": [
     {
-      "post_id": "reddit-1nrdf52",
-      "text": "water not draining; flooding; no heat; safety in the secondary was filling up; both primaries were still completely closed but the secondaries were not.",
+      "post_id": "reddit-1nsy32c",
+      "text": "failed valve; compressor issue; low compression readings; leakage; bypassing; stuck in a bad position; pulling super low amps; outdoor unit doesn't drop temps to become cold evap temps; pulling super low amps 5. amp_6 on 16.7 rla",
       "equip": {
-        "family": "air_handler",
-        "subtype": "V coils",
+        "family": "heat_pump",
+        "subtype": "",
+        "brand": "Trane"
+      },
+      "hits": [
+        "dx.compressor_or_valve_fault"
+      ]
+    }
+  ],
+  "dx.tools_misuse_or_maintenance": [
+    {
+      "post_id": "reddit-1nrc9gu",
+      "text": "vacuum pump smoking; vacuum pump ran with compressor oil; smoked the apex seals",
+      "equip": {
+        "family": "tools",
+        "subtype": "vacuum pump",
+        "brand": "JB"
+      },
+      "hits": [
+        "dx.tools_misuse_or_maintenance"
+      ]
+    }
+  ],
+  "dx.water_ingress_cabinet_or_roof": [
+    {
+      "post_id": "reddit-1nr6how",
+      "text": "roof leak issues; rust created a hole; water flows out",
+      "equip": {
+        "family": "rtu",
+        "subtype": "",
         "brand": "Carrier"
       },
       "hits": [
-        "dx.condensate_overflow_or_switch"
+        "dx.water_ingress_cabinet_or_roof"
       ]
     }
   ],
@@ -299,17 +304,19 @@
       "hits": [
         "dx.controls_board_or_comm"
       ]
-    },
+    }
+  ],
+  "dx.tools_vacuum_or_gauges": [
     {
-      "post_id": "reddit-1nqm2na",
-      "text": "frame of the fan went hot; zapped the owner; arcing through the speed board; speed board killing and burning it",
+      "post_id": "reddit-1nqjygi",
+      "text": "micron gauge jumping around; microns don’t even move really; microns go up; gauge acts weird",
       "equip": {
-        "family": "other",
-        "subtype": "exhaust fan",
+        "family": "tools",
+        "subtype": "micron gauge",
         "brand": ""
       },
       "hits": [
-        "dx.controls_board_or_comm"
+        "dx.tools_vacuum_or_gauges"
       ]
     }
   ]
