@@ -85,10 +85,6 @@ Instructions:
 
 OUTPUT (STRICT JSON):
 {
-  "post_id": "string",
-  "ontology": "diagnostics_v1",
-  "provenance": "llm_v1",
-  "x_symptoms": "string",
   "predictions": [
     {"label_id": "string", "confidence": 0.0, "rationale": "string", "spans": ["string"]}
   ]

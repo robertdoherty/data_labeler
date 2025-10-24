@@ -8,9 +8,9 @@ and calls a constrained LLM chain to predict up to 2 diagnostic labels.
 
 import os
 import json
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 
-from .schema import DiagnosticInput, DiagnosticOutput
+from .schema import DiagnosticInput, DiagnosticOutput, enforce_allowed_predictions
 from .chains import (
     build_diagnostic_labeler_chain,
     render_allowed_labels,
@@ -37,12 +37,12 @@ def build_llm_payload(
     post: DiagnosticInput,
     ontology: Dict[str, Any],
     gold_examples: Dict[str, Any],
-) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+) -> Dict[str, Any]:
     labels_block = render_allowed_labels(ontology)
     examples_block = render_examples_block(gold_examples)
     x_symptoms = _normalize_symptoms(post.get("symptoms", []), post.get("title", ""), post.get("body", ""))
 
-    prompt_vars = {
+    return {
         "labels_block": labels_block,
         "examples_block": examples_block,
         "post_id": post.get("post_id", ""),
@@ -52,35 +52,23 @@ def build_llm_payload(
         "x_symptoms": x_symptoms,
     }
 
-    base_out: DiagnosticOutput = {
-        "post_id": post.get("post_id", ""),
-        "ontology": "diagnostics_v1",
-        "provenance": "llm_v1",
-        "x_symptoms": x_symptoms,
-        "predictions": [],
-        "extra": {},
-    }
-    return prompt_vars, base_out
-
 
 def predict_diagnostics(post: DiagnosticInput) -> DiagnosticOutput:
-    # Paths
     root = _repo_root()
     ontology_path = os.path.join(root, "error_prediction_model", "meta", "diagnostics_v1.json")
     gold_path = os.path.join(root, "error_prediction_model", "gold", "golden_examples.json")
 
     ontology = _load_json(ontology_path)
     gold = _load_golden_examples(gold_path, max_per_label=3)
-
-    prompt_vars, base_out = build_llm_payload(post, ontology, gold)
+    prompt_vars = build_llm_payload(post, ontology, gold)
 
     chain = build_diagnostic_labeler_chain()
     result = chain.invoke(prompt_vars)
     text = result.content if hasattr(result, "content") else str(result)
+    
     try:
         parsed = json.loads(text)
     except Exception:
-        # attempt to extract JSON object
         start = text.find("{")
         end = text.rfind("}")
         if start != -1 and end != -1 and end > start:
@@ -91,10 +79,14 @@ def predict_diagnostics(post: DiagnosticInput) -> DiagnosticOutput:
         else:
             parsed = {}
 
-    if isinstance(parsed, dict) and parsed.get("predictions"):
-        base_out["predictions"] = parsed["predictions"][:2]
-        base_out["extra"] = {k: v for k, v in parsed.items() if k not in base_out}
-    return base_out
+    allowed = set(ontology.get("labels", []))
+    preds = parsed.get("predictions", []) if isinstance(parsed, dict) else []
+    
+    return {
+        "predictions": enforce_allowed_predictions(preds, allowed, max_labels=2),
+        "ontology": "diagnostics_v1",
+        "provenance": "llm_v1",
+    }
 
 
 __all__ = [
