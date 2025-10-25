@@ -1,0 +1,897 @@
+[
+  {
+    "post_id": "reddit-1ofre9c",
+    "x_symptoms": "flames shooting out; furnace trips high limit; terrible temperature imbalance; no heat",
+    "x_post": "Sizing on new installs\n\nIt's long, but please read if you have time because i need some advice.\n\nRecently i had a negative experience with a customer. Went to a house for a no heat call, early 2000s 70k btu A cabinet 90+ in a 1300ish sqft house, flames shooting out, tried to adjust things but it was clear it was a replacement scenario. The supply plenum was just a 14x20x36 box with 3 six inch runs coming off it. Only 3 thats it. Return was better, filter boot with 8x20 going up and to multiple large floor grilles.\n\nAnyways, I quote the customer a new 60k 90+ while explaining several times about the undersized ductwork. It is a low income area, house is a mess, customer only has the money for the swap out and nothing more. I tried my best to explain why i wasn't going to put a 40k in because of the size and the needs of the house, and that the 60k may not run and we may need to open some of the plenum after install to have heat in the house. Customer says they understand and agree.\n\nFast forward to turn on, yes it immediately trips so I cut out an 8x20 hole on the back of the plenum, put a temporary 8x20 grille over it, and give them a VERY cheap quote to add an plenum 8x20 plenum through a specific route, with 7-8 runs off it throughout the house. Maybe someday they say. Ok fine.\n\nAfter a few days they complain about the terrible temperature imbalance between different areas of the house so I give them a few options good better best and they said they have no money and also magically have no recollection of our conversation about their undersized ductwork and everything and said the old furnace worked way better than the new one. I feel this is turning into a possible bad reputation deal for me, so I go over there, donate a few hours and two 10\" flex ducts and give them quite a bit more distribution and balance than they had before. Very far from ideal, but the issue is more or less solved and they didn't have to pay anything for the additional work, so they are a satisfied customer now.\n\nGetting to the point, I have two questions:\n\n1. When ductwork is clearly undersized, why do old furnaces work for so long and new furnaces do not, which components are different? The old furnace had a high limit, it had rollouts, what is the deal?\n\n2. It's always a stressful thing for me to size a new unit for a customer and have to decide between the size of the house and the capacity of the ductwork while trying to keep my price competitive and not trying to scare the customer to potential extra ductwork costs that i know some other guys aren't going to bother with. Do you guys have any advice for preventing conflict and misunderstanding? It is a lot to explain every time im in this scenario, and i know the more i talk the less they absorb.\n\n\n\nLast thing, i have another job I'm bidding on now with a 120k 90+ and only an 8x24 duct as the supply plenum. It has been working for years like that, and the other guys are just quoting a swap, but i know it could use more than just a swap. So this is yet another similar situation for me. Any advice is appreciated.\n\nThanks",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofeiyx",
+    "x_symptoms": "blowing cold air; low voltage on b terminal 5v instead of volt_24; reversing valve not energizing; bad thermostat",
+    "x_post": "Honeywell 8000 stat issues w/HP?\n\nAbout a week ago I went to a new install to test everything for heat. Bosch HP with oil boiler for backup heat. Had a brand new 8000 stat with a wireless ODS for changeover temp etc. The stat worked fine for changeover, put the ODS in the freezer and it went to aux heat\n\nI put the unit on for heatpump and find its blowing cold air. Only had 5v on B which wasnt enough for the reversing valve. Pulled apart all the wires, nothing shorted. Tried a few different spare wires, same issue. I put the B wire with Y at the stat and was able to get 24v at the ahu. So I told the boss its a bad new stat. \n\nGo back today, install the front and back panel of the new 8000 and have the exact same issue. Boss comes over thinking I screwed up (also the install was his friends house) but we get the same results. Even reprogrammed the new 8000 for basic heatpump with B and was still only getting 5v. We isolated off the boiler and the ODU, still only have 5v on B.\n\nMaybe we got a bad batch?",
+    "equip": {
+      "family": "heat_pump",
+      "subtype": "",
+      "brand": "Honeywell"
+    },
+    "y_diag": [
+      [
+        "dx.compressor_or_valve_fault",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.compressor_or_valve_fault",
+    "rule_confidence": 0.8,
+    "rule_fired_rules": [
+      "dx.compressor_or_valve_fault"
+    ]
+  },
+  {
+    "post_id": "reddit-1ofdnrw",
+    "x_symptoms": "small shock from touching r terminal; no common hooked up",
+    "x_post": "RTU has no common\n\nHi,\n\nI was doing some scheduled maintenance for RTUs lately and I found a couple units without commons hooked up. They ran fine. I did get a small shock from touching R for some reason.\n\nI'm pretty new and I don't understand how there isn't a common. Does the circuit just complete through ground then?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofaw6g",
+    "x_symptoms": "thermostat doesn't connect via app/website; app says it’s connected but can’t control anything; app installation instructions had an icon that was a different color and not available on ios/android; qr code appears in the settings of the stat",
+    "x_post": "Anyone run into these? Routine swap out, issue resolved but now doesn’t connect via app/website…Anyone get it to connect somehow?\n\nI think it’s on carriers end. I uninstalled/reinstalled app, verified credentials are correct and verified wifi connection/correct bandwidth…",
+    "equip": {
+      "family": "controls",
+      "subtype": "thermostat",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofap96",
+    "x_symptoms": "leaks in both coils; leaking from the u-tubes or in the coil; blow the bottom of the txv out",
+    "x_post": "Lennox over engineering\n\nCan someoneone explain why and what the purpose of this double evap coil set up is and why this thing seems like it has 3 metering devices in the case coil the outdoor is barebones straight ac unit but this makes no sense. I asked my supervisor and he has no clue why this is designed this way either both of us have only seen this at this particular customers and nowhere else. Im totally lost on the point of this and what the goal is of having a set up like this.",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "indoor unit with double evap coil",
+      "brand": "Lennox"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of5tka",
+    "x_symptoms": "furnace isn't working; no gas supply",
+    "x_post": "“My furnace isn’t working!”\n\nI know what’s wrong with it….\n\nAin’t got no gas in it.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of59p4",
+    "x_symptoms": "wine cooler needs repair",
+    "x_post": "Ethics.\n\nI am aware of the cost of doing business.  And collecting less than my hourly pay can’t cover the bills.  Today I was asked to fix an 8yo $500 residential wine cooler.  I don’t spark my torches for less 400.  Add parts, I’m at $600.  So, would you make the repair and warranty the work?   I told them to buy a new one and save money.   Boss wanted me to fix it.",
+    "equip": {
+      "family": "other",
+      "subtype": "wine cooler",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of49xw",
+    "x_symptoms": "unusual capacitor wiring; compressor and fan running off 7.5 mfd capacitor",
+    "x_post": "Can someone please tell me how this works\n\nOk so obviously I know the wires are off. But I have never seen a condenser run wholly off of a 7.5 mfd. And yet here at this doctor's office I'll be damned if all four weren't working with the exact same setup. Trane and American standard. This was a week or two ago but it's been driving me crazy. The fan and compressor are both running of a 7.5. Com and here are on the same terminal and fan is on the other. EXACT same config on all four condensers.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "condenser",
+      "brand": "American Standard"
+    },
+    "y_diag": [
+      [
+        "dx.install_or_wiring_issue",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.install_or_wiring_issue",
+    "rule_confidence": 0.6,
+    "rule_fired_rules": [
+      "dx.install_or_wiring_issue"
+    ]
+  },
+  {
+    "post_id": "reddit-1of37d6",
+    "x_symptoms": "awful smell; dead animals in intake",
+    "x_post": "Happy Friday! Found the smell.\n\nWas doing a maintenance on a boiler, awful smell, i found these little bastards in the intake",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of17fu",
+    "x_symptoms": "missing condenser coils; missing micro channel coils",
+    "x_post": "Never change STL\n\nNot a single micro channel touched, good on them 😂",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "condenser",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oeyll4",
+    "x_symptoms": "refrigerant leak; destroyed rtu",
+    "x_post": "Yeah, I’m going to need some time off…\n\nWorkman’s comp?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "",
+      "brand": "Lennox"
+    },
+    "y_diag": [
+      [
+        "dx.refrigerant_leak_or_low_charge",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.refrigerant_leak_or_low_charge",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.refrigerant_leak_or_low_charge"
+    ]
+  },
+  {
+    "post_id": "reddit-1oetyv0",
+    "x_symptoms": "overheating issue; incorrect wiring/installation; there are 3 circulators and only 2 wired to the new panel. leaving the other circ wired to the aquastat and wiring the end switches from the panel to the tt on aquastat means that when any of the 2 zones or the indirect call for heat that the circulator wired to the aquastat will come on.",
+    "x_post": "Can you guess the issue?\n\nCustomer calls for an overheating issue. A sub that we used (maybe not any longer after this) installed a new indirect water heater the day before. The boiler originally heated 2 zones. Used the aquastat and taco SR501 to operate the 2 circs. Installer installed the new taco SR503 there in the pic. \n\nThings got worse the longer I looked. But at least the over heating is fixed.",
+    "equip": {
+      "family": "boiler",
+      "subtype": "hydronic heating system",
+      "brand": "Taco"
+    },
+    "y_diag": [
+      [
+        "dx.install_or_wiring_issue",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.install_or_wiring_issue",
+    "rule_confidence": 0.6,
+    "rule_fired_rules": [
+      "dx.install_or_wiring_issue"
+    ]
+  },
+  {
+    "post_id": "reddit-1oeo3v8",
+    "x_symptoms": "60° ctoa; 1/4 inch liquid line improper sizing; died of a leak",
+    "x_post": "I don't know if I ever shared my uncle's AC.....\n\nYes that's a 60° CTOA on an r22 unit from 2003. \n\n\nI was just doom scrolling my old residential service pictures and found his system. \n\n\n\nIt lived underneath his deck, had a 1/4 inch liquid line, 3 filter driers; one in the unit, one after the service valves, and one before the Piston. The drier vent dumped onto it and he didn't remember the last time it was serviced until he called me out to take a look at it. IIRC it still cooled at a 16 degree drop. It died of a leak a year later. \n\n\nNew unit is installed in the same place.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oen3cd",
+    "x_symptoms": "carbon monoxide poisoning implied; cracked heat exchanger",
+    "x_post": "No wonder Gpa has been so sleepy when the heat comes on\n\nReplaced 1993 100k BTU Trane HX. You read that right, 1993 😅",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Trane"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oejfg0",
+    "x_symptoms": "no heat; gas meter locked root cause; faulty gas valve initial misdiagnosis; rental property; new tenant; no other gas appliances; electric water heater; tenant had no clue gas meter locked",
+    "x_post": "Rookie mistake on a “no heat” call\n\nSo the other day I went to a no-heat call and diagnosed a faulty gas valve. The furnace was about 20 years old, so I recommended replacing it instead of dumping money into it. The homeowner agreed since it made more sense long term.\n\nFast forward to today we went and installed a brand new furnace. My boss went to another job, so it was just me and another tech finishing everything up. After connecting everything, we realized we weren’t getting any gas. Checked the shutoff all good. The other tech asked if I turned off the gas at the meter, I said no but went to check anyway… and sure enough, the gas meter was locked. 🤦‍♂️\n\nSo yeah… that explains the “bad gas valve.” I know, dumb rookie mistake. I’ve been doing HVAC for about 9 months now, still learning every day.\n\nWhen we finished, I called my boss and he asked how the furnace job went. I told him everything’s good, we finished, but there was a slight problem. He’s like, “What happened?” I told him we weren’t getting gas, and he goes, “Don’t tell me the gas meter was locked.” I said, “Yeah…” and he’s like, “Oh shit, let me call you back.”\n\nFifteen minutes later he calls me and says the homeowner was pissed — and he ended up giving them the furnace for free and ate the cost. 😬\n\nHope you guys get a good laugh from my dumbass mistake. Lesson learned the hard way!",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oef7el",
+    "x_symptoms": "poor solder joint visual; potential leak",
+    "x_post": "Is this plumbing solder?\n\nRepaired by “an old guy, with a beard in a Honda civic with wooden windows”.  As verbatim as I can remember..",
+    "equip": {
+      "family": "",
+      "subtype": "refrigerant line",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oe9z9d",
+    "x_symptoms": "no heat; blower not working; furnace lights up and goes out on limit; burny electric smell",
+    "x_post": "Keeprite g96ctn0802120a blower not working\n\nHad a call Tuesday right at the end of the day for a no heat on a 3 year old keeprite furnace. Upon arrival it was giving me a 10 flash (reversed polarity) code. Checked polarity and it was correct. 121.4v at board Code persisted even after resetting furnace. Replaced the control board, and furnace started right up. Left and not even 5 minutes later the customer called stating burny electric smell coming from registers. Got back and the blower is now not working. Tested and getting proper voltage a molex for high voltage at motor and checked DC control voltage everything checks out. Ordered a new motor and installed it. Same thing, furnace lights right up and goes out on limit after a minute or two and blower will not run. Checked continuity in the wiring harnesses. Swapped out the motor a second time as I have all the proper inputs and motor still isn't running. At this point I am at a loss. So I swapped out the board (again) and double and triple checked all settings and voltages etc. left tstat wires unhooked an jumped a call for g, still same thing. Ran an appliance cord to an outlet thinking maybe there is something up with the incoming power from that breaker ie high voltage noise (even though furnace has a power choke) still nothing from the blower. Called it a day and warrantied the whole furnace. Fucking nightmare call. Anyone have any suggestions as to why this might have happened?",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Keeprite"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oe4m9y",
+    "x_symptoms": "gas valve failure",
+    "x_post": "Anyone else seeing a lot of carrier gas valve fail?\n\nI have worked for a lot of companies that sell carrier but this year I've replaced 5 gas valves this month, all carrier horizontal. I know this is how it goes sometimes but just something I haven't seen. Been doing HVAC for 9 years, we always get the txv summers and normal stuff just curious if anyone has noticed this.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "horizontal",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oe1idg",
+    "x_symptoms": "ir remote signal interference; tvs turning on/off with ductless remote",
+    "x_post": "Infrared Remote signal interference\n\nAlways heard there was potential for interference from ductless remotes and other IR signal receivers but haven't experienced any until lately.\n\nLast few weeks a couple of installs have led to calls about tvs being turned on/off with the ductless remote and now it's looking like it might be an issue for some...\n\nAnyone else seeing a rise in this issue or have any recommendations? \n\nTvs and ductless seem to be in close proximity so hard to avoid.",
+    "equip": {
+      "family": "mini_split",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odovda",
+    "x_symptoms": "no heat; renter mistakenly believed the unit had air conditioning.",
+    "x_post": "No heat call?…\n\nGet there, a kid in a teddy bear costume answers the door.  Finds dad, dad finds young teenager to translate, dad leaves before she even gets me to the mechanical room.  Theres a boiler(i noted all the fin tubing, thinking friggin awesome!  Boiler service at 5pm!)  me: “it feels like the heat works just fine and the thermostat is up to temperature.  Have there been issuses that happen sometimes but not all the time?”  Kid: “no, the heat works great but the air conditioner doesnt work.”\n\nTHE HOME DOES NOT HAVE AND HAS NEVER HAD AIR CONDITIONING!!!!!\n\nThis was a home warranty call LOL",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odnnci",
+    "x_symptoms": "compressor failure; oil leakage; gusher; visually obvious damage; unit needs replacement; recurring compressor/oil leakage issues",
+    "x_post": "Can you spot the issue?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "second stage compressor, gas heat",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odlxbw",
+    "x_symptoms": "cracked heat exchanger; flames visible inside heat exchanger; co issues potential",
+    "x_post": "Its nice to have a garage heater so you dont start your car inside and have CO issues\n\nThis garage heater HX had cracks on ever cell and the one pictured had cracks on both sides and it was so wide I could see the flames inside when I ran it just to see what happens. Poor guys classic Porsche is gonna be cold now",
+    "equip": {
+      "family": "furnace",
+      "subtype": "garage heater",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odlppq",
+    "x_symptoms": "refrigerant leak compressor pins; low on charge; vacuum loss 1200 microns; compressor running but system not cooling/heating",
+    "x_post": "Crap day.\n\nManaged two calls today.  First was a follow up for a coworker who didn’t have enough 404 to charge the system.  It was 449!  Still I should have been able to find the leak… 12ppm from the compressor pins.  I would have let it fly but they wanted leak seal.  Gross right?  Oh and that gas blend never happened.  Wink wink;)  My second call was one I didn’t finish last week.  It was slightly low on charge.  Today it was at 1200 microns?!?!  And the compressor was running.  I repeatedly ask if anyone had been working on it.  NO!  So an hour later, tracer has, 300psi nitrogen, they let slip three other companies have been there.  And I managed to get some of their job notes.  And they have been trying to fix it themselves just using the techs notes.. to save $$.  I told them I’m done with the game and wrote out the bill.    I didn’t notice he wrote the check wrong!  So another loss.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.refrigerant_leak_or_low_charge",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.refrigerant_leak_or_low_charge",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.refrigerant_leak_or_low_charge",
+      "dx.tools_vacuum_or_gauges"
+    ]
+  },
+  {
+    "post_id": "reddit-1odlbsn",
+    "x_symptoms": "compressor overcurrent protection trip",
+    "x_post": "LG mini.\n\nWe service a lg mini split that will through a ch29 for compressor overcurrent protection. But only in heat, anyone ran across this?",
+    "equip": {
+      "family": "mini_split",
+      "subtype": "",
+      "brand": "LG"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odl1fq",
+    "x_symptoms": "refrigerant leak; no detected refrigerant leak; previous refrigerant leak repaired 2 years ago",
+    "x_post": "What is this goop? And how is it not leaking!\n\nFixed two leaks in this box today.  Have one more to go.  Wanted a temporary fix and this seems to hold.  So?",
+    "equip": {
+      "family": "commercial_refrigeration",
+      "subtype": "display_case",
+      "brand": "Hussmann"
+    },
+    "y_diag": [
+      [
+        "dx.refrigerant_leak_or_low_charge",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.refrigerant_leak_or_low_charge",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.refrigerant_leak_or_low_charge"
+    ]
+  },
+  {
+    "post_id": "reddit-1odivcy",
+    "x_symptoms": "high head pressure trip; scale buildup",
+    "x_post": "WSHP Descale\n\nWas wondering if any water source wizards out there could tell me what chemical y’all are using and what method you’re using to get it through the system. BMS runs the cooling tower and swears their water is perfect but both circuits on my carrier aqua zone are tripping on high head and I want to descale. It’s a 5 year old unit and it’s a new location to my company. I highly doubt the old servicing company ever even back flushed. \n\nAny recommendations for pumps? Chemicals? Anything to make this a little bit easier.",
+    "equip": {
+      "family": "heat_pump",
+      "subtype": "WSHP",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oddpgl",
+    "x_symptoms": "ear piercing noise; unusual noise; harmonic sound; firing rate never goes above 20%",
+    "x_post": "Ear piercing noise\n\nCamus dynaforce boiler  Model DRNH 3000 MSI\n\nI was recently hired (6 weeks ago) at this office building as maintenance. My background is residential HVAC, not 3 million BTU boilers and 20 ton chillers. What could possibly be causing this fan to make this noise? The motor was replaced 5 months ago according to some paper work i found. \n\nAny help would be appreciated. Office staff is starting to complain of the noise.",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": "Camus"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oddi8q",
+    "x_symptoms": "furnace tripped the roll out switch; flames are visibly lazy; high co levels; high oxygen levels; secondary hx is plugged",
+    "x_post": "Advice on possible secondary HX restricted\n\nLooking for advice on a Heil, NTGM125EKA3. I’m an HVAC tech but I’ve always worked on the commercial/industrial side so this isn’t an issue I’ve run into before. Not a lot of 97% furnaces in my world. End of last winter my buddy’s furnace tripped the roll out switch a few random times. I didn’t see it roll out but the flames are visibly lazy. Initially when I looked at it my combustion analyzer was out for repairs so I did the basics, verified draft and gas pressure, air flow, checked supply air for CO, etc. Spring came and it was kinda forgotten about. Now that winter is back I went for a better look. Went through the A coil with a camera to look at the HX. I found a few rings from the clamshell laying on the secondary HX but didn’t find any visible cracks. I’m reading really high CO levels <1500 ppm and high oxygen levels with my analyzer. I still have good readings on the draft fan and the temperature split is good. It pulls its combustion air from the space and I made sure the exhaust was clear. I was thinking there is cracks and the draft fan is drawing through them but that should be a rather large crack to bring enough oxygen in to cool the flame and raise CO levels. So my next assumption is the secondary HX is plugged. I recall Carrier having a lot of issues with their secondary HXs in the mid 2000’s but I don’t remember what the issues were. Any suggestions appreciated",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Heil"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oddh3z",
+    "x_symptoms": "air conditioning is broken; no cooling; hot; air conditioning is broken in terminal 4; no cooling in terminal 4; hot in terminal 4; terminal 3 is working fine",
+    "x_post": "We're here at Sky Harbor Airport and the air conditioning is broken. Apparently throughout the whole airport.\n\nIm a residential guy. Would this likely  be a huge chiller issue? I think that it would be cool to see a system such as used here  , but definitely would not have any idea what to even look for. \nI am a little bit of an ac nerd but that big of scale would probably be overwhelming for me.",
+    "equip": {
+      "family": "chiller",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odc65o",
+    "x_symptoms": "nicked copper; weaker spot; worried that it's gonna pop or get worse",
+    "x_post": "Nicked copper, can I fix this?\n\nSo I had to fix this WATER leak (PVC) and accidentally nicked the copper. It not leaking or being picked up by bubbles or my leak detector... but it's certainly a weaker spot now. Can I heat up some silfos and lay it on top of this weak spot to strengthen it? I'm worried that it's gonna pop or get worse and now I'm screwed...",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1odalu8",
+    "x_symptoms": "corrosion; bad heat exchanger; blown out sight glasses; bad regulator; improper combustion",
+    "x_post": "What’s going on here?",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": "Navien"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1od7hyh",
+    "x_symptoms": "open rollout",
+    "x_post": "F downflows\n\nNothing like finding a furnace with an open rollout in the blower comartment in a downflow furnace",
+    "equip": {
+      "family": "furnace",
+      "subtype": "downflow",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1od72o2",
+    "x_symptoms": "compressor bad; lower contact oxidized; terminal disintegrated",
+    "x_post": "Rheem compressor bad!\n\nWho here has had problems with Rheem? This compressor took a shit after 6 months.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": "Rheem"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocyq36",
+    "x_symptoms": "broke a piece; stupid aluminum piece",
+    "x_post": "Well guys I won the stupid prize for the day.\n\nIt's an old William's wall heater hope i can find that stupid aluminum piece.",
+    "equip": {
+      "family": "other",
+      "subtype": "wall heater",
+      "brand": "William's"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocv9y8",
+    "x_symptoms": "furnace exhaust pipe disconnected; venting into space; carbon monoxide risk; rust on everything",
+    "x_post": "Customer loves the smell he says",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocv4x4",
+    "x_symptoms": "coil sensor failure; no heat; defrost sensor failure",
+    "x_post": "Rheem hest pump coil sensor failure\n\nFew months old unit worked fine with ac but no heat with coil sensor failure…don’t see many heat pumps around my area any ideas and what to look for and location of the sensor ?",
+    "equip": {
+      "family": "heat_pump",
+      "subtype": "",
+      "brand": "Rheem"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1octxms",
+    "x_symptoms": "refrigerant leak; oil lost; oil barely visible in sight glass",
+    "x_post": "Adding Oil after refrigerant leak\n\nAs the title says, I'm dealing with a Refrigerant leak with some oil lost and I'm not sure what the best course of action is for adding the correct amount of oil.\n\nThis is on a Liebert DSE 085. Compressor is a Digital Copeland Scroll with a POE oil capacity of 3.37L/ 114 Oz, condenser is 3 stories up. I have no idea if they piped oil traps in the hot gas lines or if additional oil was added during commissioning.\n\nI haven't seen this compressor run yet. The on site maintenance staff told me when the compressor is running, the oil is barely visible in the sight glass. I did observe, When the unit is off, there is no oil in the sight glass at all. Just for comparison sake, The compressor on circuit 2 in this unit has the site glass completely full of oil when off. Maintenance wants me to add oil to the compressor. But how much? I believe the best course of action would be to let the system run for 15-20 minutes and check the oil level\n\nI know its a bit of a guessing game considering oil will be throughout the system and some was lost due to the leak. But I don't want to blindly add oil and risk over filling. I also don't want to Caesar salad.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": "Liebert"
+    },
+    "y_diag": [
+      [
+        "dx.refrigerant_leak_or_low_charge",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.refrigerant_leak_or_low_charge",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.refrigerant_leak_or_low_charge"
+    ]
+  },
+  {
+    "post_id": "reddit-1octgth",
+    "x_symptoms": "refrigerant contaminated; powdery white substance; fibrous plastic like material; hose clogged; sight glass clouded; hardened styrofoam consistency; solid plastic consistency",
+    "x_post": "Contaminated Opteon R454B\n\nI had a maintenance on a new system. It was low on refrigerant so I was going to get it charged up.\n\nOpened up a brand new jug of Opteon and set up to charge, purged a bit through my gauges and this crap comes out. A powdery white substance that wadded up in my hose and hardened into a fibrous plastic like material. My hose is fully clogged and I'm kinda worried about my manifold. I think if I put this into the system it would have destroyed it.\n\nI have never seen anything like this. Has anyone else? Anyone have an explanation? Sorry for low picture quality, had to transfer them from my work phone.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": "Honeywell"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocrv1v",
+    "x_symptoms": "motor not running; check windings",
+    "x_post": "Molex plugs\n\nWhat are you guys using to test these motors, I want to check the windings, do I just stick my meter leads in the plug? I want to see the ohms etcs",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocp6lm",
+    "x_symptoms": "customer headache; carbon monoxide poisoning implied; flames rolling out; safety bypassed",
+    "x_post": "Safeties may or may not exist for a reason\n\nCustomer mentioned having a headache after leaving their unit run for a few hours. \n\nI wonder why.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocp48v",
+    "x_symptoms": "leak; gasket leaking",
+    "x_post": "Is there a service bulletin on this leak?\n\nTo the residential Carrier guys, is there a service bulletin on this gasket between the collector box and inducer housing? 2022-2023 condensing furnaces, this is got to be like the 6th one i have seen leaking from the same exact spot. The tech support rep I spoke with in my area says it's not a known defect.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "condensing",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ocjr6b",
+    "x_symptoms": "unknown substance in glycol; glycol contamination; kinda tastes like cancer… feels like plastic and crumbles",
+    "x_post": "What is this substance?\n\nFound when checking glycol levels in commercial lochnivar boiler. Supplies modine heaters and aircraft hanger door tracks…",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": "Lochnivar"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oc5x11",
+    "x_symptoms": "icing up at the coil",
+    "x_post": "Need advice on a 10 ton split system\n\nI was sent to a job to replace an evap coil on a 10 ton split system that was diagnosed by someone else. \n\nWhen I got on site, I saw many warning/red flags: lineset size (suction and liquid) reduced, VFD was canceled and indoor fan tied directly to power, outdoor condenser is about 1.5ft from another condenser, condenser coil fins had been mangled, economizer canceled, and sensors canceled. This was all done by a previous company.\n\nI voiced my concerns to my boss, but I was basically told to shove it and do the work. \n\nI replaced the old coil (there was a very large oil stain so I'm confident there truly was a leak). I pressure tested the system with nitrogen before charging and DID find a leak at a king valve. After addressing the leak, it held pressure. Finally, I charged using a reference chart.\n\nThe system is now icing up at the coil like then old coil did. It has been about a month since the coil swap. If you are the tech that has to fix the mess I've let myself make, where are you starting?",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oc0q6i",
+    "x_symptoms": "zones not warming up; weak heating; air lock; not circulating to the furthest zone very good",
+    "x_post": "Taco 007e pump\n\nI’m trying to fix a system has boiler with 3 zones and a taco 007e pump. All three zone valves are working but only 2 zones are warming up but barely. The light on the pump is orange and not white indicating air lock. I’m assuming I have a weak pump, does that sound realistic and do these pumps get weak and need to be replaced? What else do I need to check?",
+    "equip": {
+      "family": "boiler",
+      "subtype": "",
+      "brand": "Taco"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  }
+]
