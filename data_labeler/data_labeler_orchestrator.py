@@ -134,7 +134,8 @@ def _augment_with_diagnostics(
         final_provenance = rule_provenance
         llm_payload: Optional[Dict[str, Any]] = None
 
-        need_llm = llm_available and not fired_rules
+        is_unclear = (label_id == "dx.other_or_unclear")
+        need_llm = llm_available and (not fired_rules or is_unclear)
         if need_llm:
             stats["llm_attempted"] += 1
             try:
