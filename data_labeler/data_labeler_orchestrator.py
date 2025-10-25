@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -58,6 +59,13 @@ def _write_json(path: str, obj: Any) -> str:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
     return path
+
+
+def _format_hms(seconds: float) -> str:
+    total_seconds = int(max(0, round(seconds)))
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 
 def _extract_equipment(labels: Dict[str, Any]) -> Dict[str, str]:
@@ -173,6 +181,7 @@ def _augment_with_diagnostics(
         final_rows.append({
             "post_id": post_id,
             "x_symptoms": x_symptoms,
+            "x_post": f"{title.strip()}\n\n{body.strip()}".strip(),
             "equip": equip,
             "y_diag": [[final_label, 1.0]],
             "provenance": final_provenance,
@@ -202,9 +211,12 @@ def process_reddit_data_to_solutions(
     """
     print(f"🚀 Starting data labeling pipeline...")
     print(f"📥 Input: {reddit_data_file}")
+    t0 = time.time()
+    total_posts_processed = 0
     
     # Step 1: Break labeling
     print(f"\n📊 Step 1: Break labeling...")
+    step1_start = time.time()
     break_agent = BreakLabelerAgent(output_dir=output_dir)
     break_result = break_agent.label_from_json_file(
         reddit_data_file,
@@ -216,24 +228,32 @@ def process_reddit_data_to_solutions(
     
     break_labels_file = break_result["output_file"]
     print(f"✅ Break labels: {break_labels_file}")
+    print(f"⏱️ Step 1 duration: {_format_hms(time.time() - step1_start)}")
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     # Step 2: Solution extraction
     print(f"\n💡 Step 2: Solution extraction...")
     solutions_file = os.path.join(output_dir, f"solutions_{timestamp}.json")
-
+    step2_start = time.time()
     solutions_path = process_breaks_to_solutions(
         raw_file=reddit_data_file,
         labels_file=break_labels_file,
         out_file=solutions_file
     )
     print(f"✅ Solutions: {solutions_path}")
+    print(f"⏱️ Step 2 duration: {_format_hms(time.time() - step2_start)}")
 
     solutions_doc = _load_json(solutions_path) if os.path.exists(solutions_path) else {}
+    try:
+        total_posts_processed = len(solutions_doc) if isinstance(solutions_doc, (dict, list)) else 0
+    except Exception:
+        total_posts_processed = 0
+    print(f"🧮 Posts processed: {total_posts_processed}")
 
     # Step 3: Rule-based diagnostics
     print(f"\n🧠 Step 3: Rule-based diagnostics...")
+    step3_start = time.time()
     rules_path = os.path.join(current_dir, "rule_labeler", "meta", "rules_v1.json")
     norm_cfg_path = os.path.join(current_dir, "rule_labeler", "scripts", "make_error_prediction_config.json")
 
@@ -254,6 +274,7 @@ def process_reddit_data_to_solutions(
     _write_json(final_dataset_file, final_rows)
 
     print(f"✅ Rule predictions: {rule_rows_file}")
+    print(f"⏱️ Step 3 duration: {_format_hms(time.time() - step3_start)}")
 
     # Step 4: Final diagnostic agent summary
     if stats.get("llm_attempted"):
@@ -266,6 +287,8 @@ def process_reddit_data_to_solutions(
 
     print(f"✅ Solutions + diagnostics: {diagnostics_file}")
     print(f"✅ Final dataset: {final_dataset_file}")
+    print(f"⏳ Total runtime: {_format_hms(time.time() - t0)}")
+    print(f"🧮 Total posts processed: {total_posts_processed}")
     print(f"\n🎉 Pipeline complete!")
 
     return {
