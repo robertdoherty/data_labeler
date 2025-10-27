@@ -2,149 +2,369 @@
   "rules": [
     {
       "label": "dx.electrical_low_voltage_chain",
-      "all": ["contactor chatter", "voltage drop"],
+      "all": [
+        "contactor chatter",
+        "voltage drop"
+      ],
       "any": [],
       "notes": "classic low-voltage through safeties"
     },
     {
       "label": "dx.electrical_low_voltage_chain",
-      "any": ["contactor chatter", "voltage drop"],
+      "any": [
+        "contactor chatter",
+        "voltage drop"
+      ],
       "all": [],
       "score": 0.6,
       "notes": "softer catch for low-voltage signs"
     },
     {
       "label": "dx.power_supply_transformer",
-        "any": ["breaker on transformer", "transformer weak", "transformer sags", "transformer_breaker_trip"],
+      "any": [
+        "breaker on transformer",
+        "transformer weak",
+        "transformer sags",
+        "transformer_breaker_trip"
+      ],
       "all": [],
       "notes": "transformer supply issue"
     },
     {
       "label": "dx.condensate_overflow_or_switch",
-      "any": ["float switch", "pan switch", "overflow pan", "trap overflow"],
+      "any": [
+        "float switch",
+        "pan switch",
+        "overflow pan",
+        "trap overflow"
+      ],
       "all": []
     },
     {
       "label": "dx.condensate_overflow_or_switch",
-      "all": ["overflow", "trap"],
+      "all": [
+        "overflow",
+        "trap"
+      ],
       "any": [],
-      "equip": {"family": "furnace"},
+      "equip": {
+        "family": "furnace"
+      },
       "score": 0.9,
       "notes": "furnace trap overflow phrasing (order-insensitive via token pair)"
     },
     {
       "label": "dx.condensate_overflow_or_switch",
-      "any": ["condensate", "drain", "overflow pan", "trap overflow", "condensate leaking", "drain clogged", "flex condensate"],
+      "any": [
+        "condensate",
+        "drain",
+        "overflow pan",
+        "trap overflow",
+        "condensate leaking",
+        "drain clogged",
+        "flex condensate"
+      ],
       "all": [],
       "score": 0.8,
       "notes": "broader condensate/drain signals"
     },
     {
       "label": "dx.condensate_overflow_or_switch",
-      "any": ["condensate", "drain", "overflow"],
+      "any": [
+        "condensate",
+        "drain",
+        "overflow"
+      ],
       "all": [],
-      "equip": {"family": "mini_split", "subtype": "cassette"},
+      "equip": {
+        "family": "mini_split",
+        "subtype": "cassette"
+      },
       "score": 0.85,
       "notes": "mini-split cassette drain context"
     },
     {
       "label": "dx.mechanical_drive_or_bearing",
-      "any": ["fan not spinning", "seized bearing", "bearing noise", "vibration"],
+      "any": [
+        "fan not spinning",
+        "seized bearing",
+        "bearing noise",
+        "vibration"
+      ],
       "all": []
     },
     {
       "label": "dx.mechanical_drive_or_bearing",
-      "all": ["bearing", "fan"],
+      "all": [
+        "bearing",
+        "fan"
+      ],
       "any": [],
       "score": 0.9,
       "notes": "bearing issue explicitly tied to fan"
     },
     {
       "label": "dx.mechanical_drive_or_bearing",
-      "any": ["bearing", "vibration", "pulsating"],
+      "any": [
+        "bearing",
+        "vibration",
+        "pulsating"
+      ],
       "all": [],
-      "equip": {"subtype": ["exhaust fan", "range hood motor", "swamp cooler bearing"]},
+      "equip": {
+        "subtype": [
+          "exhaust fan",
+          "range hood motor",
+          "swamp cooler bearing"
+        ]
+      },
       "score": 0.85,
       "notes": "fan-specific mechanical context"
     },
     {
       "label": "dx.mechanical_drive_or_bearing",
-      "any": ["bearing", "seized bearing", "vibration", "vibrating", "pulsating", "mystery noise", "running loose"],
+      "any": [
+        "bearing",
+        "seized bearing",
+        "vibration",
+        "vibrating",
+        "pulsating",
+        "mystery noise",
+        "running loose"
+      ],
       "all": [],
       "score": 0.7,
       "notes": "broader drive/bearing noises"
     },
     {
       "label": "dx.controls_board_or_comm",
-      "any": ["control board", "speed board", "comm alarm", "mnet com"],
+      "any": [
+        "control board",
+        "speed board",
+        "comm alarm",
+        "mnet com",
+        "won't connect to app",
+        "cant control via app",
+        "can't control via app",
+        "doesnt connect via app",
+        "doesn't connect via app",
+        "wifi connection",
+        "wifi module"
+      ],
       "all": [],
       "score": 0.7,
       "notes": "board/comm issues"
     },
     {
       "label": "dx.refrigerant_leak_or_low_charge",
-      "any": ["low refrigerant", "low charge", "refrigerant leak", "leak from evaporator coil", "uv dye"],
+      "any": [
+        "low refrigerant",
+        "low charge",
+        "refrigerant leak",
+        "leak from evaporator coil",
+        "uv dye",
+        "leaking brazed joints",
+        "pressure test wouldn't hold",
+        "died of a leak"
+      ],
       "all": [],
       "score": 0.7,
       "notes": "refrigerant-side issues (removed generic 'leak')"
     },
     {
       "label": "dx.install_or_wiring_issue",
-      "any": ["wiring", "wrong tap", "oversized contactor", "line set reused", "wiring issue"],
+      "any": [
+        "wiring",
+        "wrong tap",
+        "oversized contactor",
+        "line set reused",
+        "wiring issue",
+        "wrong voltage",
+        "volt_120 coil",
+        "voltage wrong"
+      ],
       "all": [],
       "score": 0.6,
       "notes": "install/wiring hints"
     },
     {
       "label": "dx.fuel_delivery_or_burner_tuning",
-      "any": ["fuel leak", "oil leak"],
+      "any": [
+        "fuel leak",
+        "oil leak"
+      ],
       "all": [],
-      "equip": {"subtype": "oil burner"},
+      "equip": {
+        "subtype": "oil burner"
+      },
       "score": 0.9,
       "notes": "fuel medium specific"
     },
     {
       "label": "dx.water_ingress_cabinet_or_roof",
-      "any": ["roof leak", "water ingress", "water flows out", "cabinet leak"],
+      "any": [
+        "roof leak",
+        "water ingress",
+        "water flows out",
+        "cabinet leak"
+      ],
       "all": [],
       "score": 0.8,
       "notes": "water ingress separate from refrigerant"
     },
     {
       "label": "dx.tools_vacuum_or_gauges",
-      "any": ["micron gauge", "microns", "vacuum gauge"],
+      "any": [
+        "micron gauge",
+        "microns",
+        "vacuum gauge"
+      ],
       "all": [],
       "score": 0.7,
       "notes": "tool behavior category"
     },
     {
       "label": "dx.tools_misuse_or_maintenance",
-      "any": ["vacuum pump smoking", "vacuum pump ran with compressor oil", "apex seals"],
+      "any": [
+        "vacuum pump smoking",
+        "vacuum pump ran with compressor oil",
+        "apex seals"
+      ],
       "all": [],
       "score": 0.85,
       "notes": "tool misuse/maintenance incidents"
     },
     {
       "label": "dx.safety_incident_or_electrical_contact",
-      "any": ["electrocution", "zapped", "snake electrocuted"],
+      "any": [
+        "electrocution",
+        "zapped",
+        "snake electrocuted"
+      ],
       "all": [],
       "score": 0.9,
       "notes": "safety incidents not diagnoses"
     },
     {
       "label": "dx.compressor_or_valve_fault",
-      "any": ["low compression", "bypassing valve", "reversing valve", "stuck valve", "bypassing", "valve bypassing"],
+      "any": [
+        "low compression",
+        "bypassing valve",
+        "reversing valve",
+        "stuck valve",
+        "bypassing",
+        "valve bypassing",
+        "compressor bad",
+        "compressor overcurrent",
+        "terminal disintegrated",
+        "blown compressor terminal",
+        "compressor terminal"
+      ],
       "all": [],
       "score": 0.8,
       "notes": "compressor/valve specific indicators"
     },
     {
       "label": "dx.compressor_or_valve_fault",
-      "all": ["low", "amps"],
+      "all": [
+        "low",
+        "amps"
+      ],
       "any": [],
-      "equip": {"family": "heat_pump"},
+      "equip": {
+        "family": "heat_pump"
+      },
       "score": 0.75,
       "notes": "heat pump context for low amps + suspected valve/compressor issue"
+    },
+    {
+      "label": "dx.sensor_or_safety_fault",
+      "any": [
+        "sensor failure",
+        "faulty sensor",
+        "coil sensor",
+        "defrost sensor",
+        "roll out switch",
+        "rollout switch",
+        "limit switch"
+      ],
+      "all": [],
+      "score": 0.75,
+      "notes": "sensor or safety device faults"
+    },
+    {
+      "label": "dx.airflow_restriction_or_ice",
+      "any": [
+        "icing up",
+        "iced coil",
+        "frozen coil",
+        "blocked intake",
+        "intake blocked"
+      ],
+      "all": [],
+      "score": 0.75,
+      "notes": "airflow restriction or coil icing symptoms"
+    },
+    {
+      "label": "dx.fuel_delivery_or_burner_tuning",
+      "any": [
+        "no gas",
+        "gas meter locked",
+        "gas turned off",
+        "gas service locked",
+        "gas valve failure",
+        "faulty gas valve",
+        "bad gas valve"
+      ],
+      "all": [],
+      "score": 0.8,
+      "notes": "gas supply or valve issues"
+    },
+    {
+      "label": "dx.mechanical_drive_or_bearing",
+      "any": [
+        "ear piercing noise",
+        "fan making noise",
+        "fan noise",
+        "screeching fan"
+      ],
+      "all": [],
+      "score": 0.7,
+      "notes": "noisy or failing fan drive components"
+    },
+    {
+      "label": "dx.controls_board_or_comm",
+      "any": [
+        "thermostat app",
+        "connect via app"
+      ],
+      "all": [],
+      "score": 0.6,
+      "notes": "smart control connectivity complaints"
+    },
+    {
+      "label": "dx.heat_exchanger_failure",
+      "all": [
+        "heat exchanger",
+        "crack"
+      ],
+      "any": [],
+      "score": 0.9,
+      "notes": "explicit cracked heat exchanger mentions"
+    },
+    {
+      "label": "dx.heat_exchanger_failure",
+      "any": [
+        "failed heat exchanger",
+        "heat exchanger failure",
+        "broken heat exchanger",
+        "cracked hx",
+        "hx cracked",
+        "secondary hx"
+      ],
+      "all": [],
+      "score": 0.85,
+      "notes": "common shorthand for failed heat exchangers"
     }
   ],
   "fallback": "dx.other_or_unclear"
