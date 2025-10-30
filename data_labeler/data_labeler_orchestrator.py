@@ -105,6 +105,8 @@ def _augment_with_diagnostics(
         symptoms = error_report.get("symptoms", []) or []
         title = post.get("title", "") or ""
         body = post.get("body", "") or ""
+        reddit_url = post.get("url", "") or ""
+        subreddit = post.get("subreddit", "") or ""
 
         equip = _extract_equipment(labels)
 
@@ -198,6 +200,8 @@ def _augment_with_diagnostics(
             "rule_label": label_id,
             "rule_confidence": _clamp_conf(rule_conf),
             "rule_fired_rules": fired_rules,
+            "reddit_url": reddit_url,
+            "subreddit": subreddit,
         })
 
     return records, rule_rows, final_rows, stats
