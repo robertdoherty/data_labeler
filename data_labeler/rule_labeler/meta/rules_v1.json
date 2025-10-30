@@ -191,7 +191,9 @@
       "label": "dx.fuel_delivery_or_burner_tuning",
       "any": [
         "fuel leak",
-        "oil leak"
+        "oil leak",
+        "leaking gas valve",
+        "gas valve leaking"
       ],
       "all": [],
       "equip": {
@@ -258,7 +260,10 @@
         "compressor overcurrent",
         "terminal disintegrated",
         "blown compressor terminal",
-        "compressor terminal"
+        "compressor terminal",
+        "txv malfunctioning",
+        "txv malfunction",
+        "compressor blew an electrical terminal pin"
       ],
       "all": [],
       "score": 0.8,
@@ -365,6 +370,31 @@
       "all": [],
       "score": 0.85,
       "notes": "common shorthand for failed heat exchangers"
+    },
+    {
+      "label": "dx.install_or_wiring_issue",
+      "all": [
+        "broken off",
+        "fan center terminal"
+      ],
+      "any": [],
+      "score": 0.85,
+      "notes": "fan center terminal wiring break"
+    },
+    {
+      "label": "dx.fuel_delivery_or_burner_tuning",
+      "any": [
+        "leaking gas valve"
+      ],
+      "all": [],
+      "equip": {
+        "family": [
+          "furnace",
+          "boiler"
+        ]
+      },
+      "score": 0.85,
+      "notes": "explicit leaking gas valve on furnace/boiler"
     }
   ],
   "fallback": "dx.other_or_unclear"

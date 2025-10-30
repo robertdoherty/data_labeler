@@ -102,6 +102,8 @@ def _augment_with_diagnostics(
         post = rec.get("post", {}) if isinstance(rec, dict) else {}
 
         error_report = labels.get("error_report", {}) if isinstance(labels, dict) else {}
+        if isinstance(labels, dict) and "error_report" not in labels:
+            labels["error_report"] = error_report
         symptoms = error_report.get("symptoms", []) or []
         title = post.get("title", "") or ""
         body = post.get("body", "") or ""
@@ -136,6 +138,7 @@ def _augment_with_diagnostics(
 
         is_unclear = (label_id == "dx.other_or_unclear")
         need_llm = llm_available and (not fired_rules or is_unclear)
+        conflict_entry: Optional[Dict[str, Any]] = None
         if need_llm:
             stats["llm_attempted"] += 1
             try:
@@ -151,10 +154,30 @@ def _augment_with_diagnostics(
                     top = preds[0]
                     maybe_label = (top.get("label_id") or "").strip()
                     if maybe_label:
-                        final_label = maybe_label
-                        final_conf = _clamp_conf(top.get("confidence", final_conf))
-                        final_provenance = llm_payload.get("provenance", "llm_v1")
-                        stats["llm_succeeded"] += 1
+                        llm_conf = _clamp_conf(top.get("confidence", 0.0))
+                        conflict_entry = {
+                            "source": "rules_vs_llm",
+                            "rule": {
+                                "label": label_id,
+                                "confidence": _clamp_conf(rule_conf),
+                            },
+                            "llm": {
+                                "label": maybe_label,
+                                "confidence": llm_conf,
+                                "provenance": llm_payload.get("provenance", "llm_v1"),
+                            },
+                        } if maybe_label != label_id else None
+
+                        if llm_conf > final_conf:
+                            final_label = maybe_label
+                            final_conf = llm_conf
+                            final_provenance = llm_payload.get("provenance", "llm_v1")
+                            stats["llm_succeeded"] += 1
+                            if conflict_entry is not None:
+                                conflict_entry["chosen"] = "llm"
+                        else:
+                            if conflict_entry is not None:
+                                conflict_entry["chosen"] = "rules"
                 else:
                     llm_payload.setdefault("predictions", [])  # type: ignore
             except Exception as exc:  # pragma: no cover - defensive for missing creds
@@ -170,6 +193,9 @@ def _augment_with_diagnostics(
                 if permanent_cred_error:
                     llm_available = False
                 llm_payload = {"error": err_msg}
+
+        if conflict_entry is not None:
+            error_report.setdefault("conflicts", []).append(conflict_entry)
 
         rec["x_symptoms"] = x_symptoms
         rec["diagnostics"] = {
