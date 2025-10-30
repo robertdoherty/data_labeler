@@ -41,19 +41,12 @@ except ImportError:
     )
 
 try:
-    from data_labeler_agent.final_diagnostic_agent.agent import predict_diagnostics
+    from data_labeler_agent.diagnostic_agent.agent import predict_diagnostics
 except ImportError:
     try:
-        from final_diagnostic_agent.agent import predict_diagnostics
+        from diagnostic_agent.agent import predict_diagnostics
     except ImportError:
-        # Fallback to the diagnostic entrypoint colocated under solution_labeler_agent
-        try:
-            from data_labeler_agent.solution_labeler_agent.agent import predict_diagnostics
-        except ImportError:
-            try:
-                from solution_labeler_agent.agent import predict_diagnostics
-            except ImportError:
-                predict_diagnostics = None  # type: ignore
+        predict_diagnostics = None  # type: ignore
 
 
 def _load_json(path: str) -> Dict[str, Any]:
