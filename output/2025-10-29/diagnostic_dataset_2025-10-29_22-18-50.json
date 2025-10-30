@@ -1,0 +1,720 @@
+[
+  {
+    "post_id": "reddit-1ojje1r",
+    "x_symptoms": "no heat; pressure switch fault; inducer motor stuck in first stage; abnormal voltage volt_210 on volt_120 system; system kicks out",
+    "x_post": "Need some help figuring this one out\n\nSo I ran to a no heat call I'm getting two error codes when I go through the history on a rheem furnace error code 45 & 46 both are pressure switch fault. The system ignite the flame fine I even put my manometer in series with the inducer port I was getting 0.65 It's a two-stage furnace One pressure switch is rated 0.25 and the other 0.30. I put my amp meter on the inducer motor I was getting 1.1 amps It's rated for 1.4 amps One thing I did notice though whenever it switched over to second stage the inducer motor never increased its amp draw which it should have. The gas valve is now in second stage but it seems like the inducer motor is stuck in first stage I did check the port that's plugged into the board when I checked common to first stage I was getting 120 volts but when I checked common to second stage I was getting some weird voltage I was getting 210 volts which I thought was weird it was pretty late at this point I just went ahead and called it and said I was going to go ahead and order the inducer motor and the control board but just for future reference do you guys believe it was the inducer motor or the control board that was the issue The furnace kept running when I was there eventually it would kick itself out I believe it's because of the gas valve is feeding too much and the inducer didn't switch over to the second stage which is overfeeding too much gas causing the pressure switch drop out anybody else run into this issue before?\n\nRheem \nModel number - RGPE-07EAMKR",
+    "equip": {
+      "family": "furnace",
+      "subtype": "two-stage furnace",
+      "brand": "Rheem"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ojiv06",
+    "x_symptoms": "flow drops to almost 0 on flow switch; shuts down on no flow; second compressor causes shutdown; flow drops to almost 0 on thermal flow switch not actual flow; second compressor causes shutdown after 1 minute",
+    "x_post": "Advice on a Chiller\n\nNeed some advice on this Daikin air cooled chiller.  Runs fine with only one compressor running, but as soon as a second one comes on, it runs for about a minute, flow drops to almost 0 on the flow switch and it shuts down on No Flow.  Gauges don't move when this happens.  Daikin suggested rotation of the tap point by 30 degrees.  We've also replaced the flow switch thinking it might be bad.  Running out of ideas here.  And all Daikin says is we need more flow, but it's about 230 GPM through a 140 ton chiller.",
+    "equip": {
+      "family": "chiller",
+      "subtype": "air cooled chiller",
+      "brand": "Daikin"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ojhxj1",
+    "x_symptoms": "smoke/fog in house; sparks/smoke from control board",
+    "x_post": "That's not good\n\nCustomer said house was \"foggy\". Wasnt fog",
+    "equip": {
+      "family": "furnace",
+      "subtype": "control board",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.controls_board_or_comm",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.controls_board_or_comm",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.controls_board_or_comm"
+    ]
+  },
+  {
+    "post_id": "reddit-1ojfn49",
+    "x_symptoms": "no cooling; iced-up outdoor unit",
+    "x_post": "“My a/c isnt cooling”. Huh, you don’t say",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "outdoor unit",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oje62g",
+    "x_symptoms": "potential bad heat exchanger; soot/buildup on heat exchanger",
+    "x_post": "Bad heat exchanger?\n\nJust scoped this heat exchanger on a 2007 steam boiler. Would you condemn this? And why is there so much build up on the knobs?",
+    "equip": {
+      "family": "boiler",
+      "subtype": "steam boiler heat exchanger",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ojcn2k",
+    "x_symptoms": "unit not starting/working due to unplugged ignition module",
+    "x_post": "Vacation mode!\n\nI had 1 call to finish from yesterday.  Hour and a half away.  Got 1/2 way home and had to turn around.  Some idiot forgot to plug in the ignition module.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "ignition module",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ojaxjj",
+    "x_symptoms": "no heat; clogged condensate drain",
+    "x_post": "I just can’t stop thinking of her….\n\nRan a no heat call today and saw a drain that reminded me of her. The temptation was too great to resist.",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "condensate drain",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.condensate_overflow_or_switch",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.condensate_overflow_or_switch",
+    "rule_confidence": 0.8,
+    "rule_fired_rules": [
+      "dx.condensate_overflow_or_switch"
+    ]
+  },
+  {
+    "post_id": "reddit-1ojapcq",
+    "x_symptoms": "defective control board; unit never started up",
+    "x_post": "Sinclair\n\nDoes Sinclair have a problem with furnace control boards or am I just unlucky. This is the second Sinclair I have come across in a month with a defective control board. This one is brand new just installed yesterday and never even started up",
+    "equip": {
+      "family": "furnace",
+      "subtype": "control board",
+      "brand": "Sinclair"
+    },
+    "y_diag": [
+      [
+        "dx.controls_board_or_comm",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.controls_board_or_comm",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.controls_board_or_comm"
+    ]
+  },
+  {
+    "post_id": "reddit-1oj7i2q",
+    "x_symptoms": "unit stuck in test mode; flashing led on rtrm board; diagnostic code pulsing on j6-6 to j6-9; solid light for about 30seconds to a minute then double blink for diagnostic",
+    "x_post": "Trane Voyager stuck in test\n\nI have a Trane Voyager 3 from 2019. \nIt is showing flashing LED on RTRM board. And flash code immediately returns on startup after power cycling unit. \n\nChecked voltage on J6. \nNo cooling lockout (J6-6 to J6-8). \nNo heating lockout (J6-6 to J6-7). \nNo system code (J6-6 to J6-10). \nOnly status code pulsing(J6-6 to J6-9). \n\nFirst thought was bad test switch, so unhooked it and power cycled unit. \nSecond thought was weird signal from BAS. So unhooked Bacnet card and power cycled unit. \nStill went into “test” on startup. \n\n\nAfter doing all of this yesterday afternoon, I picked up a new RTRM and RTOM board this morning. \nAfter install, new RTRM board is still immediately showing as in test. \n\nAnyone have any thoughts as to what is causing this?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "packaged",
+      "brand": "Trane"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oj7ejo",
+    "x_symptoms": "failed weld; untrustworthy welds",
+    "x_post": "Failed weld\n\nDo you hate when that happens",
+    "equip": {
+      "family": "HVAC",
+      "subtype": "air handler",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oj6rtg",
+    "x_symptoms": "refrigerant leak from manifold hose",
+    "x_post": "Just a friendly reminder not to spend too long looking for leaks if you haven’t thought full circle yet.\n\n🤦🏻",
+    "equip": {
+      "family": "tools",
+      "subtype": "manifold gauge hose",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.refrigerant_leak_or_low_charge",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.refrigerant_leak_or_low_charge",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.refrigerant_leak_or_low_charge"
+    ]
+  },
+  {
+    "post_id": "reddit-1oivd6n",
+    "x_symptoms": "smells gas from flue; combustion gases blowing back compromised heat exchanger",
+    "x_post": "I work for the real life Mr. Krabs.\n\nToday I had a call, “customer smells gas from flue”. First instinct tells me it may be a heat exchanger literally only because I heard it somewhere. I put a grill lighter down the burners(I was told when I asked for an analyzer months ago that “we don’t have one and you don’t need it”) and sure enough, it’s blowing straight back at me with the fan on. It is a 2018 unit, still under warranty so I figure we’re good because she’s covered. I disable the unit and bring everything my boss needs to get replacements. Then comes the interrogation, which is understandable to an extent. He proceeds to tell me it can’t be the heat exchanger because it’s not rolling out (it’s LP). The argument boiled down to “Nuh uh”. \nNOW here is the real issue. I overheard him talking with another “veteran of the field” and his exact words were “We’ll just take the combustion analyzer, tell her we checked it, and tell her Veto made a mistake.” Potentially poisoning this person for what? To save some money on a warranty she was sold? To not admit having learned something from a younger person? Mind you, he DOES NOT KNOW HOW to use a combustion analyzer. And he didn’t even know about the “match test” for the burner tubes. Am I insane? I’ve been wrong on other things, I have no issues with being wrong, but to not even check and just lie is disgusting to me. What would you do here? \n\nUPDATE: I told the customer everything this morning, and suggested she seek out another company for a 2nd opinion. Thank you all for reminding me there are still people that give a shit.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "heat exchanger",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oisxvc",
+    "x_symptoms": "fan randomly runs nuisance calls",
+    "x_post": "A2l mitigation nuisance service calls?\n\nHas anyone been having nuisance calls due to mitigation systems? We install carrier and have had a few air handlers that the customer complains will randomly run the fan.\n\nWhen I get there I check for refrigerant leaks with my sniffer but never find anything. Carrier says they have been getting calls about nuisance issues with their new units.\n\nAny experience/advice?",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "A2L mitigation system",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oiqinw",
+    "x_symptoms": "pressure switch code; acting like the pressure switches never closed; board was still saying pressure switch open when it was closed; never got to the ignitor step of ignition; no volt_120 to hsi; pressure switch confirmed to be physically operating correctly open before call for heat closed after inducer starts but the control board still reports it as open and prevents hsi energization.",
+    "x_post": "Bad board?\n\nWas working on a Lennox 96% furnace earlier today that was kind of stumping me. Board was giving me a pressure switch code and acting like the pressure switches never closed. So first I removed the flue from inducer, and board is still giving me code. Inducer is pulling perfect amperage and pushing air. Then I cleared all orifices on pressure switch and inducer and collector box, and same thing. Then I removed drain trap and checked all external drains and all is good, no water is being retained in the system while running heat. Then I decided to pull the wires off the pressures switches and checked resistance while the inducer is running and sure enough the pressure switch is closed the whole time, all the way until the system locks out. I checked all of the pressure switch wires from the board to the pressure switches and nothing is damaged or open. I even unplugged the molex plug that the pressure switches are wired into, blew it like a Nintendo cartridge and plugged it back in. Still same thing. My instinct sais Bad board. I’ve replaced 5-6 bad board in my career and I’ve never been wrong. Mostly it’s been things like, not energizing gas valve, not energizing blower with 120 when I have 24v to G, board not giving 120v to primary of transformer. Things like that. But this one stumped me because of it being a pressure switch code. But the entire time the system was running the pressure switch was closed and all wiring is intact. The customer was an electrical engineer and said he’s going to order a new board on Amazon, so I guess I’ll never know if I was wrong. What do u guys think",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Lennox"
+    },
+    "y_diag": [
+      [
+        "dx.controls_board_or_comm",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.controls_board_or_comm",
+    "rule_confidence": 0.7,
+    "rule_fired_rules": [
+      "dx.controls_board_or_comm"
+    ]
+  },
+  {
+    "post_id": "reddit-1oiq0t5",
+    "x_symptoms": "no heat call; h/e disintegrate; burners melted; burners cracked; burners overheat and break; 8 out of 17 burners were melted; all burners were cracked",
+    "x_post": "Today was definitely a day...\n\nHad a no heat call. I'm surprised it lasted this long...",
+    "equip": {
+      "family": "boiler",
+      "subtype": "Hot water boiler",
+      "brand": "RBI"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oinvwc",
+    "x_symptoms": "physical damage to outdoor unit; unit hit by car",
+    "x_post": "This was a good one\n\nCust states “ he left car in gear and got out…. “ he forgot to mention he drives a Tahoe 😂",
+    "equip": {
+      "family": "other",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oievp4",
+    "x_symptoms": "manual stuck in inducer motor; smelled burning wood; ahu was going to shake to pieces; rattled",
+    "x_post": "Rheem or installers, who’s to blame?\n\nI can understand a bird or a squirrel but C’mon now.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Rheem"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oic6zc",
+    "x_symptoms": "unusual noise on compressor shutdown; scroll rotating in reverse; discharge check valve is fucked; rod knock",
+    "x_post": "What In the actual 😂\n\nCo-worker just sent to me. Listen to this compressor shut down. I’ve heard them makes this noise for about 2 seconds but NEVER like this. What is going on lol",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oi2xj6",
+    "x_symptoms": "burning dirty on low fire; high o2; low co2; low fire adjustment was stripped out; gas valve wasn’t reacting; low gas pressure; bolts loose on back of heat exchanger; 4000ppm co",
+    "x_post": "Old Trane Intellipak 850k btu\n\nOld ipak was burning dirty on low fire , but clean on high fire. Low fire had high 02 and low co2. Went to check gas pressure and the low fire adjustment was stripped out. Tried adjusting the high fire and the gas valve wasn’t reacting. Had 2.5” on high fire and .8” on low, should have been 3.5” at the manifold on high. These 2 stage burners also run 2 speeds on the combustion motor. Found bolts loose on back of heat exchanger. How does that burner gasket look to you? Locked out gas and quoted customer a new gas valve.",
+    "equip": {
+      "family": "rtu",
+      "subtype": "",
+      "brand": "Trane"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ohwpkn",
+    "x_symptoms": "heat exchanger failure; cracked heat exchanger",
+    "x_post": "Had a first today!",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": "Trane"
+    },
+    "y_diag": [
+      [
+        "dx.heat_exchanger_failure",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.heat_exchanger_failure",
+    "rule_confidence": 0.9,
+    "rule_fired_rules": [
+      "dx.heat_exchanger_failure"
+    ]
+  },
+  {
+    "post_id": "reddit-1ohsm9n",
+    "x_symptoms": "no drain pan; blocked return duct; undersized return duct; high static pressure",
+    "x_post": "This is why you call out professionals to inspect your equipment when you buy a house.\n\nCrazy how much inspections miss on new homes. Now the home owner is responsible for everything. No drain pan right above living room. Completely blocked return duct. Unit rated for .2 static and the return alone is .3 Thankfully this isn’t a humid climate zone",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.condensate_overflow_or_switch",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.condensate_overflow_or_switch",
+    "rule_confidence": 0.8,
+    "rule_fired_rules": [
+      "dx.condensate_overflow_or_switch"
+    ]
+  },
+  {
+    "post_id": "reddit-1ohr16b",
+    "x_symptoms": "high discharge pressure; high suction pressure; contaminated charge; non-condensibles in system; compressor amps normal; condenser pressure drops to 500 psig with water on coil",
+    "x_post": "Never seen this before (refrigeration)\n\nWe have a CO2 skid with a small refrigeration unit running 404a on top to keep pressures down. There was a shutdown and they emptied the drum. Before filling it back up, they wanted me to check the unit and make sure it worked. \nI bypassed the differential pressure switch to get it to turn on and was getting crazy high discharge pressures (600+ psig)\nI told them the unit worked, but would need to be filled to get proper readings. I figured the drum was really hot compared to normal with just air in there. They filled it and it was still reading very high suction (80) and discharge (600). Normal operating pressures are 24/275. \nChecked the txv sensing bulb, it was functioning properly. No split across the drier. Restriction likely not the issue as suction and discharge were high. Pressures with it off we're almost 300. Figured maybe it was way overcharged. \nPulled 2.2 lbs out, which is exactly what it is supposed to have. Blew it out with nitro, pulled vacuum, and charged with virgin refrigerant. Pressures were right on.\nI have no idea why this thing was reading so high. Anybody have any insight?\n\nTldr - suction and discharge refrigerant pressures were very high for no reason as far as I can tell. Recovered, vacuumed, and charged fresh and they normalized.",
+    "equip": {
+      "family": "refrigeration",
+      "subtype": "CO2 drum cooling system",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ohjnfz",
+    "x_symptoms": "bad bulbs; ballast failures",
+    "x_post": "Issues with APCO Ultra\n\nHave any of you guys had issues with the APCO-X Ultra? Any call backs for them? Seeing a lot of issues with them and wanted to know if it was just my area. Thanks in advance.",
+    "equip": {
+      "family": "other",
+      "subtype": "UV light air purifier",
+      "brand": "APCO"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ohdqpd",
+    "x_symptoms": "fluctuating suction pressure; low suction pressure; system previously frozen",
+    "x_post": "Suction pressure is fluctuating\n\nSuction pressure was fluctuating between 107 and 113 psig before and after a new txv was installed. Filter was clean. Evaporator coils are clean. Subcool and superheat are good. Outside temperature is 85 degrees. Inside temperature is 76 degrees. Variable speed blower which is ramped up. Humidity inside is 58%. Static pressure was 0.33 Supply and 0.42 Return which gave it a risk of 0.75 inWC which I know is off but it’s been like this for a while. What can cause it to have lowish fluctuating pressures?",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ohcmmb",
+    "x_symptoms": "airflow issues",
+    "x_post": "😵‍💫😵‍💫😵‍💫\n\nVery. Ugly. Work. You should see the plenum. Customer states that there are airflow issues… 🤦🏾 I just wanna go home",
+    "equip": {
+      "family": "air_handler",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1oh2k1y",
+    "x_symptoms": "unusual noise",
+    "x_post": "Help!\n\nAnother hvac company changed out the compressor because of this noise but it was still making the same noise. Home owner called us out and now having trouble diagnosing this noise!",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "outdoor unit",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ogqfta",
+    "x_symptoms": "no heat; natural gas smell; gas valve energized with no flame; spark ignition wire disconnected; burnt wires and plugs; flame rolling out of holes; gas valve does not de-energize/lock out",
+    "x_post": "Almost encountered a natural gas explosion on a no heat call commercial Lenox rooftop unit\n\nSo I get a call for a pet store no heat, I take my time moseying on over there. As the manager is giving me roof hatch access she states that I see what the gas smell is coming from while I'm up on the roof. \n    Now I'm used to the insane customers that are constantly smelling gas (Even if they have electric heat pump units lol) yada yada yada everyone always smells gas. But not this time this was a real concern. As I entered the roof, natural gas smell hit me in the face (very glad I wasn't smoking walking up to the unit) I find the dog grooming unit, inducer motor is steady on, and the smell of gas is unbearable. I get the cover off and I have 24 volts energizing my gas valve with no flame. The board is showing a 59 code on this lennox rtu which says gas valve one not energized 2 minutes after demand N times. N is defined by ecto 3.04. \n\n    I shut the unit down immediately to let the gas clear from the area. Turn the unit back on, notice that the spark ignition wire is laying in the unit not connected. \n\nLooks like somebody has recently changed his heat exchanger. A lot of the wires and plugs inside the unit are burnt and repaired with crimped butt sleeves. Looks like flame was rolling out of holes on panel that divides heat exchanger and electrical compartment.  \n after powering the unit back on, no flame (on purpose) I wanted to see how long it would take for the gas valve to de-energize. Which it does not. After multiple attempts it should lock itself out but it does not. 24 volts remains at the gas valve, so I am going through the diagram to see what's what. Make sure everything got wired up correctly. \n\nSorry for the long rant, but has this ever happened to anybody before? I've never seen an ignition control module fail in this way?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "rooftop unit",
+      "brand": "Lenox"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ogek4c",
+    "x_symptoms": "fan ramps up so high everything starts howling like crazy; fan ramps down to a reasonable speed initial high speed is abnormal",
+    "x_post": "Daikin communicating system\n\nI got a personal use discount on a variable furnace, hp, and a daikin one thermostat. I live in Chicago so obviously my furnace is my main source of heat in winter but on my controller it’s auxiliary heat that I set to run under 50 degrees. No issues really other than when the furnace gets a call right away the fan ramps up so high everything starts howling like crazy, then ramps down to a reasonable speed. I feel like I’ve gone through the stat looking for fan heating profiles but can’t find anything that stops this issue. Any advice would be appreciated as my wife is not happy to begin with because I ripped out a perfectly good (though oversized)Ducane system",
+    "equip": {
+      "family": "heat_pump",
+      "subtype": "variable furnace",
+      "brand": "Daikin"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofvwg1",
+    "x_symptoms": "blower motor dead; burnt windings; dead motor pulled out",
+    "x_post": "Whelp, I guess you’ll have that…\n\nWent out to change a blower motor on a roof top unit, that was dead. I’ve seen the winding go all burnt, not just one spot. Does anyone know what causes this?",
+    "equip": {
+      "family": "rtu",
+      "subtype": "packaged RTU",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofre9c",
+    "x_symptoms": "furnace trips high limit; temperature imbalance",
+    "x_post": "Sizing on new installs\n\nIt's long, but please read if you have time because i need some advice.\n\nRecently i had a negative experience with a customer. Went to a house for a no heat call, early 2000s 70k btu A cabinet 90+ in a 1300ish sqft house, flames shooting out, tried to adjust things but it was clear it was a replacement scenario. The supply plenum was just a 14x20x36 box with 3 six inch runs coming off it. Only 3 thats it. Return was better, filter boot with 8x20 going up and to multiple large floor grilles.\n\nAnyways, I quote the customer a new 60k 90+ while explaining several times about the undersized ductwork. It is a low income area, house is a mess, customer only has the money for the swap out and nothing more. I tried my best to explain why i wasn't going to put a 40k in because of the size and the needs of the house, and that the 60k may not run and we may need to open some of the plenum after install to have heat in the house. Customer says they understand and agree.\n\nFast forward to turn on, yes it immediately trips so I cut out an 8x20 hole on the back of the plenum, put a temporary 8x20 grille over it, and give them a VERY cheap quote to add an plenum 8x20 plenum through a specific route, with 7-8 runs off it throughout the house. Maybe someday they say. Ok fine.\n\nAfter a few days they complain about the terrible temperature imbalance between different areas of the house so I give them a few options good better best and they said they have no money and also magically have no recollection of our conversation about their undersized ductwork and everything and said the old furnace worked way better than the new one. I feel this is turning into a possible bad reputation deal for me, so I go over there, donate a few hours and two 10\" flex ducts and give them quite a bit more distribution and balance than they had before. Very far from ideal, but the issue is more or less solved and they didn't have to pay anything for the additional work, so they are a satisfied customer now.\n\nGetting to the point, I have two questions:\n\n1. When ductwork is clearly undersized, why do old furnaces work for so long and new furnaces do not, which components are different? The old furnace had a high limit, it had rollouts, what is the deal?\n\n2. It's always a stressful thing for me to size a new unit for a customer and have to decide between the size of the house and the capacity of the ductwork while trying to keep my price competitive and not trying to scare the customer to potential extra ductwork costs that i know some other guys aren't going to bother with. Do you guys have any advice for preventing conflict and misunderstanding? It is a lot to explain every time im in this scenario, and i know the more i talk the less they absorb.\n\n\n\nLast thing, i have another job I'm bidding on now with a 120k 90+ and only an 8x24 duct as the supply plenum. It has been working for years like that, and the other guys are just quoting a swap, but i know it could use more than just a swap. So this is yet another similar situation for me. Any advice is appreciated.\n\nThanks",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofeiyx",
+    "x_symptoms": "blowing cold air; low voltage on b terminal 5v instead of volt_24; reversing valve not energizing",
+    "x_post": "Honeywell 8000 stat issues w/HP?\n\nAbout a week ago I went to a new install to test everything for heat. Bosch HP with oil boiler for backup heat. Had a brand new 8000 stat with a wireless ODS for changeover temp etc. The stat worked fine for changeover, put the ODS in the freezer and it went to aux heat\n\nI put the unit on for heatpump and find its blowing cold air. Only had 5v on B which wasnt enough for the reversing valve. Pulled apart all the wires, nothing shorted. Tried a few different spare wires, same issue. I put the B wire with Y at the stat and was able to get 24v at the ahu. So I told the boss its a bad new stat. \n\nGo back today, install the front and back panel of the new 8000 and have the exact same issue. Boss comes over thinking I screwed up (also the install was his friends house) but we get the same results. Even reprogrammed the new 8000 for basic heatpump with B and was still only getting 5v. We isolated off the boiler and the ODU, still only have 5v on B.\n\nMaybe we got a bad batch?",
+    "equip": {
+      "family": "heat_pump",
+      "subtype": "",
+      "brand": "Honeywell"
+    },
+    "y_diag": [
+      [
+        "dx.compressor_or_valve_fault",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.compressor_or_valve_fault",
+    "rule_confidence": 0.8,
+    "rule_fired_rules": [
+      "dx.compressor_or_valve_fault"
+    ]
+  },
+  {
+    "post_id": "reddit-1ofaw6g",
+    "x_symptoms": "thermostat not connecting via app/website; app says it’s connected but can’t control anything",
+    "x_post": "Anyone run into these? Routine swap out, issue resolved but now doesn’t connect via app/website…Anyone get it to connect somehow?\n\nI think it’s on carriers end. I uninstalled/reinstalled app, verified credentials are correct and verified wifi connection/correct bandwidth…",
+    "equip": {
+      "family": "controls",
+      "subtype": "thermostat",
+      "brand": "Carrier"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1ofap96",
+    "x_symptoms": "leaks in both coils; leaking from the u-tubes or in the coil; blow the bottom of the txv out",
+    "x_post": "Lennox over engineering\n\nCan someoneone explain why and what the purpose of this double evap coil set up is and why this thing seems like it has 3 metering devices in the case coil the outdoor is barebones straight ac unit but this makes no sense. I asked my supervisor and he has no clue why this is designed this way either both of us have only seen this at this particular customers and nowhere else. Im totally lost on the point of this and what the goal is of having a set up like this.",
+    "equip": {
+      "family": "split_ac",
+      "subtype": "air_handler",
+      "brand": "Lennox"
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of8z7z",
+    "x_symptoms": "dirty filter; neglected maintenance",
+    "x_post": "“We just changed our filter”",
+    "equip": {
+      "family": "",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.other_or_unclear",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.other_or_unclear",
+    "rule_confidence": 0.2,
+    "rule_fired_rules": []
+  },
+  {
+    "post_id": "reddit-1of5tka",
+    "x_symptoms": "furnace not working; no heat; no gas supply; gas supply cut off due to unpaid bill by previous tenant",
+    "x_post": "“My furnace isn’t working!”\n\nI know what’s wrong with it….\n\nAin’t got no gas in it.",
+    "equip": {
+      "family": "furnace",
+      "subtype": "",
+      "brand": ""
+    },
+    "y_diag": [
+      [
+        "dx.fuel_delivery_or_burner_tuning",
+        1.0
+      ]
+    ],
+    "provenance": "rules_v1::symptoms_list",
+    "rule_label": "dx.fuel_delivery_or_burner_tuning",
+    "rule_confidence": 0.8,
+    "rule_fired_rules": [
+      "dx.fuel_delivery_or_burner_tuning"
+    ]
+  }
+]
