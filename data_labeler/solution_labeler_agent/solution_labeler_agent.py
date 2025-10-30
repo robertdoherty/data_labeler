@@ -5,14 +5,21 @@ Minimal, efficient pipeline with per-post error isolation.
 """
 
 import json
+import logging
 import os
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
-    # Threshold for accepting comment-derived fields
-    from config import COMMENT_ENRICHMENT_MIN_CONFIDENCE
+    # Threshold for accepting comment-derived fields and concurrency defaults
+    from config import (
+        COMMENT_ENRICHMENT_MIN_CONFIDENCE,
+        DEFAULT_SOLUTION_MAX_CONCURRENCY,
+    )
 except Exception:
     COMMENT_ENRICHMENT_MIN_CONFIDENCE = 0.6
+    DEFAULT_SOLUTION_MAX_CONCURRENCY = 3
+
+logger = logging.getLogger(__name__)
 
 
 def load_break_labels(labels_file: str) -> Dict[str, Dict[str, Any]]:
@@ -251,13 +258,17 @@ def _merge_enrichment_into_labels(labels: Dict[str, Any], enrichment: Dict[str, 
     return labels
 
 
-def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+def run_solutions_on_enriched(
+    enriched: Dict[str, Dict[str, Any]],
+    max_concurrency: Optional[int] = None,
+) -> Dict[str, Dict[str, Any]]:
     """
     Iterate through all BREAK posts and call build_solution_labeler_chain for each.
     Pass the full enriched data (no alterations). Append LLM output to each record.
     
     Args:
         enriched: Dictionary of enriched BREAK posts with labels and full post data
+        max_concurrency: Optional override for concurrent LLM calls.
         
     Returns:
         Enriched dictionary with solution appended to each post
@@ -269,60 +280,129 @@ def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, 
         from solution_labeler_chains import build_solution_labeler_chain
     
     chain = build_solution_labeler_chain()
-    
-    # Iterate through each BREAK post
+
+    prepared_payloads: List[Dict[str, Any]] = []
+    prepared_records: List[Tuple[str, Dict[str, Any]]] = []
+
+    # Pre-build payloads so we can batch execute while maintaining per-post isolation
     for post_id, rec in enriched.items():
         try:
             post = rec.get("post", {})
             labels = rec.get("labels", {})
-            
+
             # Extract what we need for the LLM
             title = post.get("title", "")
             user_id = post.get("author", "")
             comments = post.get("comments", [])
-            
+
             # Build problem diagnosis from labels (nested)
             labels = _ensure_nested(labels)
+            rec["labels"] = labels
             symptoms = labels.get("error_report", {}).get("symptoms", [])
             asset_family = labels.get("system_info", {}).get("asset_family")
-            problem_diagnosis = f"asset_family={asset_family}; symptoms={symptoms}" if asset_family or symptoms else "unknown"
-            
+            problem_diagnosis = (
+                f"asset_family={asset_family}; symptoms={symptoms}"
+                if asset_family or symptoms
+                else "unknown"
+            )
+
             # Convert comments to JSON string for the LLM
             comments_json = json.dumps(comments, ensure_ascii=False)
-            
+
             # Prepare input for build_solution_labeler_chain
             chain_input = {
                 "post_id": post_id,
                 "title": title,
                 "user_id": user_id,
                 "problem_diagnosis": problem_diagnosis,
-                "comments_json": comments_json
+                "comments_json": comments_json,
             }
-            
-            # Call the LLM chain
-            output = chain.invoke(chain_input)
-            
+
+            prepared_payloads.append(chain_input)
+            prepared_records.append((post_id, rec))
+        except Exception as e:
+            rec["solution_report"] = {
+                "summary": "No clear solution.",
+                "error": str(e),
+                "confidence": 0.0,
+            }
+
+    if not prepared_payloads:
+        logger.info("No BREAK posts ready for solution labeling batch execution.")
+        return enriched
+
+    configured_concurrency = (
+        max_concurrency
+        if isinstance(max_concurrency, int) and max_concurrency > 0
+        else DEFAULT_SOLUTION_MAX_CONCURRENCY
+    )
+
+    logger.info(
+        "Invoking solution labeler chain for %d posts (max_concurrency=%d)",
+        len(prepared_payloads),
+        configured_concurrency,
+    )
+
+    try:
+        outputs = chain.batch(
+            prepared_payloads,
+            config={"max_concurrency": configured_concurrency},
+        )
+    except Exception as batch_exc:
+        logger.exception(
+            "Batch execution failed (max_concurrency=%d): %s; falling back to sequential processing.",
+            configured_concurrency,
+            batch_exc,
+        )
+        outputs = []
+        for payload in prepared_payloads:
+            try:
+                outputs.append(chain.invoke(payload))
+            except Exception as invoke_exc:
+                outputs.append(invoke_exc)
+        logger.info(
+            "Sequential fallback complete (%d posts)",
+            len(outputs),
+        )
+    else:
+        logger.info("Batch execution complete.")
+
+    if len(outputs) != len(prepared_records):
+        logger.warning(
+            "Output count (%d) does not match prepared record count (%d).",
+            len(outputs),
+            len(prepared_records),
+        )
+
+    for idx, (post_id, rec) in enumerate(prepared_records):
+        try:
+            output = outputs[idx] if idx < len(outputs) else Exception(
+                "missing output from batch execution"
+            )
+            if isinstance(output, Exception):
+                raise output
+
             # Parse the output (handle if it's a LangChain message object)
             if hasattr(output, "content"):
                 solution_text = output.content
             else:
                 solution_text = str(output)
-            
+
             # Try to parse as JSON
             try:
                 solution = json.loads(solution_text)
-            except:
+            except Exception:
                 # If parsing fails, extract JSON from text
                 start = solution_text.find("{")
                 end = solution_text.rfind("}")
                 if start != -1 and end != -1:
                     try:
-                        solution = json.loads(solution_text[start:end+1])
-                    except:
+                        solution = json.loads(solution_text[start : end + 1])
+                    except Exception:
                         solution = {"raw": solution_text}
                 else:
                     solution = {"raw": solution_text}
-            
+
             # Extract solution_report and optional enrichment deltas
             solution_report = solution.get("solution_report") if isinstance(solution, dict) else None
             if solution_report is None:
@@ -332,20 +412,21 @@ def run_solutions_on_enriched(enriched: Dict[str, Dict[str, Any]]) -> Dict[str, 
             # Merge enrichment deltas into labels with OP-only policy and threshold
             enrichment_block = solution.get("enrichment") if isinstance(solution, dict) else None
             if isinstance(enrichment_block, dict):
+                labels = rec.get("labels", {})
                 labels = _merge_enrichment_into_labels(labels, enrichment_block)
                 rec["labels"] = labels
 
             # Append solution report to the current record
             rec["solution_report"] = solution_report
-            
+
         except Exception as e:
             # Per-post error isolation
             rec["solution_report"] = {
                 "summary": "No clear solution.",
                 "error": str(e),
-                "confidence": 0.0
+                "confidence": 0.0,
             }
-    
+
     return enriched
 
 
@@ -368,7 +449,12 @@ def write_json(data: Dict[str, Any], out_path: str) -> str:
     return out_path
 
 
-def process_breaks_to_solutions(raw_file: str, labels_file: str, out_file: str) -> str:
+def process_breaks_to_solutions(
+    raw_file: str,
+    labels_file: str,
+    out_file: str,
+    max_concurrency: Optional[int] = None,
+) -> str:
     """
     Orchestrate the full pipeline.
     
@@ -376,6 +462,7 @@ def process_breaks_to_solutions(raw_file: str, labels_file: str, out_file: str) 
         raw_file: Path to reddit_research_data_*.json
         labels_file: Path to labeled_posts_*.json
         out_file: Path for output solutions_*.json
+        max_concurrency: Optional override for concurrent LLM calls.
         
     Returns:
         Path to output file
@@ -394,7 +481,10 @@ def process_breaks_to_solutions(raw_file: str, labels_file: str, out_file: str) 
     enriched = enrich_breaks_with_posts(break_labels, posts_index)
     
     # Run solution finding on all enriched posts
-    solved = run_solutions_on_enriched(enriched)
+    solved = run_solutions_on_enriched(
+        enriched,
+        max_concurrency=max_concurrency,
+    )
     
     # Write to disk
     return write_json(solved, out_file)
@@ -408,6 +498,12 @@ if __name__ == "__main__":
     parser.add_argument("--raw", "-r", required=True, help="Path to reddit_research_data_*.json")
     parser.add_argument("--labels", "-l", required=True, help="Path to labeled_posts_*.json")
     parser.add_argument("--output", "-o", required=True, help="Path for output solutions_*.json")
+    parser.add_argument(
+        "--max-concurrency",
+        type=int,
+        default=None,
+        help="Optional override for concurrent LLM calls",
+    )
     
     args = parser.parse_args()
     
@@ -418,7 +514,8 @@ if __name__ == "__main__":
     output_file = process_breaks_to_solutions(
         raw_file=args.raw,
         labels_file=args.labels,
-        out_file=args.output
+        out_file=args.output,
+        max_concurrency=args.max_concurrency,
     )
     
     print(f"✅ Solutions written to: {output_file}")
