@@ -55,8 +55,9 @@ def build_llm_payload(
 
 def predict_diagnostics(post: DiagnosticInput) -> DiagnosticOutput:
     root = _repo_root()
-    ontology_path = os.path.join(root, "error_prediction_model", "meta", "diagnostics_v1.json")
-    gold_path = os.path.join(root, "error_prediction_model", "gold", "golden_examples.json")
+    # Align paths with rule labeler assets used elsewhere in the pipeline
+    ontology_path = os.path.join(root, "data_labeler", "rule_labeler", "meta", "diagnostics_v1.json")
+    gold_path = os.path.join(root, "data_labeler", "rule_labeler", "gold", "golden_examples.json")
 
     ontology = _load_json(ontology_path)
     gold = _load_golden_examples(gold_path, max_per_label=3)
