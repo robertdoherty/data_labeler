@@ -46,7 +46,14 @@ except ImportError:
     try:
         from final_diagnostic_agent.agent import predict_diagnostics
     except ImportError:
-        predict_diagnostics = None  # type: ignore
+        # Fallback to the diagnostic entrypoint colocated under solution_labeler_agent
+        try:
+            from data_labeler_agent.solution_labeler_agent.agent import predict_diagnostics
+        except ImportError:
+            try:
+                from solution_labeler_agent.agent import predict_diagnostics
+            except ImportError:
+                predict_diagnostics = None  # type: ignore
 
 
 def _load_json(path: str) -> Dict[str, Any]:
@@ -214,11 +221,22 @@ def process_reddit_data_to_solutions(
     print(f"📥 Input: {reddit_data_file}")
     t0 = time.time()
     total_posts_processed = 0
+
+    base_output_dir = os.path.abspath(output_dir)
+    os.makedirs(base_output_dir, exist_ok=True)
+
+    run_dt = datetime.now()
+    run_date = run_dt.strftime("%Y-%m-%d")
+    timestamp = run_dt.strftime("%Y-%m-%d_%H-%M-%S")
+    run_output_dir = os.path.join(base_output_dir, run_date)
+    os.makedirs(run_output_dir, exist_ok=True)
+
+    print(f"📁 Run output directory: {run_output_dir}")
     
     # Step 1: Break labeling
     print(f"\n📊 Step 1: Break labeling...")
     step1_start = time.time()
-    break_agent = BreakLabelerAgent(output_dir=output_dir)
+    break_agent = BreakLabelerAgent(output_dir=run_output_dir)
     break_result = break_agent.label_from_json_file(
         reddit_data_file,
         subreddits=subreddits
@@ -231,11 +249,9 @@ def process_reddit_data_to_solutions(
     print(f"✅ Break labels: {break_labels_file}")
     print(f"⏱️ Step 1 duration: {_format_hms(time.time() - step1_start)}")
     
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
     # Step 2: Solution extraction
     print(f"\n💡 Step 2: Solution extraction...")
-    solutions_file = os.path.join(output_dir, f"solutions_{timestamp}.json")
+    solutions_file = os.path.join(run_output_dir, f"solutions_{timestamp}.json")
     step2_start = time.time()
     solutions_path = process_breaks_to_solutions(
         raw_file=reddit_data_file,
@@ -266,9 +282,9 @@ def process_reddit_data_to_solutions(
 
     augmented, rule_rows, final_rows, stats = _augment_with_diagnostics(solutions_doc, prepared_rules, norm_cfg)
 
-    rule_rows_file = os.path.join(output_dir, f"rule_predictions_{timestamp}.json")
-    diagnostics_file = os.path.join(output_dir, f"solutions_with_diagnostics_{timestamp}.json")
-    final_dataset_file = os.path.join(output_dir, f"diagnostic_dataset_{timestamp}.json")
+    rule_rows_file = os.path.join(run_output_dir, f"rule_predictions_{timestamp}.json")
+    diagnostics_file = os.path.join(run_output_dir, f"solutions_with_diagnostics_{timestamp}.json")
+    final_dataset_file = os.path.join(run_output_dir, f"diagnostic_dataset_{timestamp}.json")
 
     _write_json(rule_rows_file, rule_rows)
     _write_json(diagnostics_file, augmented)
@@ -299,6 +315,7 @@ def process_reddit_data_to_solutions(
         "rule_predictions": rule_rows_file,
         "solutions_with_diagnostics": diagnostics_file,
         "final_dataset": final_dataset_file,
+        "output_directory": run_output_dir,
     }
 
 
