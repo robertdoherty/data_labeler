@@ -158,9 +158,18 @@ def _augment_with_diagnostics(
                 else:
                     llm_payload.setdefault("predictions", [])  # type: ignore
             except Exception as exc:  # pragma: no cover - defensive for missing creds
-                stats.setdefault("llm_errors", []).append({"post_id": post_id, "error": str(exc)})
-                llm_available = False
-                llm_payload = {"error": str(exc)}
+                err_msg = str(exc)
+                stats.setdefault("llm_errors", []).append({"post_id": post_id, "error": err_msg})
+                # Relax shutdown behavior: only disable for likely permanent credential errors
+                lower_msg = err_msg.lower()
+                permanent_cred_error = (
+                    "gemini_api_key" in lower_msg or
+                    "invalid api key" in lower_msg or
+                    "unauthorized" in lower_msg
+                )
+                if permanent_cred_error:
+                    llm_available = False
+                llm_payload = {"error": err_msg}
 
         rec["x_symptoms"] = x_symptoms
         rec["diagnostics"] = {
