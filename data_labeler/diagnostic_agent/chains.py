@@ -84,11 +84,11 @@ Instructions:
 - Do NOT invent content; use only provided text.
 
 OUTPUT (STRICT JSON):
-{
+{{
   "predictions": [
-    {"label_id": "string", "confidence": 0.0, "rationale": "string", "spans": ["string"]}
+    {{"label_id": "string", "confidence": 0.0, "rationale": "string", "spans": ["string"]}}
   ]
-}
+}}
 
 Validation:
 - Labels MUST be in the allowed set; otherwise use dx.other_or_unclear.

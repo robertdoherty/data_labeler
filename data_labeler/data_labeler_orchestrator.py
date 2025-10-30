@@ -6,6 +6,7 @@ import sys
 import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
+import logging
 
 # Ensure imports work across direct script and package contexts
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -82,6 +83,33 @@ def _clamp_conf(value: float) -> float:
         return max(0.0, min(1.0, float(value)))
     except Exception:
         return 0.0
+
+
+def _setup_logger(run_output_dir: str) -> "logging.Logger":
+    """Create a logger that writes to file and mirrors to stdout."""
+    logger = logging.getLogger("data_labeler_orchestrator")
+    logger.setLevel(logging.INFO)
+    # Avoid duplicate handlers across multiple invocations
+    while logger.handlers:
+        logger.handlers.pop()
+
+    os.makedirs(run_output_dir, exist_ok=True)
+    log_path = os.path.join(run_output_dir, "data_labeler_orchestrator.log")
+
+    formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+
+    file_handler = logging.FileHandler(log_path, encoding="utf-8")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+
+    console_handler = logging.StreamHandler(stream=sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    logger.propagate = False
+    return logger
 
 
 def _augment_with_diagnostics(
@@ -249,8 +277,6 @@ def process_reddit_data_to_solutions(
     Returns:
         Dict with paths to intermediate and final output files
     """
-    print(f"🚀 Starting data labeling pipeline...")
-    print(f"📥 Input: {reddit_data_file}")
     t0 = time.time()
     total_posts_processed = 0
 
@@ -263,10 +289,13 @@ def process_reddit_data_to_solutions(
     run_output_dir = os.path.join(base_output_dir, run_date)
     os.makedirs(run_output_dir, exist_ok=True)
 
-    print(f"📁 Run output directory: {run_output_dir}")
+    logger = _setup_logger(run_output_dir)
+    logger.info("🚀 Starting data labeling pipeline...")
+    logger.info("📥 Input: %s", reddit_data_file)
+    logger.info("📁 Run output directory: %s", run_output_dir)
     
     # Step 1: Break labeling
-    print(f"\n📊 Step 1: Break labeling...")
+    logger.info("\n📊 Step 1: Break labeling...")
     step1_start = time.time()
     break_agent = BreakLabelerAgent(output_dir=run_output_dir)
     break_result = break_agent.label_from_json_file(
@@ -275,14 +304,15 @@ def process_reddit_data_to_solutions(
     )
     
     if not break_result.get("success"):
+        logger.error("Break labeling failed: %s", break_result.get('error'))
         raise Exception(f"Break labeling failed: {break_result.get('error')}")
     
     break_labels_file = break_result["output_file"]
-    print(f"✅ Break labels: {break_labels_file}")
-    print(f"⏱️ Step 1 duration: {_format_hms(time.time() - step1_start)}")
+    logger.info("✅ Break labels: %s", break_labels_file)
+    logger.info("⏱️ Step 1 duration: %s", _format_hms(time.time() - step1_start))
     
     # Step 2: Solution extraction
-    print(f"\n💡 Step 2: Solution extraction...")
+    logger.info("\n💡 Step 2: Solution extraction...")
     solutions_file = os.path.join(run_output_dir, f"solutions_{timestamp}.json")
     step2_start = time.time()
     solutions_path = process_breaks_to_solutions(
@@ -290,18 +320,18 @@ def process_reddit_data_to_solutions(
         labels_file=break_labels_file,
         out_file=solutions_file
     )
-    print(f"✅ Solutions: {solutions_path}")
-    print(f"⏱️ Step 2 duration: {_format_hms(time.time() - step2_start)}")
+    logger.info("✅ Solutions: %s", solutions_path)
+    logger.info("⏱️ Step 2 duration: %s", _format_hms(time.time() - step2_start))
 
     solutions_doc = _load_json(solutions_path) if os.path.exists(solutions_path) else {}
     try:
         total_posts_processed = len(solutions_doc) if isinstance(solutions_doc, (dict, list)) else 0
     except Exception:
         total_posts_processed = 0
-    print(f"🧮 Posts processed: {total_posts_processed}")
+    logger.info("🧮 Posts processed: %s", total_posts_processed)
 
     # Step 3: Rule-based diagnostics
-    print(f"\n🧠 Step 3: Rule-based diagnostics...")
+    logger.info("\n🧠 Step 3: Rule-based diagnostics...")
     step3_start = time.time()
     rules_path = os.path.join(current_dir, "rule_labeler", "meta", "rules_v1.json")
     norm_cfg_path = os.path.join(current_dir, "rule_labeler", "scripts", "make_error_prediction_config.json")
@@ -322,23 +352,24 @@ def process_reddit_data_to_solutions(
     _write_json(diagnostics_file, augmented)
     _write_json(final_dataset_file, final_rows)
 
-    print(f"✅ Rule predictions: {rule_rows_file}")
-    print(f"⏱️ Step 3 duration: {_format_hms(time.time() - step3_start)}")
+    logger.info("✅ Rule predictions: %s", rule_rows_file)
+    logger.info("⏱️ Step 3 duration: %s", _format_hms(time.time() - step3_start))
 
     # Step 4: Final diagnostic agent summary
     if stats.get("llm_attempted"):
-        print(
-            f"🤖 Final diagnostic agent attempted {stats['llm_attempted']} posts "
-            f"(success: {stats.get('llm_succeeded', 0)})"
+        logger.info(
+            "🤖 Final diagnostic agent attempted %s posts (success: %s)",
+            stats["llm_attempted"],
+            stats.get("llm_succeeded", 0),
         )
     if stats.get("llm_errors"):
-        print(f"⚠️ Final diagnostic agent errors: {len(stats['llm_errors'])}")
+        logger.warning("⚠️ Final diagnostic agent errors: %s", len(stats["llm_errors"]))
 
-    print(f"✅ Solutions + diagnostics: {diagnostics_file}")
-    print(f"✅ Final dataset: {final_dataset_file}")
-    print(f"⏳ Total runtime: {_format_hms(time.time() - t0)}")
-    print(f"🧮 Total posts processed: {total_posts_processed}")
-    print(f"\n🎉 Pipeline complete!")
+    logger.info("✅ Solutions + diagnostics: %s", diagnostics_file)
+    logger.info("✅ Final dataset: %s", final_dataset_file)
+    logger.info("⏳ Total runtime: %s", _format_hms(time.time() - t0))
+    logger.info("🧮 Total posts processed: %s", total_posts_processed)
+    logger.info("\n🎉 Pipeline complete!")
 
     return {
         "reddit_data": reddit_data_file,
@@ -348,6 +379,7 @@ def process_reddit_data_to_solutions(
         "solutions_with_diagnostics": diagnostics_file,
         "final_dataset": final_dataset_file,
         "output_directory": run_output_dir,
+        "orchestrator_log": os.path.join(run_output_dir, "data_labeler_orchestrator.log"),
     }
 
 
