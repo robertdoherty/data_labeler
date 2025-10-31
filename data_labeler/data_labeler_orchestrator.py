@@ -264,7 +264,8 @@ def _augment_with_diagnostics(
 def process_reddit_data_to_solutions(
     reddit_data_file: str,
     output_dir: str = "output",
-    subreddits: Optional[list] = None
+    subreddits: Optional[list] = None,
+    solution_max_concurrency: Optional[int] = None,
 ) -> dict:
     """
     Full pipeline: Reddit data → Break labels → Solutions
@@ -273,6 +274,7 @@ def process_reddit_data_to_solutions(
         reddit_data_file: Path to reddit_research_data_*.json
         output_dir: Output directory for intermediate and final files
         subreddits: Optional list of subreddit names to filter
+        solution_max_concurrency: Optional override for concurrent LLM calls
         
     Returns:
         Dict with paths to intermediate and final output files
@@ -318,7 +320,8 @@ def process_reddit_data_to_solutions(
     solutions_path = process_breaks_to_solutions(
         raw_file=reddit_data_file,
         labels_file=break_labels_file,
-        out_file=solutions_file
+        out_file=solutions_file,
+        max_concurrency=solution_max_concurrency,
     )
     logger.info("✅ Solutions: %s", solutions_path)
     logger.info("⏱️ Step 2 duration: %s", _format_hms(time.time() - step2_start))
@@ -390,6 +393,12 @@ if __name__ == "__main__":
     parser.add_argument("input", help="Path to reddit_research_data_*.json")
     parser.add_argument("--output-dir", default="output", help="Output directory")
     parser.add_argument("--subs", help="Comma-separated subreddit names to include")
+    parser.add_argument(
+        "--solution-max-concurrency",
+        type=int,
+        default=None,
+        help="Optional override for concurrent LLM calls",
+    )
     
     args = parser.parse_args()
     
@@ -399,7 +408,8 @@ if __name__ == "__main__":
         result = process_reddit_data_to_solutions(
             reddit_data_file=args.input,
             output_dir=args.output_dir,
-            subreddits=subs
+            subreddits=subs,
+            solution_max_concurrency=args.solution_max_concurrency,
         )
         print(f"\n📋 Output files:")
         for key, path in result.items():
