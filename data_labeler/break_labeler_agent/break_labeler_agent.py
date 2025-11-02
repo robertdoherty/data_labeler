@@ -11,7 +11,7 @@ import os
 import sys
 import json
 import logging
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, Tuple
 from datetime import datetime
 import glob
 
@@ -29,6 +29,11 @@ try:
 except ImportError:
     # Fallback when run directly
     from break_labeler_chains import build_data_labeler_chain
+
+try:
+    from config import DEFAULT_BREAK_MAX_CONCURRENCY
+except Exception:
+    DEFAULT_BREAK_MAX_CONCURRENCY = 3
 
 
 class BreakLabelerAgent:
@@ -63,15 +68,21 @@ class BreakLabelerAgent:
             ]
         )
 
-    def label_json_data(self, reddit_data: Union[str, Dict[str, Any]],
-                        output_filename: Optional[str] = None,
-                        subreddits: Optional[List[str]] = None) -> Dict[str, Any]:
+    def label_json_data(
+        self,
+        reddit_data: Union[str, Dict[str, Any]],
+        output_filename: Optional[str] = None,
+        subreddits: Optional[List[str]] = None,
+        max_concurrency: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """
         Label Reddit JSON data for break/non-break using the LLM chain
 
         Args:
             reddit_data: Reddit data as JSON string or dict
             output_filename: Optional custom output filename (JSON)
+            subreddits: Optional list of subreddit names to include
+            max_concurrency: Optional override for concurrent LLM calls
 
         Returns:
             Dict with labeling results and metadata
@@ -94,14 +105,89 @@ class BreakLabelerAgent:
             post_chunks = self._chunk_posts_by_size(posts, max_chars=250_000)
             combined_results: List[Dict[str, Any]] = []
             chain = build_data_labeler_chain()
+
+            prepared_payloads: List[Dict[str, str]] = []
+            prepared_chunks: List[Tuple[int, List[Dict[str, Any]]]] = []
+
             for i, chunk in enumerate(post_chunks, 1):
                 chunk_json = json.dumps(chunk, ensure_ascii=False)
-                logging.info(f"Sending chunk {i}/{len(post_chunks)} with {len(chunk)} posts")
-                chunk_output = chain.invoke({"json_data": chunk_json})
-                parsed = self._parse_chain_output(chunk_output)
-                results_arr = parsed.get("results") if isinstance(parsed, dict) else None
-                if isinstance(results_arr, list):
-                    combined_results.extend(results_arr)
+                logging.info(
+                    "Prepared chunk %d/%d with %d posts", i, len(post_chunks), len(chunk)
+                )
+                prepared_payloads.append({"json_data": chunk_json})
+                prepared_chunks.append((i, chunk))
+
+            if not prepared_payloads:
+                logging.info("No post chunks ready for break labeling batch execution.")
+                combined_results = []
+            else:
+                configured_concurrency = (
+                    max_concurrency
+                    if isinstance(max_concurrency, int) and max_concurrency > 0
+                    else DEFAULT_BREAK_MAX_CONCURRENCY
+                )
+
+                logging.info(
+                    "Invoking break labeler chain for %d chunks (max_concurrency=%d)",
+                    len(prepared_payloads),
+                    configured_concurrency,
+                )
+
+                try:
+                    outputs = chain.batch(
+                        prepared_payloads,
+                        config={"max_concurrency": configured_concurrency},
+                    )
+                except Exception as batch_exc:
+                    logging.exception(
+                        "Batch execution failed (max_concurrency=%d): %s; falling back to sequential processing.",
+                        configured_concurrency,
+                        batch_exc,
+                    )
+                    outputs = []
+                    for idx, payload in enumerate(prepared_payloads, 1):
+                        try:
+                            outputs.append(chain.invoke(payload))
+                        except Exception as invoke_exc:
+                            logging.exception(
+                                "Sequential fallback failed for chunk %d/%d: %s",
+                                idx,
+                                len(prepared_payloads),
+                                invoke_exc,
+                            )
+                            outputs.append(invoke_exc)
+                    logging.info(
+                        "Sequential fallback complete (%d chunks)",
+                        len(outputs),
+                    )
+                else:
+                    logging.info("Batch execution complete.")
+
+                if len(outputs) != len(prepared_chunks):
+                    logging.warning(
+                        "Output count (%d) does not match prepared chunk count (%d).",
+                        len(outputs),
+                        len(prepared_chunks),
+                    )
+
+                for idx, (chunk_index, _) in enumerate(prepared_chunks):
+                    output = (
+                        outputs[idx]
+                        if idx < len(outputs)
+                        else Exception("missing output from batch execution")
+                    )
+                    if isinstance(output, Exception):
+                        logging.exception(
+                            "Break labeler chunk %d failed: %s",
+                            chunk_index,
+                            output,
+                        )
+                        raise output
+
+                    parsed = self._parse_chain_output(output)
+                    results_arr = parsed.get("results") if isinstance(parsed, dict) else None
+                    if isinstance(results_arr, list):
+                        combined_results.extend(results_arr)
 
             labels_dict = {"results": combined_results}
 
@@ -161,15 +247,21 @@ class BreakLabelerAgent:
                 "timestamp": start_time.isoformat()
             }
 
-    def label_from_json_file(self, json_file_path: str,
-                             output_filename: Optional[str] = None,
-                             subreddits: Optional[List[str]] = None) -> Dict[str, Any]:
+    def label_from_json_file(
+        self,
+        json_file_path: str,
+        output_filename: Optional[str] = None,
+        subreddits: Optional[List[str]] = None,
+        max_concurrency: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """
         Label Reddit data from a JSON file
 
         Args:
             json_file_path: Path to the Reddit JSON data file
             output_filename: Optional output filename for labels
+            subreddits: Optional list of subreddit names to include
+            max_concurrency: Optional override for concurrent LLM calls
 
         Returns:
             Dict with labeling results and metadata
@@ -186,7 +278,12 @@ class BreakLabelerAgent:
                 base_name = base_name.replace(".json", ".json")
                 output_filename = base_name
 
-            result = self.label_json_data(reddit_data, output_filename, subreddits=subreddits)
+            result = self.label_json_data(
+                reddit_data,
+                output_filename,
+                subreddits=subreddits,
+                max_concurrency=max_concurrency,
+            )
             result["input_file"] = json_file_path
             return result
         except Exception as e:
@@ -198,9 +295,17 @@ class BreakLabelerAgent:
                 "input_file": json_file_path
             }
 
-    def label_latest_data(self, subreddits: Optional[List[str]] = None) -> Dict[str, Any]:
+    def label_latest_data(
+        self,
+        subreddits: Optional[List[str]] = None,
+        max_concurrency: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """
         Find and label the most recent Reddit data file in output_dir for break/non-break
+
+        Args:
+            subreddits: Optional list of subreddit names to include
+            max_concurrency: Optional override for concurrent LLM calls
         """
         logging.info("Looking for latest Reddit data file...")
         try:
@@ -214,7 +319,11 @@ class BreakLabelerAgent:
 
             latest_file = max(files, key=os.path.getctime)
             logging.info(f"Found latest file: {latest_file}")
-            return self.label_from_json_file(latest_file, subreddits=subreddits)
+            return self.label_from_json_file(
+                latest_file,
+                subreddits=subreddits,
+                max_concurrency=max_concurrency,
+            )
         except Exception as e:
             error_msg = f"Failed to find/label latest data: {str(e)}"
             logging.error(error_msg)
@@ -335,6 +444,12 @@ if __name__ == "__main__":
     # Chunking is automatic; flags removed for simplicity
     parser.add_argument("--list", action="store_true", help="List available Reddit data files")
     parser.add_argument("--output-dir", default="output", help="Output directory (default: output)")
+    parser.add_argument(
+        "--max-concurrency",
+        type=int,
+        default=None,
+        help="Optional override for concurrent LLM calls",
+    )
 
     args = parser.parse_args()
 
@@ -356,7 +471,12 @@ if __name__ == "__main__":
             file_path = args.file or args.input
             subs = [s.strip() for s in args.subs.split(",")] if args.subs else None
             print(f"🔍 Labeling file: {file_path}")
-            result = agent.label_from_json_file(file_path, args.output, subreddits=subs)
+            result = agent.label_from_json_file(
+                file_path,
+                args.output,
+                subreddits=subs,
+                max_concurrency=args.max_concurrency,
+            )
             if result.get("success"):
                 print(f"✅ Labeling completed!")
                 print(f"📝 Output: {result['output_file']}")
@@ -367,7 +487,10 @@ if __name__ == "__main__":
         elif args.latest:
             print("🔍 Labeling latest Reddit data file...")
             subs = [s.strip() for s in args.subs.split(",")] if args.subs else None
-            result = agent.label_latest_data(subreddits=subs)
+            result = agent.label_latest_data(
+                subreddits=subs,
+                max_concurrency=args.max_concurrency,
+            )
             if result.get("success"):
                 print(f"✅ Labeling completed!")
                 print(f"📝 Output: {result['output_file']}")
