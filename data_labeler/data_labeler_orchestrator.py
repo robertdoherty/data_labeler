@@ -42,12 +42,24 @@ except ImportError:
     )
 
 try:
-    from data_labeler_agent.diagnostic_agent.agent import predict_diagnostics
+    from config import DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY
+except Exception:
+    DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY = 3
+
+try:
+    from data_labeler_agent.diagnostic_agent.agent import (
+        predict_diagnostics,
+        predict_diagnostics_batch,
+    )
 except ImportError:
     try:
-        from diagnostic_agent.agent import predict_diagnostics
+        from diagnostic_agent.agent import (
+            predict_diagnostics,
+            predict_diagnostics_batch,
+        )
     except ImportError:
         predict_diagnostics = None  # type: ignore
+        predict_diagnostics_batch = None  # type: ignore
 
 
 def _load_json(path: str) -> Dict[str, Any]:
@@ -123,7 +135,11 @@ def _augment_with_diagnostics(
     final_rows: List[Dict[str, Any]] = []
     stats: Dict[str, Any] = {"llm_attempted": 0, "llm_succeeded": 0, "llm_errors": []}
 
-    llm_available = predict_diagnostics is not None
+    llm_available = bool(predict_diagnostics_batch or predict_diagnostics)
+    llm_requests: List[Tuple[str, Dict[str, Any]]] = []
+    llm_results: Dict[str, Dict[str, Any]] = {}
+    llm_errors: Dict[str, str] = {}
+    per_post: List[Dict[str, Any]] = []
 
     for post_id, rec in records.items():
         labels = rec.get("labels", {}) if isinstance(rec, dict) else {}
@@ -161,79 +177,167 @@ def _augment_with_diagnostics(
         rule_row["rule_confidence"] = _clamp_conf(rule_conf)
         rule_rows.append(rule_row)
 
-        final_label = label_id
-        final_conf = _clamp_conf(rule_conf)
-        final_provenance = rule_provenance
-        llm_payload: Optional[Dict[str, Any]] = None
-
-        is_unclear = (label_id == "dx.other_or_unclear")
+        is_unclear = label_id == "dx.other_or_unclear"
         need_llm = llm_available and (not fired_rules or is_unclear)
-        conflict_entry: Optional[Dict[str, Any]] = None
         if need_llm:
             stats["llm_attempted"] += 1
-            try:
-                llm_payload = predict_diagnostics({
-                    "post_id": post_id,
-                    "title": title,
-                    "body": body,
-                    "symptoms": symptoms,
-                    "equip": equip,
-                })  # type: ignore[arg-type]
-                preds = llm_payload.get("predictions", []) if isinstance(llm_payload, dict) else []
-                if preds:
-                    top = preds[0]
-                    maybe_label = (top.get("label_id") or "").strip()
-                    if maybe_label:
-                        llm_conf = _clamp_conf(top.get("confidence", 0.0))
-                        conflict_entry = {
-                            "source": "rules_vs_llm",
-                            "rule": {
-                                "label": label_id,
-                                "confidence": _clamp_conf(rule_conf),
-                            },
-                            "llm": {
-                                "label": maybe_label,
-                                "confidence": llm_conf,
-                                "provenance": llm_payload.get("provenance", "llm_v1"),
-                            },
-                        } if maybe_label != label_id else None
+            llm_requests.append(
+                (
+                    post_id,
+                    {
+                        "post_id": post_id,
+                        "title": title,
+                        "body": body,
+                        "symptoms": symptoms,
+                        "equip": equip,
+                    },
+                )
+            )
 
-                        if llm_conf > final_conf:
-                            final_label = maybe_label
-                            final_conf = llm_conf
-                            final_provenance = llm_payload.get("provenance", "llm_v1")
-                            stats["llm_succeeded"] += 1
-                            if conflict_entry is not None:
-                                conflict_entry["chosen"] = "llm"
-                        else:
-                            if conflict_entry is not None:
-                                conflict_entry["chosen"] = "rules"
+        rec["x_symptoms"] = x_symptoms
+        per_post.append(
+            {
+                "post_id": post_id,
+                "record": rec,
+                "error_report": error_report,
+                "rule_label": label_id,
+                "rule_conf": rule_conf,
+                "rule_provenance": rule_provenance,
+                "fired_rules": fired_rules,
+                "x_symptoms": x_symptoms,
+                "title": title,
+                "body": body,
+                "equip": equip,
+                "reddit_url": reddit_url,
+                "subreddit": subreddit,
+                "need_llm": need_llm,
+            }
+        )
+
+    if llm_requests and llm_available:
+        payloads = [payload for _, payload in llm_requests]
+        batch_outputs: Optional[List[Dict[str, Any]]] = None
+
+        if predict_diagnostics_batch is not None:
+            try:
+                batch_outputs = predict_diagnostics_batch(
+                    payloads,
+                    max_concurrency=DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY,
+                )
+            except Exception as batch_exc:  # pragma: no cover - defensive fallback
+                batch_outputs = None
+                stats.setdefault("llm_errors", []).append(
+                    {"post_id": "batch", "error": str(batch_exc)}
+                )
+
+        if batch_outputs is not None:
+            for idx, (post_id, _) in enumerate(llm_requests):
+                if idx < len(batch_outputs):
+                    llm_results[post_id] = batch_outputs[idx]
                 else:
-                    llm_payload.setdefault("predictions", [])  # type: ignore
-            except Exception as exc:  # pragma: no cover - defensive for missing creds
-                err_msg = str(exc)
-                stats.setdefault("llm_errors", []).append({"post_id": post_id, "error": err_msg})
-                # Relax shutdown behavior: only disable for likely permanent credential errors
+                    llm_errors[post_id] = "missing output from batch execution"
+        else:
+            for post_id, payload in llm_requests:
+                try:
+                    if predict_diagnostics is None:
+                        raise RuntimeError("predict_diagnostics unavailable")
+                    llm_results[post_id] = predict_diagnostics(
+                        payload,
+                        max_concurrency=DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY,
+                    )  # type: ignore[arg-type]
+                except Exception as exc:  # pragma: no cover - defensive for missing creds
+                    llm_errors[post_id] = str(exc)
+
+    llm_runtime_available = llm_available
+
+    for entry in per_post:
+        post_id = entry["post_id"]
+        rec = entry["record"]
+        error_report = entry["error_report"]
+
+        final_label = entry["rule_label"]
+        final_conf = _clamp_conf(entry["rule_conf"])
+        final_provenance = entry["rule_provenance"]
+        llm_payload: Optional[Dict[str, Any]] = None
+        conflict_entry: Optional[Dict[str, Any]] = None
+
+        if entry["need_llm"]:
+            if post_id in llm_results:
+                llm_payload = llm_results[post_id]
+            elif post_id in llm_errors:
+                err_msg = llm_errors[post_id]
+                stats.setdefault("llm_errors", []).append(
+                    {"post_id": post_id, "error": err_msg}
+                )
                 lower_msg = err_msg.lower()
                 permanent_cred_error = (
-                    "gemini_api_key" in lower_msg or
-                    "invalid api key" in lower_msg or
-                    "unauthorized" in lower_msg
+                    "gemini_api_key" in lower_msg
+                    or "invalid api key" in lower_msg
+                    or "unauthorized" in lower_msg
                 )
                 if permanent_cred_error:
-                    llm_available = False
+                    llm_runtime_available = False
                 llm_payload = {"error": err_msg}
+            elif llm_runtime_available:
+                missing_msg = "missing LLM output"
+                stats.setdefault("llm_errors", []).append(
+                    {"post_id": post_id, "error": missing_msg}
+                )
+                llm_payload = {"error": missing_msg}
+            else:
+                llm_payload = {"error": "diagnostic agent unavailable"}
+
+        if isinstance(llm_payload, dict) and "predictions" in llm_payload:
+            preds = llm_payload.get("predictions", [])
+        elif llm_payload is not None:
+            preds = []
+        else:
+            preds = []
+
+        if llm_payload is not None and not preds:
+            llm_payload.setdefault("predictions", [])  # type: ignore[union-attr]
+
+        if preds:
+            top = preds[0]
+            maybe_label = (top.get("label_id") or "").strip()
+            if maybe_label:
+                llm_conf = _clamp_conf(top.get("confidence", 0.0))
+                conflict_entry = (
+                    {
+                        "source": "rules_vs_llm",
+                        "rule": {
+                            "label": entry["rule_label"],
+                            "confidence": _clamp_conf(entry["rule_conf"]),
+                        },
+                        "llm": {
+                            "label": maybe_label,
+                            "confidence": llm_conf,
+                            "provenance": llm_payload.get("provenance", "llm_v1"),
+                        },
+                    }
+                    if maybe_label != entry["rule_label"]
+                    else None
+                )
+
+                if llm_conf > final_conf:
+                    final_label = maybe_label
+                    final_conf = llm_conf
+                    final_provenance = llm_payload.get("provenance", "llm_v1")
+                    stats["llm_succeeded"] += 1
+                    if conflict_entry is not None:
+                        conflict_entry["chosen"] = "llm"
+                elif conflict_entry is not None:
+                    conflict_entry["chosen"] = "rules"
 
         if conflict_entry is not None:
             error_report.setdefault("conflicts", []).append(conflict_entry)
 
-        rec["x_symptoms"] = x_symptoms
         rec["diagnostics"] = {
             "rule_based": {
-                "label_id": label_id,
-                "confidence": _clamp_conf(rule_conf),
-                "fired_rules": fired_rules,
-                "provenance": rule_provenance,
+                "label_id": entry["rule_label"],
+                "confidence": _clamp_conf(entry["rule_conf"]),
+                "fired_rules": entry["fired_rules"],
+                "provenance": entry["rule_provenance"],
             },
             "llm": llm_payload,
             "final": {
@@ -244,19 +348,21 @@ def _augment_with_diagnostics(
             },
         }
 
-        final_rows.append({
-            "post_id": post_id,
-            "x_symptoms": x_symptoms,
-            "x_post": f"{title.strip()}\n\n{body.strip()}".strip(),
-            "equip": equip,
-            "y_diag": [[final_label, 1.0]],
-            "provenance": final_provenance,
-            "rule_label": label_id,
-            "rule_confidence": _clamp_conf(rule_conf),
-            "rule_fired_rules": fired_rules,
-            "reddit_url": reddit_url,
-            "subreddit": subreddit,
-        })
+        final_rows.append(
+            {
+                "post_id": post_id,
+                "x_symptoms": entry["x_symptoms"],
+                "x_post": f"{entry['title'].strip()}\n\n{entry['body'].strip()}".strip(),
+                "equip": entry["equip"],
+                "y_diag": [[final_label, 1.0]],
+                "provenance": final_provenance,
+                "rule_label": entry["rule_label"],
+                "rule_confidence": _clamp_conf(entry["rule_conf"]),
+                "rule_fired_rules": entry["fired_rules"],
+                "reddit_url": entry["reddit_url"],
+                "subreddit": entry["subreddit"],
+            }
+        )
 
     return records, rule_rows, final_rows, stats
 
