@@ -1,6 +1,7 @@
 """Data Labeler Agent: Orchestrates the full HVAC labeling pipeline."""
 
 import json
+import csv
 import os
 import sys
 import time
@@ -88,6 +89,36 @@ def _extract_equipment(labels: Dict[str, Any]) -> Dict[str, str]:
         "subtype": system_info.get("asset_subtype", "") or "",
         "brand": system_info.get("brand", "") or "",
     }
+
+
+def _flatten_record_for_csv(record: Dict[str, Any]) -> Dict[str, Any]:
+    """Flatten nested dictionaries for CSV output and serialize complex lists.
+
+    - Nested dicts are flattened using dot notation (e.g., equip.family)
+    - Lists of primitives are joined by '; '
+    - Lists with nested structures are JSON-serialized
+    """
+    flat: Dict[str, Any] = {}
+
+    def _is_primitive(value: Any) -> bool:
+        return isinstance(value, (str, int, float, bool)) or value is None
+
+    def _flatten(obj: Any, prefix: str = "") -> None:
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                new_key = f"{prefix}.{k}" if prefix else str(k)
+                _flatten(v, new_key)
+        elif isinstance(obj, list):
+            if all(_is_primitive(item) for item in obj):
+                flat[prefix] = "; ".join("" if item is None else str(item) for item in obj)
+            else:
+                # complex list: keep as JSON
+                flat[prefix] = json.dumps(obj, ensure_ascii=False)
+        else:
+            flat[prefix] = obj
+
+    _flatten(record)
+    return flat
 
 
 def _clamp_conf(value: float) -> float:
@@ -464,6 +495,19 @@ def process_reddit_data_to_solutions(
     logger.info("✅ Rule predictions: %s", rule_rows_file)
     logger.info("⏱️ Step 3 duration: %s", _format_hms(time.time() - step3_start))
 
+    # Step 3b: Export diagnostic dataset to CSV
+    try:
+        flattened_rows = [_flatten_record_for_csv(r) for r in final_rows]
+        fieldnames = sorted({key for row in flattened_rows for key in row.keys()})
+        final_dataset_csv = os.path.join(run_output_dir, f"diagnostic_dataset_{timestamp}.csv")
+        with open(final_dataset_csv, "w", newline="", encoding="utf-8") as f_csv:
+            writer = csv.DictWriter(f_csv, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(flattened_rows)
+        logger.info("✅ Diagnostic dataset CSV: %s", final_dataset_csv)
+    except Exception as csv_exc:
+        logger.warning("⚠️ Failed to write diagnostic dataset CSV: %s", csv_exc)
+
     # Step 4: Final diagnostic agent summary
     if stats.get("llm_attempted"):
         logger.info(
@@ -487,6 +531,7 @@ def process_reddit_data_to_solutions(
         "rule_predictions": rule_rows_file,
         "solutions_with_diagnostics": diagnostics_file,
         "final_dataset": final_dataset_file,
+        "final_dataset_csv": final_dataset_csv if 'final_dataset_csv' in locals() else None,
         "output_directory": run_output_dir,
         "orchestrator_log": os.path.join(run_output_dir, "data_labeler_orchestrator.log"),
     }
