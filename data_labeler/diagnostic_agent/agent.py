@@ -46,6 +46,7 @@ def build_llm_payload(
     post: DiagnosticInput,
     ontology: Dict[str, Any],
     gold_examples: Dict[str, Any],
+    confidence_max: float = 1.0,
 ) -> Dict[str, Any]:
     labels_block = render_allowed_labels(ontology)
     examples_block = render_examples_block(gold_examples)
@@ -59,12 +60,14 @@ def build_llm_payload(
         "body": post.get("body", ""),
         "equip": post.get("equip", {}),
         "x_symptoms": x_symptoms,
+        "confidence_max": confidence_max,
     }
 
 
 def predict_diagnostics_batch(
     posts: Sequence[DiagnosticInput],
     max_concurrency: Optional[int] = None,
+    confidence_max: Optional[float] = None,
 ) -> List[DiagnosticOutput]:
     """Run the diagnostic labeler for multiple posts with optional concurrency."""
     if not posts:
@@ -80,7 +83,13 @@ def predict_diagnostics_batch(
     chain = build_diagnostic_labeler_chain()
 
     payloads: List[Dict[str, Any]] = [
-        build_llm_payload(post, ontology, gold) for post in posts
+        build_llm_payload(
+            post,
+            ontology,
+            gold,
+            confidence_max=(confidence_max if isinstance(confidence_max, (int, float)) else 1.0),
+        )
+        for post in posts
     ]
 
     configured_concurrency = (
@@ -176,9 +185,14 @@ def predict_diagnostics_batch(
 def predict_diagnostics(
     post: DiagnosticInput,
     max_concurrency: Optional[int] = None,
+    confidence_max: Optional[float] = None,
 ) -> DiagnosticOutput:
     """Run the diagnostic labeler for a single post using the batch implementation."""
-    results = predict_diagnostics_batch([post], max_concurrency=max_concurrency)
+    results = predict_diagnostics_batch(
+        [post],
+        max_concurrency=max_concurrency,
+        confidence_max=confidence_max,
+    )
     if not results:
         raise ValueError("Diagnostic agent returned no predictions")
     return results[0]

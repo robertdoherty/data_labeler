@@ -128,6 +128,34 @@ def _clamp_conf(value: float) -> float:
         return 0.0
 
 
+def _compute_rule_conf_floor(rules: Dict[str, Any], default_floor: float = 0.6) -> float:
+    """Compute the minimum configured rule score to use as LLM confidence cap.
+
+    If no explicit scores are present, fallback to ``default_floor``.
+    """
+    try:
+        ordered = rules.get("rules") or rules.get("ordered_rules") or []
+        floor = 1.0
+        found_any = False
+        for rule in ordered:
+            if isinstance(rule, dict):
+                if "score" in rule:
+                    try:
+                        s = float(rule.get("score", 1.0))
+                    except Exception:
+                        s = 1.0
+                    floor = min(floor, s)
+                    found_any = True
+                else:
+                    # Missing score defaults to 1.0; doesn't lower the floor
+                    floor = min(floor, 1.0)
+        if not found_any:
+            return float(default_floor)
+        return max(0.0, min(1.0, float(floor)))
+    except Exception:
+        return float(default_floor)
+
+
 def _setup_logger(run_output_dir: str) -> "logging.Logger":
     """Create a logger that writes to file and mirrors to stdout."""
     logger = logging.getLogger("data_labeler_orchestrator")
@@ -171,6 +199,8 @@ def _augment_with_diagnostics(
     llm_results: Dict[str, Dict[str, Any]] = {}
     llm_errors: Dict[str, str] = {}
     per_post: List[Dict[str, Any]] = []
+
+    rule_floor_conf = _compute_rule_conf_floor(rules)
 
     for post_id, rec in records.items():
         labels = rec.get("labels", {}) if isinstance(rec, dict) else {}
@@ -254,6 +284,7 @@ def _augment_with_diagnostics(
                 batch_outputs = predict_diagnostics_batch(
                     payloads,
                     max_concurrency=DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY,
+                    confidence_max=rule_floor_conf,
                 )
             except Exception as batch_exc:  # pragma: no cover - defensive fallback
                 batch_outputs = None
@@ -275,6 +306,7 @@ def _augment_with_diagnostics(
                     llm_results[post_id] = predict_diagnostics(
                         payload,
                         max_concurrency=DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY,
+                        confidence_max=rule_floor_conf,
                     )  # type: ignore[arg-type]
                 except Exception as exc:  # pragma: no cover - defensive for missing creds
                     llm_errors[post_id] = str(exc)
@@ -332,7 +364,8 @@ def _augment_with_diagnostics(
             top = preds[0]
             maybe_label = (top.get("label_id") or "").strip()
             if maybe_label:
-                llm_conf = _clamp_conf(top.get("confidence", 0.0))
+                # Clamp LLM confidence to the rule floor (e.g., 0.6) upper bound
+                llm_conf = min(rule_floor_conf, _clamp_conf(top.get("confidence", 0.0)))
                 conflict_entry = (
                     {
                         "source": "rules_vs_llm",
@@ -385,7 +418,8 @@ def _augment_with_diagnostics(
                 "x_symptoms": entry["x_symptoms"],
                 "x_post": f"{entry['title'].strip()}\n\n{entry['body'].strip()}".strip(),
                 "equip": entry["equip"],
-                "y_diag": [[final_label, 1.0]],
+                # Weight equals selected final confidence (rule or LLM)
+                "y_diag": [[final_label, float(_clamp_conf(final_conf))]],
                 "provenance": final_provenance,
                 "rule_label": entry["rule_label"],
                 "rule_confidence": _clamp_conf(entry["rule_conf"]),

@@ -80,7 +80,7 @@ Provide:
 Instructions:
 - Choose 0–2 labels ONLY from the allowed list.
 - If unsure, return dx.other_or_unclear as the single label.
-- Rate confidence ∈ [0,1] based on textual evidence; include short rationale and spans (quoted substrings) from the inputs.
+- Rate confidence ∈ [0,{confidence_max}] based on textual evidence; include short rationale and spans (quoted substrings) from the inputs.
 - Do NOT invent content; use only provided text.
 
 OUTPUT (STRICT JSON):
