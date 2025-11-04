@@ -80,13 +80,34 @@ Provide:
 Instructions:
 - Choose 0–2 labels ONLY from the allowed list.
 - If unsure, return dx.other_or_unclear as the single label.
-- Rate confidence ∈ [0,{confidence_max}] based on textual evidence; include short rationale and spans (quoted substrings) from the inputs.
 - Do NOT invent content; use only provided text.
 
-OUTPUT (STRICT JSON):
+Deterministic confidence scoring rubric (confidence method = deterministic_v1):
+1. Identify distinct evidence spans that directly support each candidate label (quote verbatim strings). Count them as ``evidence_count``.
+2. Set ``base_score`` using the table: 0 spans → 0.05, 1 span → 0.25, 2 spans → 0.45, ≥3 spans → 0.65.
+3. Start ``raw_score`` = ``base_score`` and apply additive adjustments (each recorded in ``adjustments``):
+   - If the text states an explicit confirmation of the diagnosis (e.g., a technician verified it), add +0.15.
+   - If strong contradictory details exist or information is mostly speculative, subtract 0.20.
+   - If the chosen label is dx.other_or_unclear, subtract 0.15 (cannot go below 0.0).
+4. Report ``confidence`` = clamp(raw_score, 0.0, 1.0) rounded to two decimals. Record ``max_score`` = {confidence_max} and leave ``final_score`` empty so downstream tooling can normalize to the configured ceiling.
+
+OUTPUT (STRICT JSON, no markdown):
 {{
   "predictions": [
-    {{"label_id": "string", "confidence": 0.0, "rationale": "string", "spans": ["string"]}}
+    {{
+      "label_id": "string",
+      "confidence": 0.0,
+      "confidence_breakdown": {{
+        "method": "deterministic_v1",
+        "evidence_count": 0,
+        "base_score": 0.0,
+        "adjustments": [{{"reason": "string", "delta": 0.0}}],
+        "max_score": {confidence_max},
+        "final_score": null
+      }},
+      "rationale": "string",
+      "spans": ["string"]
+    }}
   ]
 }}
 

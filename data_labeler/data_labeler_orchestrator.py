@@ -128,6 +128,55 @@ def _clamp_conf(value: float) -> float:
         return 0.0
 
 
+def _extract_prediction_conf(pred: Dict[str, Any]) -> float:
+    """Extract the LLM confidence, honoring the deterministic breakdown if present."""
+
+    breakdown = pred.get("confidence_breakdown")
+    if isinstance(breakdown, dict):
+        final_score = breakdown.get("final_score")
+        if isinstance(final_score, (int, float)):
+            return float(final_score)
+
+        base_score = breakdown.get("base_score")
+        if isinstance(base_score, (int, float)):
+            raw_score = float(base_score)
+        else:
+            raw_score = None
+
+        adjustments = breakdown.get("adjustments")
+        if raw_score is not None:
+            if isinstance(adjustments, list):
+                for adj in adjustments:
+                    if isinstance(adj, dict):
+                        delta = adj.get("delta")
+                        if isinstance(delta, (int, float)):
+                            raw_score += float(delta)
+                    elif isinstance(adj, (int, float)):
+                        raw_score += float(adj)
+            elif isinstance(adjustments, (int, float)):
+                raw_score += float(adjustments)
+
+        if raw_score is None:
+            conf_value = pred.get("confidence")
+            if isinstance(conf_value, (int, float)):
+                raw_score = float(conf_value)
+
+        if raw_score is not None:
+            cap = breakdown.get("max_score")
+            if not isinstance(cap, (int, float)):
+                cap = 1.0
+            return max(0.0, min(float(cap), float(raw_score)))
+
+    conf_value = pred.get("confidence")
+    if isinstance(conf_value, (int, float)):
+        return float(conf_value)
+
+    try:
+        return float(conf_value)  # type: ignore[arg-type]
+    except Exception:
+        return 0.0
+
+
 def _compute_rule_conf_floor(rules: Dict[str, Any], default_floor: float = 0.6) -> float:
     """Compute the minimum configured rule score to use as LLM confidence cap.
 
@@ -365,7 +414,8 @@ def _augment_with_diagnostics(
             maybe_label = (top.get("label_id") or "").strip()
             if maybe_label:
                 # Clamp LLM confidence to the rule floor (e.g., 0.6) upper bound
-                llm_conf = min(rule_floor_conf, _clamp_conf(top.get("confidence", 0.0)))
+                llm_conf_raw = _extract_prediction_conf(top)
+                llm_conf = min(rule_floor_conf, _clamp_conf(llm_conf_raw))
                 conflict_entry = (
                     {
                         "source": "rules_vs_llm",
