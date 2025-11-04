@@ -24,7 +24,6 @@ class DiagnosticPrediction(TypedDict, total=False):
     label_id: str
     confidence: float
     rationale: str
-    spans: List[str]
 
 
 class DiagnosticOutput(TypedDict, total=False):
@@ -49,7 +48,7 @@ def enforce_allowed_predictions(
             if lid in allowed:
                 kept.append(p)
     if not kept:
-        kept = [{"label_id": FALLBACK_LABEL, "confidence": 0.2, "rationale": "fallback", "spans": []}]
+        kept = [{"label_id": FALLBACK_LABEL, "confidence": 0.2, "rationale": "fallback"}]
     kept.sort(key=lambda x: float(x.get("confidence", 0.0)), reverse=True)
     return kept[:max_labels]
 

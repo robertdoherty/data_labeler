@@ -3,7 +3,7 @@
 Minimal diagnostic labeler chain:
 - Loads diagnostics (ontology), rules, and golden examples
 - Builds a constrained prompt to assign up to 2 diagnostic labels
-- Returns JSON with label(s), confidence(s), rationale, and spans
+- Returns JSON with label(s), confidence(s), and rationale
 """
 
 import os
@@ -83,13 +83,18 @@ Instructions:
 - Do NOT invent content; use only provided text.
 
 Deterministic confidence scoring rubric (confidence method = deterministic_v1):
-1. Identify distinct evidence spans that directly support each candidate label (quote verbatim strings). Count them as ``evidence_count``.
-2. Set ``base_score`` using the table: 0 spans → 0.05, 1 span → 0.25, 2 spans → 0.45, ≥3 spans → 0.65.
-3. Start ``raw_score`` = ``base_score`` and apply additive adjustments (each recorded in ``adjustments``):
-   - If the text states an explicit confirmation of the diagnosis (e.g., a technician verified it), add +0.15.
-   - If strong contradictory details exist or information is mostly speculative, subtract 0.20.
-   - If the chosen label is dx.other_or_unclear, subtract 0.15 (cannot go below 0.0).
-4. Report ``confidence`` = clamp(raw_score, 0.0, 1.0) rounded to two decimals. Record ``max_score`` = {confidence_max} and leave ``final_score`` empty so downstream tooling can normalize to the configured ceiling.
+1. Identify distinct pieces of evidence that directly support each candidate label. Count them as ``evidence_count``.
+2. Set ``base_score`` as the final confidence. Use these explicit rules:
+   - Evidence definition: concrete, text-backed facts (direct quotes or specific measurements). Hearsay/speculation is not evidence.
+   - Baseline by evidence count: 0 → 0.05, 1 → 0.35, 2 → 0.65, ≥3 → 1.00.
+   - Within-bucket selection:
+     - No contradictions and evidence is strong/precise → use the top of the bucket.
+     - Minor uncertainty or vague phrasing → choose a mid value within the bucket (e.g., ~0.30, ~0.55, ~0.90).
+     - Clear contradictions or mixed signals → choose the bottom of the bucket or the next lower bucket’s top.
+   - Special caps:
+     - If the only plausible label is dx.other_or_unclear, cap ``base_score`` at 0.35.
+     - If all evidence is speculative (no concrete facts), treat as 0 evidence.
+3. Report ``confidence`` = clamp(base_score, 0.0, 1.0) rounded to two decimals.
 
 OUTPUT (STRICT JSON, no markdown):
 {{
@@ -100,13 +105,9 @@ OUTPUT (STRICT JSON, no markdown):
       "confidence_breakdown": {{
         "method": "deterministic_v1",
         "evidence_count": 0,
-        "base_score": 0.0,
-        "adjustments": [{{"reason": "string", "delta": 0.0}}],
-        "max_score": {confidence_max},
-        "final_score": null
+        "base_score": 0.0
       }},
-      "rationale": "string",
-      "spans": ["string"]
+      "rationale": "string"
     }}
   ]
 }}

@@ -129,50 +129,23 @@ def _clamp_conf(value: float) -> float:
 
 
 def _extract_prediction_conf(pred: Dict[str, Any]) -> float:
-    """Extract the LLM confidence, honoring the deterministic breakdown if present."""
+    """Extract confidence using base_score only; fallback to top-level confidence.
+
+    Downstream capping is applied separately using the rule floor.
+    """
 
     breakdown = pred.get("confidence_breakdown")
     if isinstance(breakdown, dict):
-        final_score = breakdown.get("final_score")
-        if isinstance(final_score, (int, float)):
-            return float(final_score)
-
         base_score = breakdown.get("base_score")
         if isinstance(base_score, (int, float)):
-            raw_score = float(base_score)
-        else:
-            raw_score = None
-
-        adjustments = breakdown.get("adjustments")
-        if raw_score is not None:
-            if isinstance(adjustments, list):
-                for adj in adjustments:
-                    if isinstance(adj, dict):
-                        delta = adj.get("delta")
-                        if isinstance(delta, (int, float)):
-                            raw_score += float(delta)
-                    elif isinstance(adj, (int, float)):
-                        raw_score += float(adj)
-            elif isinstance(adjustments, (int, float)):
-                raw_score += float(adjustments)
-
-        if raw_score is None:
-            conf_value = pred.get("confidence")
-            if isinstance(conf_value, (int, float)):
-                raw_score = float(conf_value)
-
-        if raw_score is not None:
-            cap = breakdown.get("max_score")
-            if not isinstance(cap, (int, float)):
-                cap = 1.0
-            return max(0.0, min(float(cap), float(raw_score)))
+            return max(0.0, min(1.0, float(base_score)))
 
     conf_value = pred.get("confidence")
     if isinstance(conf_value, (int, float)):
-        return float(conf_value)
+        return max(0.0, min(1.0, float(conf_value)))
 
     try:
-        return float(conf_value)  # type: ignore[arg-type]
+        return max(0.0, min(1.0, float(conf_value)))  # type: ignore[arg-type]
     except Exception:
         return 0.0
 
