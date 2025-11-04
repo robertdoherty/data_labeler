@@ -554,7 +554,26 @@ def process_reddit_data_to_solutions(
 
     # Step 3b: Export diagnostic dataset to CSV
     try:
-        flattened_rows = [_flatten_record_for_csv(r) for r in final_rows]
+        # Expand y_diag ([[label, score]]) into flat CSV columns: diagnosis | weight
+        transformed_rows: List[Dict[str, Any]] = []
+        for row in final_rows:
+            row_out = dict(row)
+            y_diag = row_out.pop("y_diag", None)
+            diagnosis = ""
+            weight_value: Optional[float] = None
+            if isinstance(y_diag, list) and y_diag:
+                first = y_diag[0]
+                if isinstance(first, (list, tuple)) and len(first) >= 2:
+                    diagnosis = str(first[0]) if first[0] is not None else ""
+                    try:
+                        weight_value = float(first[1]) if first[1] is not None else None
+                    except Exception:
+                        weight_value = None
+            row_out["diagnosis"] = diagnosis
+            row_out["weight"] = weight_value if weight_value is not None else ""
+            transformed_rows.append(row_out)
+
+        flattened_rows = [_flatten_record_for_csv(r) for r in transformed_rows]
         fieldnames = sorted({key for row in flattened_rows for key in row.keys()})
         final_dataset_csv = os.path.join(run_output_dir, f"diagnostic_dataset_{timestamp}.csv")
         with open(final_dataset_csv, "w", newline="", encoding="utf-8") as f_csv:
