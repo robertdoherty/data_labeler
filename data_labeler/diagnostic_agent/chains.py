@@ -86,13 +86,16 @@ Deterministic confidence scoring rubric (confidence method = deterministic_v1):
 1. Identify distinct pieces of evidence that directly support each candidate label. Count them as ``evidence_count``.
 2. Set ``base_score`` as the final confidence. Use these explicit rules:
    - Evidence definition: concrete, text-backed facts (direct quotes or specific measurements). Hearsay/speculation is not evidence.
-   - Baseline by evidence count: 0 → 0.05, 1 → 0.35, 2 → 0.65, ≥3 → 1.00.
-   - Within-bucket selection:
-     - No contradictions and evidence is strong/precise → use the top of the bucket.
-     - Minor uncertainty or vague phrasing → choose a mid value within the bucket (e.g., ~0.30, ~0.55, ~0.90).
+   - Baseline by evidence count (conservative): 0 → 0.00, 1 → 0.25, 2-3 → 0.60, ≥4 → 1.00.
+   - Within-bucket selection (bias conservative):
+     - Default to the lower half of the bucket unless evidence is strong and precise.
+     - No contradictions and evidence is strong/precise (e.g., quoted measurements, model-specific checks) → use the top of the bucket.
+     - Minor uncertainty or vague phrasing → choose a lower value within the bucket (e.g., ~0.20, ~0.45, ~0.70).
      - Clear contradictions or mixed signals → choose the bottom of the bucket or the next lower bucket’s top.
+   - Downshifts/penalties:
+     - If symptoms are generic and could fit multiple labels, downshift one bucket.
    - Special caps:
-     - If the only plausible label is dx.other_or_unclear, cap ``base_score`` at 0.35.
+     - If the only plausible label is dx.other_or_unclear, cap ``base_score`` at 0.30.
      - If all evidence is speculative (no concrete facts), treat as 0 evidence.
 3. Report ``confidence`` = clamp(base_score, 0.0, 1.0) rounded to two decimals.
 
