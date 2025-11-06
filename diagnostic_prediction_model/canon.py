@@ -1,16 +1,18 @@
 # diagnostic_prediction_model/canon.py
 
 import re
+import json
+import hashlib
+from pathlib import Path
 
-
-def canonicalize_symptoms(symptoms: str) -> str:
+def canonicalize_fields(symptoms: str) -> list[str]:
     """Canonicalize a symptoms string.
 
     Args:
         xsymptoms: The symptoms string to canonicalize.
 
     Returns:
-        The canonicalized symptoms string.
+        The canonicalized symptoms list.
     """
     parts = [p.strip().lower() for p in symptoms.split(";")]
     out = []
@@ -26,15 +28,147 @@ def canonicalize_symptoms(symptoms: str) -> str:
     return dedup
 
 
-def canonicalize_equipment(equipment: str) -> str:
-    """Canonicalize an equipment string.
+def canonicalize_equip(equip: dict) -> dict:
+    """Canonicalize equipment fields similar to symptoms (lowercase, underscores).
 
     Args:
-        equipment: The equipment string to canonicalize.
+        equip: Dict possibly containing 'family', 'subtype', 'brand'.
 
     Returns:
-        The canonicalized equipment string.
+        Dict with canonicalized string values for 'family', 'subtype', 'brand'.
     """
-    return equipment.lower().strip()
+    def norm(value: str) -> str:
+        if not isinstance(value, str):
+            return ""
+        # similar to canonicalize_fields per-token normalization
+        token = value.strip().lower()
+        token = re.sub(r"[.,!?]+$", "", token)           # drop trailing punctuation
+        token = re.sub(r"\s+", " ", token).strip()       # collapse whitespace
+        token = token.replace("-", "_")                   # hyphens -> underscores
+        token = token.replace(" ", "_")                   # spaces -> underscores
+        return token
+
+    return {
+        "family": norm(equip.get("family", "")),
+        "subtype": norm(equip.get("subtype", "")),
+        "brand": norm(equip.get("brand", "")),
+    }
 
 
+def split_from_id(post_id: str) -> str:
+    """Deterministically assign each post to train/val/test.
+    Uses a hash of post_id so the split is stable between runs.
+    """
+    h = int(hashlib.md5(post_id.encode()).hexdigest(), 16) % 100
+    return "train" if h < 80 else "val" if h < 90 else "test"
+
+def build_training_data(path_to_json: str) -> dict:
+    """Build training data from a JSON file.
+
+    Args:
+        path_to_json: The path to the JSON file.
+
+    Returns:
+        The training data.
+    """
+    diagnostic_dataset = json.load(open(path_to_json, 'r'))
+    
+    # Set up data directory relative to this script
+    script_dir = Path(__file__).parent
+    data_dir = script_dir / "data"
+    data_dir.mkdir(exist_ok=True)
+    
+    # Generate empty sets and training jsonl
+    symptom_set, family_set, subtype_set, brand_set, diag_set = set(), set(), set(), set(), set()
+    out_files = {
+        "train": open(data_dir / "train.jsonl","w"),
+        "val":   open(data_dir / "val.jsonl","w"),
+        "test":  open(data_dir / "test.jsonl","w"),
+    }
+    ## Go through all issues and add to sets
+    for issue in diagnostic_dataset:
+        # Canonicalize symptoms
+        issue['symptoms_canon'] = canonicalize_fields(issue.get('x_symptoms', ''))
+        symptom_set.update(issue['symptoms_canon'])
+
+        # Canonicalize equipment and WRITE BACK so JSONL has canonical values
+        equip_canon = canonicalize_equip(issue.get('equip', {}))
+        issue['equip'] = equip_canon
+        if equip_canon['family']:
+            family_set.add(equip_canon['family'])
+        if equip_canon['subtype']:
+            subtype_set.add(equip_canon['subtype'])
+        if equip_canon['brand']:
+            brand_set.add(equip_canon['brand'])
+
+        # Diagnostic label (as-is from dataset entry)
+        diag_label = None
+        try:
+            diag_label = issue['y_diag'][0][0]
+        except Exception:
+            diag_label = None
+        if diag_label:
+            diag_set.add(diag_label)
+
+        # Split from id to train/val/test and write out
+        issue["split"] = split_from_id(issue["post_id"])
+        out_files[issue["split"]].write(json.dumps(issue) + "\n")
+    
+    for f in out_files.values(): f.close()
+
+    def to_idx_map(vals): return {v:i for i,v in enumerate(sorted(vals))}
+
+    # Ensure unknown tokens exist for sparse fields
+    subtype_set.add("<unk_subtype>")
+    brand_set.add("<unk_brand>")
+
+    vocabs = {
+        "symptom2id": to_idx_map(symptom_set),
+        "family2id":  to_idx_map(family_set),
+        "subtype2id": to_idx_map(subtype_set),
+        "brand2id":   to_idx_map(brand_set),
+        "diag2id":    to_idx_map(diag_set),
+        "version": 1
+    }
+    
+    json.dump(vocabs, open(data_dir / "vocabs.json","w"), indent=2)
+    
+    # Return statistics for reporting
+    return {
+        "total": len(diagnostic_dataset),
+        "train": sum(1 for issue in diagnostic_dataset if issue['split'] == 'train'),
+        "val": sum(1 for issue in diagnostic_dataset if issue['split'] == 'val'),
+        "test": sum(1 for issue in diagnostic_dataset if issue['split'] == 'test'),
+        "vocab_sizes": {
+            "symptoms": len(symptom_set),
+            "families": len(family_set),
+            "subtypes": len(subtype_set),
+            "brands": len(brand_set),
+            "diagnostics": len(diag_set)
+        },
+        "output_dir": str(data_dir)
+    }
+
+
+if __name__ == "__main__":
+    # Use the most recent diagnostic dataset
+    input_file = Path(__file__).parent.parent / "output" / "2025-11-03" / "diagnostic_dataset_2025-11-03_20-59-20.json"
+    
+    if not input_file.exists():
+        print(f"Error: Input file not found at {input_file}")
+        exit(1)
+    
+    print(f"Building training data from: {input_file}\n")
+    stats = build_training_data(str(input_file))
+    
+    print(f"✓ Created training data from {stats['total']} samples")
+    print(f"  - Train: {stats['train']} samples")
+    print(f"  - Val: {stats['val']} samples")
+    print(f"  - Test: {stats['test']} samples")
+    print(f"\n✓ Vocabulary sizes:")
+    print(f"  - Symptoms: {stats['vocab_sizes']['symptoms']}")
+    print(f"  - Families: {stats['vocab_sizes']['families']}")
+    print(f"  - Subtypes: {stats['vocab_sizes']['subtypes']}")
+    print(f"  - Brands: {stats['vocab_sizes']['brands']}")
+    print(f"  - Diagnostics: {stats['vocab_sizes']['diagnostics']}")
+    print(f"\n✓ Output files written to: {stats['output_dir']}/")
