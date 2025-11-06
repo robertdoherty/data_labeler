@@ -1,8 +1,8 @@
 """Dataset utilities for error prediction inputs."""
 
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
-class ErrorPredictionDataset(Dataset):
+class DiagnosticPredictionDataset(Dataset):
     """Dataset wrapper for error prediction data.
 
     Expects ``data_dir`` to be an indexable sequence (e.g., list) of items.
@@ -30,5 +30,10 @@ class ErrorPredictionDataset(Dataset):
             The item at the specified index.
         """
         return self.data_dir[idx]
+
+    @property
+    def classes(self):
+        """Return the classes in the dataset."""
+        return self.data_dir.classes()
 
 

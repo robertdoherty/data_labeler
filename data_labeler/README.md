@@ -10,12 +10,13 @@ Simple tools to label HVAC-related Reddit posts.
 
 ### Pipeline at a glance
 1. Break labeling: mark posts as BREAK or not, and extract fields from the OP.
-2. Solution extraction: look at comments and produce a short solution summary.
-3. Diagnostics: map symptoms to a diagnostic label using rules. If unclear, call an LLM.
+2. Solution extraction: reviews comments for only break posts, fills in missing fields for system/symptom, and determines if solution is available
+3. Diagnostics: map symptoms to a diagnostic label using rules. If unclear, calls an agent to make a best guess using finite diagnosis
 4. Vision enrichment (optional): parse images to add brand/model and visual symptoms.
 
+
 ### Inputs and outputs
-- Input: a Reddit dataset like `output/reddit_research_data_YYYY-MM-DD.json`.
+- Input: a Reddit dataset like `output/reddit_research_data_YYYY-MM-DD.json`. Note to run a new scrape use: `python "/Users/robertdoherty/Desktop/Playground/research agent/reddit_fetcher.py"`
 - Outputs (written under `output/YYYY-MM-DD/`):
   - `break_labeled_posts_*.json`
   - `solutions_*.json`

@@ -373,7 +373,7 @@ def run_solutions_on_enriched(
             len(outputs),
             len(prepared_records),
         )
-
+    # Merge outputs into enriched records
     for idx, (post_id, rec) in enumerate(prepared_records):
         try:
             output = outputs[idx] if idx < len(outputs) else Exception(
