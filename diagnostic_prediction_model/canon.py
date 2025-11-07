@@ -17,8 +17,8 @@ def canonicalize_fields(symptoms: str) -> list[str]:
     parts = [p.strip().lower() for p in symptoms.split(";")]
     out = []
     for p in parts:
-        p = re.sub(r"[.,!?]+$", "", p)
         p = re.sub(r"\s+", " ", p).strip()
+        p = p.replace("/", "_")
         if p:
             out.append(p.replace(" ", "_"))
     seen, dedup = set(), []
