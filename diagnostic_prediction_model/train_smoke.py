@@ -3,15 +3,15 @@
 import json
 import torch
 from torch.utils.data import DataLoader
-from diagnostic_prediction_model.dataio.dataloader import HVACDataset
+from diagnostic_prediction_model.dataloader import HVACDataset
 
 
 def train_smoke_test():
     """Load vocabs and datasets, verify batching works correctly."""
-    VOCAB_PATH = "diagnostic_prediction_model/data/vocabs.json"
-    TRAIN_PATH = "diagnostic_prediction_model/data/train.jsonl"
-    VAL_PATH   = "diagnostic_prediction_model/data/val.jsonl"
-    TEST_PATH  = "diagnostic_prediction_model/data/test.jsonl"
+    VOCAB_PATH = "diagnostic_prediction_model/etl/data/vocabs.json"
+    TRAIN_PATH = "diagnostic_prediction_model/etl/data/train.jsonl"
+    VAL_PATH   = "diagnostic_prediction_model/etl/data/val.jsonl"
+    TEST_PATH  = "diagnostic_prediction_model/etl/data/test.jsonl"
 
     # 1) load vocabs
     v = json.load(open(VOCAB_PATH))
