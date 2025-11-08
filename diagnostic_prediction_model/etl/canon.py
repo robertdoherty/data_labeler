@@ -152,10 +152,14 @@ def build_training_data(path_to_json: str) -> dict:
 
 if __name__ == "__main__":
     # Use the most recent diagnostic dataset
-    input_file = Path(__file__).parent.parent / "output" / "2025-11-03" / "diagnostic_dataset_2025-11-03_20-59-20.json"
+    # Navigate to project root (3 levels up from this file)
+    script_dir = Path(__file__).resolve().parent
+    project_root = script_dir.parent.parent
+    input_file = project_root / "output" / "2025-11-03" / "diagnostic_dataset_2025-11-03_20-59-20.json"
     
     if not input_file.exists():
         print(f"Error: Input file not found at {input_file}")
+        print(f"Project root: {project_root}")
         exit(1)
     
     print(f"Building training data from: {input_file}\n")
