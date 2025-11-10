@@ -4,25 +4,40 @@ import json, numpy as np, torch
 from torch.utils.data import Dataset, DataLoader
 
 
-def soft_target(diag2id: dict[str,int], y_diag: list[tuple[str,float]]|None=None, add_other: bool=True) -> torch.Tensor:
-    """Convert a list of diagnostic labels and weights to a soft target tensor."""
+def soft_target(
+    diag2id: dict[str, int],
+    y_diag: list[tuple[str, float]] | None = None,
+    add_other: bool = True,
+) -> torch.Tensor:
+    """Convert diagnostic labels/weights to a normalized soft target tensor."""
+
     y = np.zeros(len(diag2id), np.float32)
     tot = 0.0
-    for d,w in y_diag:
+
+    for d, w in (y_diag or []):
         i = diag2id.get(d)
-        if i is not None: y[i] += float(w)
-        tot += float(w)
+        if i is None:
+            continue
+        w = float(w)
+        y[i] += w
+        tot += w
+
     if add_other:
-        y[diag2id["dx.other_or_unclear"]] += max(0.0, 1.0 - tot)
-        tot = 1.0
-    if tot > 0: y /= y.sum()
+        other_idx = diag2id.get("dx.other_or_unclear")
+        if other_idx is not None:
+            y[other_idx] += max(0.0, 1.0 - tot)
+
+    if y.sum() > 0:
+        y /= y.sum()
+
     return torch.from_numpy(y)
 
 
 class HVACDataset(Dataset):
     
     def __init__(self, path: str, v: dict[str, dict[str, int]]):
-        self.rows = [json.loads(l) for l in open(path)]
+        with open(path) as fh:
+            self.rows = [json.loads(l) for l in fh]
         self.v = v
     
     
