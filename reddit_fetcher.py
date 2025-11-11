@@ -3,7 +3,7 @@
 
 import praw
 import prawcore # Import specific exceptions
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import logging
 from typing import List, Dict, Optional, Any
 import json
@@ -43,6 +43,14 @@ def get_comments_with_retry(submission):
     """Replaces 'more comments' and fetches the full comment list with retry logic."""
     submission.comments.replace_more(limit=0) # Fetch all comments
     return submission.comments.list()
+
+@retry_on_reddit_api_error
+def search_submissions_with_retry(subreddit_instance, query: str, sort: str = "new", syntax: str = "cloudsearch", limit: Optional[int] = None):
+    """
+    Perform a subreddit search with retry logic. Useful for time-window pagination using CloudSearch syntax.
+    """
+    logging.debug(f"Searching r/{subreddit_instance.display_name} with query='{query}', sort='{sort}', syntax='{syntax}', limit={limit}")
+    return list(subreddit_instance.search(query=query, sort=sort, syntax=syntax, limit=limit))
 # >>> END NEW ADDITION
 
 
@@ -293,6 +301,167 @@ def fetch_subreddit_posts_with_comments(
     return result
 
 
+def fetch_subreddit_posts_with_comments_time_windowed(
+    reddit: praw.Reddit,
+    subreddit_names: List[str],
+    target_posts_per_subreddit: int = 5000,
+    window_hours: int = 24,
+    include_stickied: bool = False,
+    fetch_comments: bool = False
+) -> Dict[str, Any]:
+    """
+    Fetch posts by iterating through time windows to bypass Reddit's ~1k listing cap.
+    Uses CloudSearch timestamp ranges per subreddit to gather a larger corpus.
+    
+    Args:
+        reddit: Initialized PRAW Reddit client
+        subreddit_names: List of subreddit names to fetch from
+        target_posts_per_subreddit: Target number of posts to collect per subreddit
+        window_hours: Size of each backwards-looking time window
+        include_stickied: Whether to include pinned posts
+        fetch_comments: Whether to expand and include comments (can be very slow at scale)
+    
+    Returns:
+        Dict containing nested JSON structure with subreddits, posts, comments (optional), and metadata
+    """
+    if not reddit:
+        logging.error("PRAW Reddit instance not initialized for time-windowed fetch.")
+        return {"subreddits": {}, "metadata": {"fetch_timestamp": datetime.now(timezone.utc).isoformat(), "total_subreddits": 0, "total_posts": 0, "total_comments": 0}}
+    
+    if not subreddit_names:
+        logging.warning("No subreddit names provided to time-windowed fetch.")
+        return {"subreddits": {}, "metadata": {"fetch_timestamp": datetime.now(timezone.utc).isoformat(), "total_subreddits": 0, "total_posts": 0, "total_comments": 0}}
+    
+    fetch_timestamp = datetime.now(timezone.utc).isoformat()
+    result = {
+        "subreddits": {},
+        "metadata": {
+            "fetch_timestamp": fetch_timestamp,
+            "total_subreddits": 0,
+            "total_posts": 0,
+            "total_comments": 0
+        }
+    }
+    
+    total_posts = 0
+    total_comments = 0
+    successful_subreddits = 0
+    
+    logging.info(f"Starting time-windowed fetch from {len(subreddit_names)} subreddits; target {target_posts_per_subreddit} posts/subreddit, window={window_hours}h, fetch_comments={fetch_comments}")
+    
+    for subreddit_name in subreddit_names:
+        logging.info(f"[time-windowed] Processing subreddit: r/{subreddit_name}")
+        try:
+            subreddit_instance = reddit.subreddit(subreddit_name)
+            subreddit_posts = []
+            subreddit_comments_count = 0
+            seen_ids: set[str] = set()
+            
+            # Start from "now" and move backwards in windowed chunks
+            window_end = datetime.now(timezone.utc)
+            max_windows = 365 * 2  # hard cap: do not scan more than ~2 years of 24h windows
+            windows_scanned = 0
+            
+            while len(subreddit_posts) < target_posts_per_subreddit and windows_scanned < max_windows:
+                window_start = window_end.replace()  # copy
+                # Move start back by window_hours
+                window_start = window_start - timedelta(hours=window_hours)
+                
+                start_ts = int(window_start.timestamp())
+                end_ts = int(window_end.timestamp())
+                query = f"timestamp:{start_ts}..{end_ts}"
+                
+                logging.debug(f"[time-windowed] r/{subreddit_name} window {window_start.isoformat()} → {window_end.isoformat()} (query={query})")
+                
+                try:
+                    submissions_list = search_submissions_with_retry(subreddit_instance, query=query, sort="new", syntax="cloudsearch", limit=None)
+                except Exception as e_search:
+                    logging.warning(f"[time-windowed] Search failed for r/{subreddit_name} window: {e_search}")
+                    submissions_list = []
+                
+                if not submissions_list:
+                    logging.debug(f"[time-windowed] No submissions found in r/{subreddit_name} for this window.")
+                
+                for submission in submissions_list:
+                    if not include_stickied and getattr(submission, "stickied", False):
+                        continue
+                    if submission.id in seen_ids:
+                        continue
+                    
+                    seen_ids.add(submission.id)
+                    
+                    post_data = {
+                        "post_id": f"reddit-{submission.id}",
+                        "title": getattr(submission, "title", None),
+                        "body": getattr(submission, "selftext", None),
+                        "author": str(submission.author) if getattr(submission, "author", None) else "[deleted]",
+                        "created_utc": datetime.fromtimestamp(getattr(submission, "created_utc", 0), tz=timezone.utc).isoformat(),
+                        "score": getattr(submission, "score", None),
+                        "num_comments": getattr(submission, "num_comments", None),
+                        "upvote_ratio": getattr(submission, "upvote_ratio", None),
+                        "url": getattr(submission, "url", None),
+                        "subreddit": subreddit_name,
+                        "is_stickied": getattr(submission, "stickied", False),
+                        "comments": []
+                    }
+                    
+                    try:
+                        image_urls = extract_image_urls_from_submission(submission)
+                    except Exception as _img_err:
+                        logging.debug(f"Could not extract image URLs for post {submission.id}: {_img_err}")
+                        image_urls = []
+                    post_data["image_urls"] = image_urls
+                    
+                    if fetch_comments:
+                        try:
+                            comment_list = get_comments_with_retry(submission)
+                            for comment in comment_list:
+                                if hasattr(comment, 'body') and comment.body not in ['[deleted]', '[removed]']:
+                                    comment_data = {
+                                        "comment_id": f"reddit-{comment.id}",
+                                        "body": comment.body,
+                                        "author": str(comment.author) if comment.author else "[deleted]",
+                                        "created_utc": datetime.fromtimestamp(comment.created_utc, tz=timezone.utc).isoformat(),
+                                        "score": comment.score,
+                                        "parent_post_id": f"reddit-{submission.id}",
+                                        "permalink": f"https://reddit.com{comment.permalink}"
+                                    }
+                                    post_data["comments"].append(comment_data)
+                                    subreddit_comments_count += 1
+                        except Exception as e_comment:
+                            logging.warning(f"Could not fetch comments for post {submission.id} in r/{subreddit_name}: {e_comment}")
+                    
+                    subreddit_posts.append(post_data)
+                    
+                    if len(subreddit_posts) >= target_posts_per_subreddit:
+                        break
+                
+                # Move window back
+                window_end = window_start
+                windows_scanned += 1
+            
+            result["subreddits"][subreddit_name] = {"posts": subreddit_posts}
+            posts_count = len(subreddit_posts)
+            total_posts += posts_count
+            total_comments += subreddit_comments_count
+            successful_subreddits += 1
+            logging.info(f"[time-windowed] Completed r/{subreddit_name}: {posts_count} posts, {subreddit_comments_count} comments, windows_scanned={windows_scanned}")
+        
+        except (prawcore.exceptions.Redirect, prawcore.exceptions.NotFound):
+            logging.warning(f"[time-windowed] Subreddit r/{subreddit_name} not found or redirected - skipping")
+            continue
+        except prawcore.exceptions.Forbidden:
+            logging.warning(f"[time-windowed] Cannot access private subreddit r/{subreddit_name} - skipping")
+            continue
+        except Exception as e_sub:
+            logging.error(f"[time-windowed] Unexpected error processing r/{subreddit_name}: {e_sub} - skipping")
+            continue
+    
+    result["metadata"]["total_subreddits"] = successful_subreddits
+    result["metadata"]["total_posts"] = total_posts
+    result["metadata"]["total_comments"] = total_comments
+    logging.info(f"[time-windowed] Fetch completed: {successful_subreddits}/{len(subreddit_names)} subreddits, {total_posts} posts, {total_comments} comments")
+    return result
 def HVAC_fetch(limit_per_subreddit: int = 100, include_stickied: bool = False):
     """Test that the fetch_subreddit_posts_with_comments function works correctly"""
     print("=== Testing fetch_subreddit_posts_with_comments function ===\n")
@@ -377,8 +546,71 @@ def HVAC_fetch(limit_per_subreddit: int = 100, include_stickied: bool = False):
         return False
 
 
+def HVAC_fetch_time_windowed(
+    target_posts_per_subreddit: int = 5000,
+    window_hours: int = 24,
+    include_stickied: bool = False,
+    fetch_comments: bool = False
+):
+    """
+    Test runner for the time-windowed fetch to gather large volumes of posts.
+    """
+    print("=== Testing fetch_subreddit_posts_with_comments_time_windowed function ===\n")
+    logging.getLogger().setLevel(logging.DEBUG)
+    try:
+        from local_secrets import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT
+        reddit = praw.Reddit(
+            client_id=REDDIT_CLIENT_ID,
+            client_secret=REDDIT_CLIENT_SECRET, 
+            user_agent=REDDIT_USER_AGENT,
+            read_only=True
+        )
+        reddit.user.me()
+        print("✅ Reddit client initialized and connected successfully")
+        
+        result = fetch_subreddit_posts_with_comments_time_windowed(
+            reddit=reddit,
+            subreddit_names=["HVAC"],
+            target_posts_per_subreddit=target_posts_per_subreddit,
+            window_hours=window_hours,
+            include_stickied=include_stickied,
+            fetch_comments=fetch_comments
+        )
+        
+        print("📋 Result structure:")
+        print(json.dumps(result, indent=2))
+        
+        posts_count = result["metadata"]["total_posts"]
+        total_comments = result["metadata"]["total_comments"]
+        
+        from datetime import date
+        import os
+        output_dir = "output"
+        os.makedirs(output_dir, exist_ok=True)
+        today = date.today().strftime("%Y-%m-%d")
+        filename = f"reddit_research_data_timewindowed_{today}.json"
+        filepath = os.path.join(output_dir, filename)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Time-windowed fetch - Fetched {posts_count} posts with {total_comments} total comments")
+        print(f"📊 Metadata: {result['metadata']}")
+        print(f"💾 Data saved to: {filepath}")
+        return True
+    except ImportError:
+        print("❌ Test failed - local_secrets.py not found")
+        print("     Create local_secrets.py with REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, and REDDIT_USER_AGENT")
+        return False
+    except Exception as e:
+        print(f"❌ Test failed: {e}")
+        return False
+
+
 if __name__ == "__main__":
     print("Testing HVAC fetch...")
     HVAC_fetch(limit_per_subreddit=5000, include_stickied=False)
     print("\nHVAC fetch complete!")
+    print("\nTesting HVAC time-windowed fetch for 5000 posts...")
+    HVAC_fetch_time_windowed(target_posts_per_subreddit=5000, window_hours=24, include_stickied=False, fetch_comments=False)
+    print("\nHVAC time-windowed fetch complete!")
 
