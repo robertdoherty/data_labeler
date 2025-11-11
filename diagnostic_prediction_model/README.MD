@@ -57,14 +57,13 @@ The following describes how the pipeline works today, with pointers to where eac
   - Batch into tensors: `x.float(): [B, INPUT_DIM]`, `y.float(): [B, NUM_CLASSES]`.
   - Where: `diagnostic_prediction_model/dataloader.py`, examples in `diagnostic_prediction_model/train_smoke.py` and `diagnostic_prediction_model/test_dataset.ipynb`
 
-- Train a classifier
+- Train a classifier** (details below)
   - Recommended: small MLP or Wide&Deep; model outputs logits; minimize soft cross-entropy / KLDiv against soft labels.
   - Where: `diagnostic_prediction_model/classifier.py` (placeholder to implement)
 
 - Validate & save
   - Track val loss + top-k/F1; save `model.pt` with `vocabs.json` for inference parity.
   - Where: to be implemented (see Roadmap)
-
 
 Data locations
 --------------
@@ -141,6 +140,14 @@ Development notes
 - Targets are soft labels; any leftover mass goes to `dx.other_or_unclear`.
 - Unknown equipment tokens map to `<unk_* >`, ensuring fixed-dim encodings.
 - Deterministic splits by `post_id` for reproducibility.
+- The wide deep classifier works in the following way
+    • Provide the model a long vector of numbers about a ticket (symptoms, equipment), and model tries to predict diagnosis
+    • Model tries to predict in 2 ways
+        - Wide: a simple linear look up (symptom A --> diag B)
+        - Deep: a small stack of layers that can learn combinations of symptoms (symptom X + Y + Z --> diag C)
+    • It adds the 2 brains outputs (logits) then compares the truth with a loss
+        - If labels are soft (probabilities) it uses KLDiv
+        - If your labels are hard (a single class id), it uses CrossEntropy
 
 
 Roadmap / TODO
