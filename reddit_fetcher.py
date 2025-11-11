@@ -293,7 +293,7 @@ def fetch_subreddit_posts_with_comments(
     return result
 
 
-def test_fetch_subreddit_posts_with_comments():
+def HVAC_fetch(limit_per_subreddit: int = 100, include_stickied: bool = False):
     """Test that the fetch_subreddit_posts_with_comments function works correctly"""
     print("=== Testing fetch_subreddit_posts_with_comments function ===\n")
     
@@ -321,8 +321,8 @@ def test_fetch_subreddit_posts_with_comments():
         result = fetch_subreddit_posts_with_comments(
             reddit=reddit,
             subreddit_names=["HVAC"],
-            limit_per_subreddit=100,
-            include_stickied=False
+            limit_per_subreddit=limit_per_subreddit,
+            include_stickied=include_stickied
         )
         
         print("📋 Result structure:")
@@ -378,7 +378,7 @@ def test_fetch_subreddit_posts_with_comments():
 
 
 if __name__ == "__main__":
-    print("Testing fetch_subreddit_posts_with_comments function...")
-    test_fetch_subreddit_posts_with_comments()
-    print("\nTest complete!")
+    print("Testing HVAC fetch...")
+    HVAC_fetch(limit_per_subreddit=5000, include_stickied=False)
+    print("\nHVAC fetch complete!")
 
