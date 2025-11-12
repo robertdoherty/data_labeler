@@ -328,14 +328,21 @@ def fetch_subreddit_posts_with_comments_time_windowed(
     include_stickied: bool = False,
     fetch_comments: bool = False
 ) -> Dict[str, Any]:
-    """Fetch posts by stepping backwards through time windows.
+    """Fetch posts while walking backwards through Reddit history.
 
-    The Reddit listing endpoints cap pagination at ~1k items. We avoid that
-    cap by repeatedly asking Reddit for submissions that fall inside explicit
-    time windows. We try to use :meth:`praw.models.Subreddit.submissions` when
-    available; if not, we fall back to a CloudSearch query via
-    :meth:`praw.models.Subreddit.search` with a timestamp range.
+    The previous implementation attempted to walk fixed-width time windows
+    (e.g. 24 hours at a time) and would stop after a long "empty window" streak.
+    That meant quiet subreddits – including r/HVAC – could hit the empty-window
+    limit before ever encountering a real post, which is exactly what the logs
+    in the bug report show.  We simplify the approach by repeatedly asking for
+    "the newest posts before a moving timestamp".  Each batch advances the
+    timestamp to the oldest item returned, so we always make progress even if a
+    subreddit has weeks or months without activity.
     """
+
+    # ``window_hours`` is retained for backwards compatibility with previous
+    # callers.  The new implementation does not rely on fixed-width windows, so
+    # the argument is currently unused.
 
     if not reddit:
         logging.error("PRAW Reddit instance not initialized for time-windowed fetch.")
@@ -377,15 +384,15 @@ def fetch_subreddit_posts_with_comments_time_windowed(
     successful_subreddits = 0
 
     logging.info(
-        "Starting time-windowed fetch from %d subreddits; target %d posts/subreddit, window=%dh, fetch_comments=%s",
+        "Starting time-windowed fetch from %d subreddits; target %d posts/subreddit, fetch_comments=%s",
         len(subreddit_names),
         target_posts_per_subreddit,
-        window_hours,
         fetch_comments,
     )
 
-    seconds_per_window = max(1, window_hours * 3600)
-    max_empty_windows = max(5, int((365 * 24) / max(window_hours, 1)))
+    # Reddit search endpoints cap `limit` at ~100.  Keep batches small so we
+    # can steadily move the `before` cursor backwards without hammering the API.
+    search_batch_limit = 100
 
     for subreddit_name in subreddit_names:
         logging.info("[time-windowed] Processing subreddit: r/%s", subreddit_name)
@@ -395,49 +402,47 @@ def fetch_subreddit_posts_with_comments_time_windowed(
             subreddit_comments_count = 0
             seen_ids: set[str] = set()
 
-            window_end_ts = int(datetime.now(timezone.utc).timestamp())
-            empty_windows = 0
+            before_timestamp = int(datetime.now(timezone.utc).timestamp())
 
-            while (
-                len(subreddit_posts) < target_posts_per_subreddit
-                and empty_windows < max_empty_windows
-                and window_end_ts > 0
-            ):
-                window_start_ts = max(0, window_end_ts - seconds_per_window)
+            while len(subreddit_posts) < target_posts_per_subreddit and before_timestamp > 0:
+                remaining_slots = target_posts_per_subreddit - len(subreddit_posts)
+                batch_limit = min(search_batch_limit, remaining_slots)
 
-                # Try native PRAW submissions() if available; otherwise fall back to CloudSearch
-                try:
-                    submissions = list(
-                        subreddit_instance.submissions(start=window_start_ts, end=window_end_ts)  # type: ignore[attr-defined]
-                    )
-                except AttributeError:
-                    # Fallback: CloudSearch query for timestamp window
-                    query = f"timestamp:{window_start_ts}..{window_end_ts}"
-                    submissions = search_submissions_with_retry(
-                        subreddit_instance,
-                        query=query,
-                        sort="new",
-                        syntax="cloudsearch",
-                        limit=None,
-                    )
+                # CloudSearch supports range queries.  Asking for everything with
+                # a timestamp less than `before_timestamp` ensures we keep
+                # discovering older content without wasting calls on empty
+                # windows.
+                query = f"timestamp:<{before_timestamp}"
+                submissions = search_submissions_with_retry(
+                    subreddit_instance,
+                    query=query,
+                    sort="new",
+                    syntax="cloudsearch",
+                    limit=batch_limit,
+                )
 
                 if not submissions:
-                    empty_windows += 1
-                    window_end_ts = window_start_ts
                     logging.debug(
-                        "[time-windowed] No submissions for r/%s in %s..%s (empty streak=%d)",
+                        "[time-windowed] No submissions for r/%s before %s; stopping",
                         subreddit_name,
-                        datetime.fromtimestamp(window_start_ts, tz=timezone.utc).isoformat(),
-                        datetime.fromtimestamp(window_end_ts, tz=timezone.utc).isoformat(),
-                        empty_windows,
+                        datetime.fromtimestamp(before_timestamp, tz=timezone.utc).isoformat(),
                     )
-                    continue
+                    break
 
-                empty_windows = 0
+                submissions.sort(
+                    key=lambda sub: getattr(sub, "created_utc", 0), reverse=True
+                )
 
-                submissions.sort(key=lambda sub: getattr(sub, "created_utc", 0), reverse=True)
+                oldest_seen_ts: Optional[int] = None
 
                 for submission in submissions:
+                    created_utc = int(getattr(submission, "created_utc", 0))
+                    oldest_seen_ts = (
+                        created_utc
+                        if oldest_seen_ts is None
+                        else min(oldest_seen_ts, created_utc)
+                    )
+
                     if not include_stickied and getattr(submission, "stickied", False):
                         continue
                     if submission.id in seen_ids:
@@ -446,7 +451,7 @@ def fetch_subreddit_posts_with_comments_time_windowed(
                     seen_ids.add(submission.id)
 
                     post_created = datetime.fromtimestamp(
-                        getattr(submission, "created_utc", 0), tz=timezone.utc
+                        created_utc, tz=timezone.utc
                     ).isoformat()
 
                     post_data: Dict[str, Any] = {
@@ -503,9 +508,14 @@ def fetch_subreddit_posts_with_comments_time_windowed(
                     if len(subreddit_posts) >= target_posts_per_subreddit:
                         break
 
-                window_end_ts = int(
-                    min(getattr(sub, "created_utc", window_start_ts) for sub in submissions)
-                )
+                if oldest_seen_ts is None:
+                    logging.debug(
+                        "[time-windowed] Unable to determine oldest timestamp for r/%s; stopping",
+                        subreddit_name,
+                    )
+                    break
+
+                before_timestamp = max(0, oldest_seen_ts - 1)
 
             result["subreddits"][subreddit_name] = {"posts": subreddit_posts}
             posts_count = len(subreddit_posts)
