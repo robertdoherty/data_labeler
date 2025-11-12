@@ -8,6 +8,7 @@ import logging
 from typing import List, Dict, Optional, Any
 import json
 import html
+import os
 
 
 # <<< Import tenacity for retries
@@ -15,7 +16,24 @@ from tenacity import retry, stop_after_attempt, wait_random_exponential, retry_i
 # >>> END NEW ADDITION
 
 # Configure basic logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s:%(funcName)s:%(lineno)d] - %(message)s')
+LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(funcName)s:%(lineno)d] - %(message)s'
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+
+# Add a file handler that overwrites on each run and mirrors console logs
+try:
+    os.makedirs("output", exist_ok=True)
+    log_file_path = os.path.join("output", "reddit_fetcher.log")
+    root_logger = logging.getLogger()
+    # Remove any existing FileHandlers to avoid duplicates across runs
+    for handler in list(root_logger.handlers):
+        if isinstance(handler, logging.FileHandler):
+            root_logger.removeHandler(handler)
+    file_handler = logging.FileHandler(log_file_path, mode='w', encoding='utf-8')
+    file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    root_logger.addHandler(file_handler)
+except Exception as _log_cfg_err:
+    # If file logging can't be set up, continue with console-only logging
+    logging.debug(f"File logging not configured: {_log_cfg_err}")
 
 #  Define a retry decorator for PRAW API calls
 # This decorator will automatically retry functions if they fail due to network issues or Reddit server errors.
