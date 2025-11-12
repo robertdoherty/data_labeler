@@ -314,9 +314,9 @@ def fetch_subreddit_posts_with_comments_time_windowed(
 
     The Reddit listing endpoints cap pagination at ~1k items. We avoid that
     cap by repeatedly asking Reddit for submissions that fall inside explicit
-    time windows. The helper :meth:`praw.models.Subreddit.submissions` already
-    wraps the required CloudSearch query, so we lean on it directly instead of
-    building the request manually.
+    time windows. We try to use :meth:`praw.models.Subreddit.submissions` when
+    available; if not, we fall back to a CloudSearch query via
+    :meth:`praw.models.Subreddit.search` with a timestamp range.
     """
 
     if not reddit:
@@ -387,9 +387,21 @@ def fetch_subreddit_posts_with_comments_time_windowed(
             ):
                 window_start_ts = max(0, window_end_ts - seconds_per_window)
 
-                submissions = list(
-                    subreddit_instance.submissions(start=window_start_ts, end=window_end_ts)
-                )
+                # Try native PRAW submissions() if available; otherwise fall back to CloudSearch
+                try:
+                    submissions = list(
+                        subreddit_instance.submissions(start=window_start_ts, end=window_end_ts)  # type: ignore[attr-defined]
+                    )
+                except AttributeError:
+                    # Fallback: CloudSearch query for timestamp window
+                    query = f"timestamp:{window_start_ts}..{window_end_ts}"
+                    submissions = search_submissions_with_retry(
+                        subreddit_instance,
+                        query=query,
+                        sort="new",
+                        syntax="cloudsearch",
+                        limit=None,
+                    )
 
                 if not submissions:
                     empty_windows += 1
