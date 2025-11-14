@@ -1,8 +1,7 @@
 # Global configuration for labeling/enrichment behavior
 
-# Minimum confidence required for accepting comment-derived fields
-COMMENT_ENRICHMENT_MIN_CONFIDENCE = 0.6
 
+########################### Concurrency settings ###########################
 # Default concurrency for solution labeler LLM batch execution
 DEFAULT_SOLUTION_MAX_CONCURRENCY = 3
 
@@ -12,4 +11,14 @@ DEFAULT_BREAK_MAX_CONCURRENCY = 3
 # Default concurrency for diagnostic agent batch execution
 DEFAULT_DIAGNOSTIC_MAX_CONCURRENCY = 3
 
+########################### Confidence settings ###########################
+# Minimum confidence required for accepting comment-derived fields
+COMMENT_ENRICHMENT_MIN_CONFIDENCE = 0.6
+
+
+########################### Paths ###########################
+# Path to golden diagnostic chart
+GOLDEN_DIAGNOSTIC_CHART_PATH = "data_labeler/rule_labeler/meta/golden_set_v3.json"
+
+## Other settings
 
