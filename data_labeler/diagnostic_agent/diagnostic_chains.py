@@ -20,6 +20,20 @@ def _repo_root() -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
+def _load_diagnostics_ontology() -> Dict[str, Any]:
+    """Load diagnostics ontology from path specified in config."""
+    root = _repo_root()
+    sys.path.insert(0, root)
+    try:
+        from config import DIAGNOSTICS_ONTOLOGY_PATH
+        ontology_path = os.path.join(root, DIAGNOSTICS_ONTOLOGY_PATH)
+        return _load_json(ontology_path)
+    except Exception as e:
+        # Fallback to hardcoded path if config is not available
+        fallback_path = os.path.join(root, "data_labeler", "rule_labeler", "meta", "diagnostics_v1.json")
+        return _load_json(fallback_path)
+
+
 def _load_json(path: str) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -147,32 +161,44 @@ def build_diagnostic_labeler_chain() -> RunnableSequence:
 
 
 def render_allowed_labels(ontology: Dict[str, Any]) -> str:
-    # diagnostics_v1.json currently stores only label ids; add simple descriptions
+    """Render allowed labels with descriptions from golden set.
+    
+    Loads descriptions from golden set (GOLDEN_DIAGNOSTIC_CHART_PATH).
+    Raises ValueError if labels or descriptions cannot be loaded.
+    """
     labels = ontology.get("labels", [])
+    if not labels:
+        raise ValueError("No labels found in ontology")
+    
+    # Load descriptions from golden set
+    root = _repo_root()
+    sys.path.insert(0, root)
+    from config import GOLDEN_DIAGNOSTIC_CHART_PATH
+    golden_path = os.path.join(root, GOLDEN_DIAGNOSTIC_CHART_PATH)
+    
+    try:
+        golden_data = _load_json(golden_path)
+    except Exception as e:
+        raise ValueError(f"Failed to load golden set from {golden_path}: {e}")
+    
+    diagnostics = golden_data.get("diagnostics", [])
+    if not diagnostics:
+        raise ValueError(f"No diagnostics found in golden set at {golden_path}")
+    
+    descriptions_map = {}
+    for diag in diagnostics:
+        diag_id = diag.get("diagnostic_id")
+        desc = diag.get("description") or diag.get("specific_diagnostic_name", "")
+        if diag_id:
+            descriptions_map[diag_id] = desc
+    
     lines = []
     for lid in labels:
-        # Minimal placeholder descriptions; can be extended later
-        desc = {
-            "dx.electrical_low_voltage_chain": "Low-voltage chain issues (through safeties)",
-            "dx.power_supply_transformer": "Transformer power supply problems",
-            "dx.control_open_or_short": "Control circuit open/short faults",
-            "dx.contactor_relay_fault": "Contactor/relay contact or coil faults",
-            "dx.airflow_restriction_or_ice": "Airflow restriction or iced coil",
-            "dx.refrigerant_leak_or_low_charge": "Refrigerant leak or low charge",
-            "dx.compressor_or_valve_fault": "Compressor or reversing/expansion valve issues",
-            "dx.condensate_overflow_or_switch": "Condensate overflow or float/pan switch",
-            "dx.mechanical_drive_or_bearing": "Drive/bearing/seizure/misalignment",
-            "dx.sensor_or_safety_fault": "Sensor or safety device fault",
-            "dx.install_or_wiring_issue": "Installation or wiring problems",
-            "dx.controls_board_or_comm": "Controls board or communication faults",
-            "dx.fuel_delivery_or_burner_tuning": "Fuel delivery or burner tuning (oil/gas)",
-            "dx.water_ingress_cabinet_or_roof": "Water ingress to cabinet/roof",
-            "dx.tools_vacuum_or_gauges": "Vacuum/gauge tool behavior",
-            "dx.tools_misuse_or_maintenance": "Tool misuse/maintenance",
-            "dx.safety_incident_or_electrical_contact": "Safety incident or electrical contact",
-            "dx.other_or_unclear": "Other/unclear",
-        }.get(lid, "")
+        desc = descriptions_map.get(lid, "")
+        if not desc:
+            raise ValueError(f"No description found for label '{lid}' in golden set")
         lines.append(f"- {lid}: {desc}")
+    
     return "\n".join(lines)
 
 

@@ -9,6 +9,7 @@ and calls a constrained LLM chain to predict up to 2 diagnostic labels.
 import json
 import logging
 import os
+import sys
 from typing import Any, Dict, List, Optional, Sequence
 
 from .schema import DiagnosticInput, DiagnosticOutput, enforce_allowed_predictions
@@ -74,7 +75,16 @@ def predict_diagnostics_batch(
         return []
 
     root = _repo_root()
-    ontology_path = os.path.join(root, "data_labeler", "rule_labeler", "meta", "diagnostics_v1.json")
+    
+    # Load paths from config
+    sys.path.insert(0, root)
+    try:
+        from config import DIAGNOSTICS_ONTOLOGY_PATH
+        ontology_path = os.path.join(root, DIAGNOSTICS_ONTOLOGY_PATH)
+    except Exception:
+        # Fallback to hardcoded path
+        ontology_path = os.path.join(root, "data_labeler", "rule_labeler", "meta", "diagnostics_v1.json")
+    
     gold_path = os.path.join(root, "data_labeler", "rule_labeler", "gold", "golden_examples.json")
 
     ontology = _load_json(ontology_path)
