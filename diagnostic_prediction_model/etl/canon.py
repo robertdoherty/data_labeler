@@ -102,13 +102,9 @@ def build_training_data(path_to_json: str) -> dict:
             brand_set.add(equip_canon['brand'])
 
         # Diagnostic label (as-is from dataset entry)
-        diag_label = None
-        try:
-            diag_label = issue['y_diag'][0][0]
-        except Exception:
-            diag_label = None
-        if diag_label:
-            diag_set.add(diag_label)
+        for diag_label, _ in issue.get('y_diag') or []:
+            if diag_label:
+                diag_set.add(diag_label)
 
         # Split from id to train/val/test and write out
         issue["split"] = split_from_id(issue["post_id"])
@@ -119,8 +115,10 @@ def build_training_data(path_to_json: str) -> dict:
     def to_idx_map(vals): return {v:i for i,v in enumerate(sorted(vals))}
 
     # Ensure unknown tokens exist for sparse fields
+    family_set.add("<unk_family>")
     subtype_set.add("<unk_subtype>")
     brand_set.add("<unk_brand>")
+    diag_set.add("dx.other_or_unclear")
 
     vocabs = {
         "symptom2id": to_idx_map(symptom_set),
