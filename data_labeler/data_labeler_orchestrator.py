@@ -179,17 +179,25 @@ def _compute_rule_conf_floor(rules: Dict[str, Any], default_floor: float = 0.6) 
 
 
 def _setup_logger(run_output_dir: str) -> "logging.Logger":
-    """Create a logger that writes to file and mirrors to stdout."""
-    logger = logging.getLogger("data_labeler_orchestrator")
+    """Create a single root logger that writes to break_labeler.log and stdout.
+
+    All module loggers (orchestrator, break labeler, solution labeler, etc.)
+    will propagate into this root logger so we have one unified log file per run.
+    """
+    # Configure root logger
+    logger = logging.getLogger()
     logger.setLevel(logging.INFO)
+
     # Avoid duplicate handlers across multiple invocations
     while logger.handlers:
         logger.handlers.pop()
 
     os.makedirs(run_output_dir, exist_ok=True)
-    log_path = os.path.join(run_output_dir, "data_labeler_orchestrator.log")
+    log_path = os.path.join(run_output_dir, "break_labeler.log")
 
-    formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s - %(name)s - %(message)s"
+    )
 
     file_handler = logging.FileHandler(log_path, encoding="utf-8")
     file_handler.setLevel(logging.INFO)
@@ -516,6 +524,7 @@ def process_reddit_data_to_solutions(
         labels_file=break_labels_file,
         out_file=solutions_file,
         max_concurrency=solution_max_concurrency,
+        output_dir=base_output_dir,
     )
     logger.info("✅ Solutions: %s", solutions_path)
     logger.info("⏱️ Step 2 duration: %s", _format_hms(time.time() - step2_start))

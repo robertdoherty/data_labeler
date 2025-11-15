@@ -261,6 +261,7 @@ def _merge_enrichment_into_labels(labels: Dict[str, Any], enrichment: Dict[str, 
 def run_solutions_on_enriched(
     enriched: Dict[str, Dict[str, Any]],
     max_concurrency: Optional[int] = None,
+    output_dir: str = "output",
 ) -> Dict[str, Dict[str, Any]]:
     """
     Iterate through all BREAK posts and call build_solution_labeler_chain for each.
@@ -273,6 +274,8 @@ def run_solutions_on_enriched(
     Returns:
         Enriched dictionary with solution appended to each post
     """
+    logger.info("=== Solution Labeler: Starting run_solutions_on_enriched ===")
+    
     # Import the chain builder
     try:
         from .solution_labeler_chains import build_solution_labeler_chain
@@ -280,6 +283,7 @@ def run_solutions_on_enriched(
         from solution_labeler_chains import build_solution_labeler_chain
     
     chain = build_solution_labeler_chain()
+    logger.debug("Solution labeler chain built successfully")
 
     prepared_payloads: List[Dict[str, Any]] = []
     prepared_records: List[Tuple[str, Dict[str, Any]]] = []
@@ -342,12 +346,20 @@ def run_solutions_on_enriched(
         len(prepared_payloads),
         configured_concurrency,
     )
+    logger.debug(f"Post IDs being processed: {[p['post_id'] for p in prepared_payloads]}")
 
     try:
+        import time
+        batch_start = time.time()
+        logger.debug(f"Starting batch execution at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
         outputs = chain.batch(
             prepared_payloads,
             config={"max_concurrency": configured_concurrency},
         )
+        
+        batch_duration = time.time() - batch_start
+        logger.info(f"Batch execution completed in {batch_duration:.2f}s")
     except Exception as batch_exc:
         logger.exception(
             "Batch execution failed (max_concurrency=%d): %s; falling back to sequential processing.",
@@ -355,13 +367,22 @@ def run_solutions_on_enriched(
             batch_exc,
         )
         outputs = []
-        for payload in prepared_payloads:
+        seq_start = time.time()
+        for idx, payload in enumerate(prepared_payloads):
+            post_id = payload.get('post_id', f'unknown_{idx}')
             try:
-                outputs.append(chain.invoke(payload))
+                logger.debug(f"Sequential invoke starting for post {post_id}")
+                invoke_start = time.time()
+                output = chain.invoke(payload)
+                invoke_duration = time.time() - invoke_start
+                logger.debug(f"Sequential invoke completed for post {post_id} in {invoke_duration:.2f}s")
+                outputs.append(output)
             except Exception as invoke_exc:
+                logger.error(f"Sequential invoke failed for post {post_id}: {invoke_exc}")
                 outputs.append(invoke_exc)
+        seq_duration = time.time() - seq_start
         logger.info(
-            "Sequential fallback complete (%d posts)",
+            "Sequential fallback complete (%d posts) in {seq_duration:.2f}s",
             len(outputs),
         )
     else:
@@ -454,6 +475,7 @@ def process_breaks_to_solutions(
     labels_file: str,
     out_file: str,
     max_concurrency: Optional[int] = None,
+    output_dir: str = "output",
 ) -> str:
     """
     Orchestrate the full pipeline.
@@ -484,6 +506,7 @@ def process_breaks_to_solutions(
     solved = run_solutions_on_enriched(
         enriched,
         max_concurrency=max_concurrency,
+        output_dir=output_dir,
     )
     
     # Write to disk

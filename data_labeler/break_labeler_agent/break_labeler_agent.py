@@ -51,22 +51,12 @@ class BreakLabelerAgent:
         """
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
-        self._setup_logging(log_level)
+        # Logger will propagate to the root logger configured by the orchestrator
+        self.logger = logging.getLogger(__name__)
 
         # History of label runs
         self.label_history: List[Dict[str, Any]] = []
         logging.info(f"BreakLabelerAgent initialized with output_dir: {self.output_dir}")
-
-    def _setup_logging(self, log_level: int):
-        """Setup logging configuration"""
-        logging.basicConfig(
-            level=log_level,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.StreamHandler(),
-                logging.FileHandler(os.path.join(self.output_dir, 'break_labeler_agent.log'))
-            ]
-        )
 
     def label_json_data(
         self,
@@ -134,10 +124,18 @@ class BreakLabelerAgent:
                 )
 
                 try:
+                    import time
+                    batch_start = time.time()
+                    self.logger.debug(f"Starting batch execution at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+                    self.logger.debug(f"Post IDs being processed: {[p['json_data'][:100] for p in prepared_payloads]}")
+                    
                     outputs = chain.batch(
                         prepared_payloads,
                         config={"max_concurrency": configured_concurrency},
                     )
+                    
+                    batch_duration = time.time() - batch_start
+                    self.logger.info(f"Break labeler batch execution completed in {batch_duration:.2f}s")
                 except Exception as batch_exc:
                     logging.exception(
                         "Batch execution failed (max_concurrency=%d): %s; falling back to sequential processing.",
@@ -266,7 +264,9 @@ class BreakLabelerAgent:
         Returns:
             Dict with labeling results and metadata
         """
-        logging.info(f"Loading Reddit data from: {json_file_path}")
+        # Logging handled by root logger; just emit informative messages
+        self.logger.info("=== Break Labeler: Starting label_from_json_file ===")
+        self.logger.info(f"Loading Reddit data from: {json_file_path}")
         try:
             with open(json_file_path, 'r', encoding='utf-8') as f:
                 reddit_data = json.load(f)
