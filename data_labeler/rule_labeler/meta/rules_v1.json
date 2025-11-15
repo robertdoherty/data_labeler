@@ -1,400 +1,864 @@
 {
   "rules": [
     {
-      "label": "dx.electrical_low_voltage_chain",
-      "all": [
-        "contactor chatter",
-        "voltage drop"
+      "label": "dx.cooling_disabled_or_heat_on",
+      "any": [
+        "ac blowing hot air",
+        "supply air is warmer than expected while in cooling mode"
       ],
-      "any": [],
-      "notes": "classic low-voltage through safeties"
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0001"
     },
     {
-      "label": "dx.electrical_low_voltage_chain",
+      "label": "dx.cooling_disabled_or_heat_on",
       "any": [
-        "contactor chatter",
-        "voltage drop"
+        "AC is blowing warm air",
+        "supply air is warmer than expected while in cooling mode"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0002"
+    },
+    {
+      "label": "dx.cooling_disabled_or_heat_on",
+      "any": [
+        "air coming out of vents isn't cold",
+        "supply air is warmer than expected while in cooling mode"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0003"
+    },
+    {
+      "label": "dx.cooling_disabled_or_heat_on",
+      "any": [
+        "my a/c blows warm not cool",
+        "supply air is warmer than expected while in cooling mode"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0004"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "ac running but house not cooling",
+        "system struggles to reach the set temperature in cooling mode"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0005"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "AC runs all day but can't reach set temp",
+        "system struggles to reach the set temperature in cooling mode"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0006"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "home never gets cool enough",
+        "system struggles to reach the set temperature in cooling mode"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0007"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "air conditioner can't keep up in the heat",
+        "system struggles to reach the set temperature in cooling mode"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0008"
+    },
+    {
+      "label": "dx.blown_fuse_or_tripped_breaker",
+      "any": [
+        "ac won't turn on",
+        "entire HVAC system fails to start for cooling"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0009"
+    },
+    {
+      "label": "dx.blown_fuse_or_tripped_breaker",
+      "any": [
+        "air conditioner not turning on at all",
+        "entire HVAC system fails to start for cooling"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0010"
+    },
+    {
+      "label": "dx.blown_fuse_or_tripped_breaker",
+      "any": [
+        "nothing happens when I set AC to cool",
+        "entire HVAC system fails to start for cooling"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0011"
+    },
+    {
+      "label": "dx.blown_fuse_or_tripped_breaker",
+      "any": [
+        "AC is dead no power",
+        "entire HVAC system fails to start for cooling"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0012"
+    },
+    {
+      "label": "dx.blower_motor_failure_or_fan_not_running",
+      "any": [
+        "no air coming from vents",
+        "no air is circulating through the ducts when it should be"
+      ],
+      "all": [],
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0013"
+    },
+    {
+      "label": "dx.blower_motor_failure_or_fan_not_running",
+      "any": [
+        "blower not working, no airflow",
+        "no air is circulating through the ducts when it should be"
+      ],
+      "all": [],
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0014"
+    },
+    {
+      "label": "dx.blower_motor_failure_or_fan_not_running",
+      "any": [
+        "AC on but not blowing any air",
+        "no air is circulating through the ducts when it should be"
+      ],
+      "all": [],
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0015"
+    },
+    {
+      "label": "dx.clogged_dirty_air_filter",
+      "any": [
+        "weak airflow from vents",
+        "airflow at the vents is weaker than normal"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0016"
+    },
+    {
+      "label": "dx.clogged_dirty_air_filter",
+      "any": [
+        "not much air coming out of the vents",
+        "airflow at the vents is weaker than normal"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0017"
+    },
+    {
+      "label": "dx.clogged_dirty_air_filter",
+      "any": [
+        "air flow is very low",
+        "airflow at the vents is weaker than normal"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0018"
+    },
+    {
+      "label": "dx.dirty_or_clogged_evaporator_coil",
+      "any": [
+        "ac is freezing up",
+        "ice or frost is forming on the evaporator coil or refrigerant lines"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0019"
+    },
+    {
+      "label": "dx.dirty_or_clogged_evaporator_coil",
+      "any": [
+        "ice on the AC lines",
+        "ice or frost is forming on the evaporator coil or refrigerant lines"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0020"
+    },
+    {
+      "label": "dx.dirty_or_clogged_evaporator_coil",
+      "any": [
+        "evaporator coil icing over",
+        "ice or frost is forming on the evaporator coil or refrigerant lines"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0021"
+    },
+    {
+      "label": "dx.dirty_or_clogged_evaporator_coil",
+      "any": [
+        "frost buildup on indoor unit",
+        "ice or frost is forming on the evaporator coil or refrigerant lines"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0022"
+    },
+    {
+      "label": "dx.clogged_condensate_drain_line",
+      "any": [
+        "water is leaking from my AC",
+        "water is leaking or pooling near the indoor unit"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0023"
+    },
+    {
+      "label": "dx.clogged_condensate_drain_line",
+      "any": [
+        "puddle of water near the furnace",
+        "water is leaking or pooling near the indoor unit"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0024"
+    },
+    {
+      "label": "dx.clogged_condensate_drain_line",
+      "any": [
+        "AC dripping water inside",
+        "water is leaking or pooling near the indoor unit"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0025"
+    },
+    {
+      "label": "dx.thermostat_batteries_dead_or_no_power",
+      "any": [
+        "thermostat is blank",
+        "thermostat has no display or power"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0026"
+    },
+    {
+      "label": "dx.thermostat_batteries_dead_or_no_power",
+      "any": [
+        "thermostat display is off",
+        "thermostat has no display or power"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0027"
+    },
+    {
+      "label": "dx.thermostat_batteries_dead_or_no_power",
+      "any": [
+        "no lights on thermostat",
+        "thermostat has no display or power"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0028"
+    },
+    {
+      "label": "dx.thermostat_set_incorrectly_mode_or_temp",
+      "any": [
+        "thermostat was on wrong setting",
+        "thermostat settings were incorrect for the desired operation"
       ],
       "all": [],
       "score": 0.6,
-      "notes": "softer catch for low-voltage signs"
+      "notes": "auto from mapping_id=map_0029"
     },
     {
-      "label": "dx.power_supply_transformer",
+      "label": "dx.thermostat_set_incorrectly_mode_or_temp",
       "any": [
-        "breaker on transformer",
-        "transformer weak",
-        "transformer sags",
-        "transformer_breaker_trip"
-      ],
-      "all": [],
-      "notes": "transformer supply issue"
-    },
-    {
-      "label": "dx.condensate_overflow_or_switch",
-      "any": [
-        "float switch",
-        "pan switch",
-        "overflow pan",
-        "trap overflow"
-      ],
-      "all": []
-    },
-    {
-      "label": "dx.condensate_overflow_or_switch",
-      "all": [
-        "overflow",
-        "trap"
-      ],
-      "any": [],
-      "equip": {
-        "family": "furnace"
-      },
-      "score": 0.9,
-      "notes": "furnace trap overflow phrasing (order-insensitive via token pair)"
-    },
-    {
-      "label": "dx.condensate_overflow_or_switch",
-      "any": [
-        "condensate",
-        "drain",
-        "overflow pan",
-        "trap overflow",
-        "condensate leaking",
-        "drain clogged",
-        "flex condensate"
-      ],
-      "all": [],
-      "score": 0.8,
-      "notes": "broader condensate/drain signals"
-    },
-    {
-      "label": "dx.condensate_overflow_or_switch",
-      "any": [
-        "condensate",
-        "drain",
-        "overflow"
-      ],
-      "all": [],
-      "equip": {
-        "family": "mini_split",
-        "subtype": "cassette"
-      },
-      "score": 0.85,
-      "notes": "mini-split cassette drain context"
-    },
-    {
-      "label": "dx.mechanical_drive_or_bearing",
-      "any": [
-        "fan not spinning",
-        "seized bearing",
-        "bearing noise",
-        "vibration"
-      ],
-      "all": []
-    },
-    {
-      "label": "dx.mechanical_drive_or_bearing",
-      "all": [
-        "bearing",
-        "fan"
-      ],
-      "any": [],
-      "score": 0.9,
-      "notes": "bearing issue explicitly tied to fan"
-    },
-    {
-      "label": "dx.mechanical_drive_or_bearing",
-      "any": [
-        "bearing",
-        "vibration",
-        "pulsating"
-      ],
-      "all": [],
-      "equip": {
-        "subtype": [
-          "exhaust fan",
-          "range hood motor",
-          "swamp cooler bearing"
-        ]
-      },
-      "score": 0.85,
-      "notes": "fan-specific mechanical context"
-    },
-    {
-      "label": "dx.mechanical_drive_or_bearing",
-      "any": [
-        "bearing",
-        "seized bearing",
-        "vibration",
-        "vibrating",
-        "pulsating",
-        "mystery noise",
-        "running loose"
-      ],
-      "all": [],
-      "score": 0.7,
-      "notes": "broader drive/bearing noises"
-    },
-    {
-      "label": "dx.controls_board_or_comm",
-      "any": [
-        "control board",
-        "speed board",
-        "comm alarm",
-        "mnet com",
-        "won't connect to app",
-        "cant control via app",
-        "can't control via app",
-        "doesnt connect via app",
-        "doesn't connect via app",
-        "wifi connection",
-        "wifi module"
-      ],
-      "all": [],
-      "score": 0.7,
-      "notes": "board/comm issues"
-    },
-    {
-      "label": "dx.refrigerant_leak_or_low_charge",
-      "any": [
-        "low refrigerant",
-        "low charge",
-        "refrigerant leak",
-        "leak from evaporator coil",
-        "uv dye",
-        "leaking brazed joints",
-        "pressure test wouldn't hold",
-        "died of a leak"
-      ],
-      "all": [],
-      "score": 0.7,
-      "notes": "refrigerant-side issues (removed generic 'leak')"
-    },
-    {
-      "label": "dx.install_or_wiring_issue",
-      "any": [
-        "wiring",
-        "wrong tap",
-        "oversized contactor",
-        "line set reused",
-        "wiring issue",
-        "wrong voltage",
-        "volt_120 coil",
-        "voltage wrong"
+        "someone turned the AC off at thermostat",
+        "thermostat settings were incorrect for the desired operation"
       ],
       "all": [],
       "score": 0.6,
-      "notes": "install/wiring hints"
+      "notes": "auto from mapping_id=map_0030"
     },
     {
-      "label": "dx.fuel_delivery_or_burner_tuning",
+      "label": "dx.thermostat_set_incorrectly_mode_or_temp",
       "any": [
-        "fuel leak",
-        "oil leak",
-        "leaking gas valve",
-        "gas valve leaking"
-      ],
-      "all": [],
-      "equip": {
-        "subtype": "oil burner"
-      },
-      "score": 0.9,
-      "notes": "fuel medium specific"
-    },
-    {
-      "label": "dx.water_ingress_cabinet_or_roof",
-      "any": [
-        "roof leak",
-        "water ingress",
-        "water flows out",
-        "cabinet leak"
-      ],
-      "all": [],
-      "score": 0.8,
-      "notes": "water ingress separate from refrigerant"
-    },
-    {
-      "label": "dx.tools_vacuum_or_gauges",
-      "any": [
-        "micron gauge",
-        "microns",
-        "vacuum gauge"
-      ],
-      "all": [],
-      "score": 0.7,
-      "notes": "tool behavior category"
-    },
-    {
-      "label": "dx.tools_misuse_or_maintenance",
-      "any": [
-        "vacuum pump smoking",
-        "vacuum pump ran with compressor oil",
-        "apex seals"
-      ],
-      "all": [],
-      "score": 0.85,
-      "notes": "tool misuse/maintenance incidents"
-    },
-    {
-      "label": "dx.safety_incident_or_electrical_contact",
-      "any": [
-        "electrocution",
-        "zapped",
-        "snake electrocuted"
-      ],
-      "all": [],
-      "score": 0.9,
-      "notes": "safety incidents not diagnoses"
-    },
-    {
-      "label": "dx.compressor_or_valve_fault",
-      "any": [
-        "low compression",
-        "bypassing valve",
-        "reversing valve",
-        "stuck valve",
-        "bypassing",
-        "valve bypassing",
-        "compressor bad",
-        "compressor overcurrent",
-        "terminal disintegrated",
-        "blown compressor terminal",
-        "compressor terminal",
-        "txv malfunctioning",
-        "txv malfunction",
-        "compressor blew an electrical terminal pin"
-      ],
-      "all": [],
-      "score": 0.8,
-      "notes": "compressor/valve specific indicators"
-    },
-    {
-      "label": "dx.compressor_or_valve_fault",
-      "all": [
-        "low",
-        "amps"
-      ],
-      "any": [],
-      "equip": {
-        "family": "heat_pump"
-      },
-      "score": 0.75,
-      "notes": "heat pump context for low amps + suspected valve/compressor issue"
-    },
-    {
-      "label": "dx.sensor_or_safety_fault",
-      "any": [
-        "sensor failure",
-        "faulty sensor",
-        "coil sensor",
-        "defrost sensor",
-        "roll out switch",
-        "rollout switch",
-        "limit switch"
-      ],
-      "all": [],
-      "score": 0.75,
-      "notes": "sensor or safety device faults"
-    },
-    {
-      "label": "dx.airflow_restriction_or_ice",
-      "any": [
-        "icing up",
-        "iced coil",
-        "frozen coil",
-        "blocked intake",
-        "intake blocked"
-      ],
-      "all": [],
-      "score": 0.75,
-      "notes": "airflow restriction or coil icing symptoms"
-    },
-    {
-      "label": "dx.fuel_delivery_or_burner_tuning",
-      "any": [
-        "no gas",
-        "gas meter locked",
-        "gas turned off",
-        "gas service locked",
-        "gas valve failure",
-        "faulty gas valve",
-        "bad gas valve"
-      ],
-      "all": [],
-      "score": 0.8,
-      "notes": "gas supply or valve issues"
-    },
-    {
-      "label": "dx.mechanical_drive_or_bearing",
-      "any": [
-        "ear piercing noise",
-        "fan making noise",
-        "fan noise",
-        "screeching fan"
-      ],
-      "all": [],
-      "score": 0.7,
-      "notes": "noisy or failing fan drive components"
-    },
-    {
-      "label": "dx.controls_board_or_comm",
-      "any": [
-        "thermostat app",
-        "connect via app"
+        "thermostat was set to heat by mistake",
+        "thermostat settings were incorrect for the desired operation"
       ],
       "all": [],
       "score": 0.6,
-      "notes": "smart control connectivity complaints"
+      "notes": "auto from mapping_id=map_0031"
     },
     {
-      "label": "dx.heat_exchanger_failure",
-      "all": [
-        "heat exchanger",
-        "crack"
-      ],
-      "any": [],
-      "score": 0.9,
-      "notes": "explicit cracked heat exchanger mentions"
-    },
-    {
-      "label": "dx.heat_exchanger_failure",
+      "label": "dx.igniter_or_pilot_failure",
       "any": [
-        "failed heat exchanger",
-        "heat exchanger failure",
-        "broken heat exchanger",
-        "cracked hx",
-        "hx cracked",
-        "secondary hx"
+        "furnace blowing cold air",
+        "air from the vents remains cool when heating is on"
       ],
       "all": [],
-      "score": 0.85,
-      "notes": "common shorthand for failed heat exchangers"
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0032"
     },
     {
-      "label": "dx.install_or_wiring_issue",
-      "all": [
-        "broken off",
-        "fan center terminal"
-      ],
-      "any": [],
-      "score": 0.85,
-      "notes": "fan center terminal wiring break"
-    },
-    {
-      "label": "dx.fuel_delivery_or_burner_tuning",
+      "label": "dx.igniter_or_pilot_failure",
       "any": [
-        "leaking gas valve"
+        "heater blowing cool air",
+        "air from the vents remains cool when heating is on"
       ],
       "all": [],
-      "equip": {
-        "family": [
-          "furnace",
-          "boiler"
-        ]
-      },
-      "score": 0.85,
-      "notes": "explicit leaking gas valve on furnace/boiler"
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0033"
+    },
+    {
+      "label": "dx.igniter_or_pilot_failure",
+      "any": [
+        "only cold air comes out when heat is on",
+        "air from the vents remains cool when heating is on"
+      ],
+      "all": [],
+      "score": 0.35,
+      "notes": "auto from mapping_id=map_0034"
+    },
+    {
+      "label": "dx.high_limit_switch_open_furnace_overheat",
+      "any": [
+        "furnace turns on and off quickly",
+        "furnace cycles off before reaching the set temperature"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0035"
+    },
+    {
+      "label": "dx.high_limit_switch_open_furnace_overheat",
+      "any": [
+        "heater keeps shutting off after a few minutes",
+        "furnace cycles off before reaching the set temperature"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0036"
+    },
+    {
+      "label": "dx.high_limit_switch_open_furnace_overheat",
+      "any": [
+        "furnace short cycles",
+        "furnace cycles off before reaching the set temperature"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0037"
+    },
+    {
+      "label": "dx.gas_valve_not_opening_or_gas_supply_off",
+      "any": [
+        "furnace won't ignite at all",
+        "furnace fails to ignite entirely (no flame)"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0038"
+    },
+    {
+      "label": "dx.gas_valve_not_opening_or_gas_supply_off",
+      "any": [
+        "no flame in furnace",
+        "furnace fails to ignite entirely (no flame)"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0039"
+    },
+    {
+      "label": "dx.gas_valve_not_opening_or_gas_supply_off",
+      "any": [
+        "heater not lighting up",
+        "furnace fails to ignite entirely (no flame)"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0040"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "hissing noise coming from AC",
+        "a noticeable hissing or bubbling sound is present around the HVAC unit"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0041"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "sound of hissing or bubbling at the indoor unit",
+        "a noticeable hissing or bubbling sound is present around the HVAC unit"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0042"
+    },
+    {
+      "label": "dx.refrigerant_undercharge",
+      "any": [
+        "AC making a hissing sound",
+        "a noticeable hissing or bubbling sound is present around the HVAC unit"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0043"
+    },
+    {
+      "label": "dx.loud_banging_or_rattling_from_blower_loose_part",
+      "any": [
+        "loud banging or rattling from blower",
+        "unusual banging or rattling noises are heard during system operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0044"
+    },
+    {
+      "label": "dx.loud_banging_or_rattling_from_blower_loose_part",
+      "any": [
+        "thumping noise when AC runs",
+        "unusual banging or rattling noises are heard during system operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0045"
+    },
+    {
+      "label": "dx.squealing_or_screeching_from_blower_belt_or_bearing",
+      "any": [
+        "high-pitched squeal from furnace",
+        "a high-pitched squealing or screeching noise comes from the HVAC system"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0046"
+    },
+    {
+      "label": "dx.squealing_or_screeching_from_blower_belt_or_bearing",
+      "any": [
+        "screeching sound from air handler",
+        "a high-pitched squealing or screeching noise comes from the HVAC system"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0047"
+    },
+    {
+      "label": "dx.squealing_or_screeching_from_blower_belt_or_bearing",
+      "any": [
+        "AC making squealing noise",
+        "a high-pitched squealing or screeching noise comes from the HVAC system"
+      ],
+      "all": [],
+      "score": 0.45,
+      "notes": "auto from mapping_id=map_0048"
+    },
+    {
+      "label": "dx.booming_noise_on_furnace_start_delayed_ignition",
+      "any": [
+        "loud boom when furnace starts",
+        "a loud 'boom' or popping sound occurs when the furnace starts up"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0049"
+    },
+    {
+      "label": "dx.booming_noise_on_furnace_start_delayed_ignition",
+      "any": [
+        "furnace makes a bang on startup",
+        "a loud 'boom' or popping sound occurs when the furnace starts up"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0050"
+    },
+    {
+      "label": "dx.booming_noise_on_furnace_start_delayed_ignition",
+      "any": [
+        "gas furnace ignition makes a popping noise",
+        "a loud 'boom' or popping sound occurs when the furnace starts up"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0051"
+    },
+    {
+      "label": "dx.system_oversized_short_cycles_high_humidity",
+      "any": [
+        "house is very humid",
+        "indoor humidity remains high despite cooling operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0052"
+    },
+    {
+      "label": "dx.system_oversized_short_cycles_high_humidity",
+      "any": [
+        "AC isn't removing humidity",
+        "indoor humidity remains high despite cooling operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0053"
+    },
+    {
+      "label": "dx.system_oversized_short_cycles_high_humidity",
+      "any": [
+        "air feels clammy inside",
+        "indoor humidity remains high despite cooling operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0054"
+    },
+    {
+      "label": "dx.significant_duct_leakage_or_disconnection",
+      "any": [
+        "one room doesn't cool like others",
+        "one or more rooms are not receiving adequate conditioning compared to the rest"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0055"
+    },
+    {
+      "label": "dx.significant_duct_leakage_or_disconnection",
+      "any": [
+        "some rooms never get enough heat or AC",
+        "one or more rooms are not receiving adequate conditioning compared to the rest"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0056"
+    },
+    {
+      "label": "dx.significant_duct_leakage_or_disconnection",
+      "any": [
+        "uneven cooling in the house",
+        "one or more rooms are not receiving adequate conditioning compared to the rest"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0057"
+    },
+    {
+      "label": "dx.no_fault_system_normal_first_heat_cycle",
+      "any": [
+        "burning dust smell when heat comes on",
+        "a burning dust odor is noticed when the heating system starts"
+      ],
+      "all": [],
+      "score": 0.8,
+      "notes": "auto from mapping_id=map_0058"
+    },
+    {
+      "label": "dx.no_fault_system_normal_first_heat_cycle",
+      "any": [
+        "smells like burning when furnace starts",
+        "a burning dust odor is noticed when the heating system starts"
+      ],
+      "all": [],
+      "score": 0.8,
+      "notes": "auto from mapping_id=map_0059"
+    },
+    {
+      "label": "dx.compressor_short_cycling",
+      "any": [
+        "AC turns on and off every few minutes",
+        "the air conditioner compressor turns on and off in very short intervals"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0060"
+    },
+    {
+      "label": "dx.compressor_short_cycling",
+      "any": [
+        "compressor keeps short cycling",
+        "the air conditioner compressor turns on and off in very short intervals"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0061"
+    },
+    {
+      "label": "dx.compressor_short_cycling",
+      "any": [
+        "air conditioner short-cycles frequently",
+        "the air conditioner compressor turns on and off in very short intervals"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0062"
+    },
+    {
+      "label": "dx.flame_sensor_dirty_or_failed",
+      "any": [
+        "furnace lights then goes out",
+        "the furnace burners ignite but then shut off shortly after"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0063"
+    },
+    {
+      "label": "dx.flame_sensor_dirty_or_failed",
+      "any": [
+        "burners fire but shut off after a few seconds",
+        "the furnace burners ignite but then shut off shortly after"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0064"
+    },
+    {
+      "label": "dx.flame_sensor_dirty_or_failed",
+      "any": [
+        "flame in furnace won't stay on",
+        "the furnace burners ignite but then shut off shortly after"
+      ],
+      "all": [],
+      "score": 0.5,
+      "notes": "auto from mapping_id=map_0065"
+    },
+    {
+      "label": "dx.air_trapped_in_lines_needs_bleeding",
+      "any": [
+        "boiler fires but radiators are cold",
+        "the boiler is operating but heat is not reaching some or all radiators"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0066"
+    },
+    {
+      "label": "dx.air_trapped_in_lines_needs_bleeding",
+      "any": [
+        "circulator pump running but no heat",
+        "the boiler is operating but heat is not reaching some or all radiators"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0067"
+    },
+    {
+      "label": "dx.air_trapped_in_lines_needs_bleeding",
+      "any": [
+        "boiler fired but heat not reaching rooms",
+        "the boiler is operating but heat is not reaching some or all radiators"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0068"
+    },
+    {
+      "label": "dx.expansion_tank_failure_pressure_swings",
+      "any": [
+        "water dripping from boiler pipe",
+        "the boiler’s pressure relief valve is discharging water"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0069"
+    },
+    {
+      "label": "dx.expansion_tank_failure_pressure_swings",
+      "any": [
+        "boiler pressure relief valve leaking",
+        "the boiler’s pressure relief valve is discharging water"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0070"
+    },
+    {
+      "label": "dx.expansion_tank_failure_pressure_swings",
+      "any": [
+        "boiler releasing water occasionally",
+        "the boiler’s pressure relief valve is discharging water"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0071"
+    },
+    {
+      "label": "dx.compressor_making_loud_noises",
+      "any": [
+        "AC running loud outside",
+        "the outdoor unit/compressor is much louder than normal"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0072"
+    },
+    {
+      "label": "dx.compressor_making_loud_noises",
+      "any": [
+        "outdoor unit compressor is very noisy",
+        "the outdoor unit/compressor is much louder than normal"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0073"
+    },
+    {
+      "label": "dx.compressor_making_loud_noises",
+      "any": [
+        "AC unit making much more noise than usual",
+        "the outdoor unit/compressor is much louder than normal"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0074"
+    },
+    {
+      "label": "dx.zone_damper_or_controller_malfunction",
+      "any": [
+        "one zone not cooling in office",
+        "a particular zone in a multi-zone system is not cooling/heating"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0075"
+    },
+    {
+      "label": "dx.zone_damper_or_controller_malfunction",
+      "any": [
+        "one thermostat area not getting AC",
+        "a particular zone in a multi-zone system is not cooling/heating"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0076"
+    },
+    {
+      "label": "dx.cracked_heat_exchanger",
+      "any": [
+        "carbon monoxide detector triggered with furnace on",
+        "carbon monoxide alarm triggers during furnace operation"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0077"
+    },
+    {
+      "label": "dx.cracked_heat_exchanger",
+      "any": [
+        "carbon monoxide alarm with furnace",
+        "carbon monoxide alarm triggers during furnace operation"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0078"
+    },
+    {
+      "label": "dx.blocked_flue_or_chimney",
+      "any": [
+        "flames are coming out of the furnace",
+        "flames roll out of the furnace burner area during operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0079"
+    },
+    {
+      "label": "dx.blocked_flue_or_chimney",
+      "any": [
+        "saw flame rollout from furnace front",
+        "flames roll out of the furnace burner area during operation"
+      ],
+      "all": [],
+      "score": 0.3,
+      "notes": "auto from mapping_id=map_0080"
+    },
+    {
+      "label": "dx.undersized_or_blocked_ducts_registers",
+      "any": [
+        "vents make whistling noise",
+        "the vents or ducts emit a whistling sound when the system is running"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0081"
+    },
+    {
+      "label": "dx.undersized_or_blocked_ducts_registers",
+      "any": [
+        "high-pitched whistle from air vent",
+        "the vents or ducts emit a whistling sound when the system is running"
+      ],
+      "all": [],
+      "score": 0.4,
+      "notes": "auto from mapping_id=map_0082"
+    },
+    {
+      "label": "dx.heat_pump_auxiliary_heat_stuck_on_or_off",
+      "any": [
+        "electric bill suddenly very high",
+        "unusually high energy consumption by the HVAC system"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0083"
+    },
+    {
+      "label": "dx.heat_pump_auxiliary_heat_stuck_on_or_off",
+      "any": [
+        "energy bills spiked after HVAC issue",
+        "unusually high energy consumption by the HVAC system"
+      ],
+      "all": [],
+      "score": 0.25,
+      "notes": "auto from mapping_id=map_0084"
+    },
+    {
+      "label": "dx.system_oversized_short_cycles_high_humidity",
+      "any": [
+        "boiler keeps turning on and off",
+        "the boiler turns on and off more frequently than normal"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0085"
+    },
+    {
+      "label": "dx.system_oversized_short_cycles_high_humidity",
+      "any": [
+        "commercial boiler short cycling frequently",
+        "the boiler turns on and off more frequently than normal"
+      ],
+      "all": [],
+      "score": 0.2,
+      "notes": "auto from mapping_id=map_0086"
     }
   ],
   "fallback": "dx.other_or_unclear"

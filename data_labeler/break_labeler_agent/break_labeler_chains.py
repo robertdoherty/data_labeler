@@ -6,6 +6,7 @@ structured HVAC malfunction details (asset_family, brand, model, symptoms, etc.)
 
 import os
 import sys
+import json
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableSequence
@@ -20,6 +21,35 @@ except ImportError:
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
+
+
+def _repo_root() -> str:
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def _load_system_types() -> dict:
+    """Load system_types.json generated from golden_set_v3.
+
+    Returns a dict with:
+      - system_types: list[str]
+      - by_diagnostic_id: dict[str, list[str]]
+    """
+    path = os.path.join(
+        _repo_root(),
+        "data_labeler",
+        "rule_labeler",
+        "scripts",
+        "system_types.json",
+    )
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        # Fallback to empty structure if file not present yet
+        return {"system_types": [], "by_diagnostic_id": {}}
+
+
+SYSTEM_TYPES = _load_system_types()
 
 try:
     from local_secrets import GEMINI_API_KEY
@@ -62,6 +92,9 @@ NON_BREAK examples:
 - Shopping/quotes, brand opinions, install pics w/o issues, non-HVAC.
 
 Fields available per post: title, body, score, num_comments, upvote_ratio, media(if present).
+
+Canonical system_types (from the diagnostic ontology, for context only):
+{system_types_list}
 
 Glossary:
 - break_label: "BREAK" or "NON_BREAK" classification
@@ -132,5 +165,7 @@ def build_data_labeler_chain() -> RunnableSequence:
         RunnableSequence that outputs validated BreakOutput objects
     """
     llm = build_llm()
-    chain = LABELER_PROMPT | llm
+    system_types_list = ", ".join(SYSTEM_TYPES.get("system_types", []))
+    prompt = LABELER_PROMPT.partial(system_types_list=system_types_list)
+    chain = prompt | llm
     return chain

@@ -6,6 +6,7 @@ solution for an HVAC malfunction based on evidence strength and alignment.
 
 import os
 import sys
+import json
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableSequence
@@ -14,6 +15,35 @@ from langchain_core.runnables import RunnableSequence
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
+
+
+def _repo_root() -> str:
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def _load_system_types() -> dict:
+    """Load system_types.json generated from golden_set_v3.
+
+    Returns a dict with:
+      - system_types: list[str]
+      - by_diagnostic_id: dict[str, list[str]]
+    """
+    path = os.path.join(
+        _repo_root(),
+        "data_labeler",
+        "rule_labeler",
+        "scripts",
+        "system_types.json",
+    )
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        # Fallback to empty structure if file not present yet
+        return {"system_types": [], "by_diagnostic_id": {}}
+
+
+SYSTEM_TYPES = _load_system_types()
 
 try:
     from local_secrets import GEMINI_API_KEY
@@ -47,6 +77,8 @@ You are an HVAC technician tasked with diagnosing and repairing a system malfunc
 
 Given a post with a system malfunction outlined, you are to use the provided comments json to determine the best solution to the problem. Use ONLY the provided post context and comments.
 Comments are provided in chronological order; preserve order when referencing evidence. Prioritize the OP (user: {user_id}) and OP edits; for enrichment, only include OP-derived facts.
+Where relevant, reason about the system using these canonical system_types (diagnostic ontology context only, not a required output field):
+{system_types_list}
 If evidence is weak, conflicting, unsafe, or not clearly tied to the symptoms, answer exactly: "No clear solution."
 Do NOT invent facts or fixes.
 
@@ -149,6 +181,8 @@ Now produce the STRICT JSON output specified above."""
 def build_solution_labeler_chain() -> RunnableSequence:
     """Build the solution labeling chain"""
     llm = build_llm()
-    chain = SOLUTION_PROMPT | llm
+    system_types_list = ", ".join(SYSTEM_TYPES.get("system_types", []))
+    prompt = SOLUTION_PROMPT.partial(system_types_list=system_types_list)
+    chain = prompt | llm
     return chain
 

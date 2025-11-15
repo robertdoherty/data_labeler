@@ -1,0 +1,338 @@
+{
+  "system_types": [
+    "boiler_hydronic",
+    "chiller_ahu_system",
+    "commercial_rtu",
+    "ductless_mini_split",
+    "residential_furnace",
+    "residential_heat_pump",
+    "residential_split_ac",
+    "vrf_system"
+  ],
+  "by_diagnostic_id": {
+    "dx.refrigerant_undercharge": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system",
+      "vrf_system",
+      "ductless_mini_split"
+    ],
+    "dx.refrigerant_overcharge": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system",
+      "vrf_system"
+    ],
+    "dx.non_condensable_gases_in_refrigerant": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system"
+    ],
+    "dx.thermal_expansion_valve_stuck_or_failed": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.filter_drier_or_capillary_tube_restriction": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.compressor_not_starting_electrical_problem": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system",
+      "vrf_system"
+    ],
+    "dx.compressor_internal_failure_mechanical_valve": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system",
+      "vrf_system"
+    ],
+    "dx.reversing_valve_stuck_or_leaking": [
+      "residential_heat_pump",
+      "vrf_system"
+    ],
+    "dx.compressor_short_cycling": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.clogged_dirty_air_filter": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.dirty_or_clogged_evaporator_coil": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.blower_motor_failure_or_fan_not_running": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.significant_duct_leakage_or_disconnection": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.undersized_or_blocked_ducts_registers": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.blower_running_wrong_speed_or_clogged_wheel": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.dirty_or_blocked_condenser_coil": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system"
+    ],
+    "dx.condenser_fan_motor_failure": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "chiller_ahu_system"
+    ],
+    "dx.condenser_fan_not_at_full_speed": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.outdoor_unit_obstructed_debris": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.blown_fuse_or_tripped_breaker": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.main_power_switch_off": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.control_transformer_failure_no_24v": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.failed_start_or_run_capacitor": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.compressor_or_fan_contactor_failed": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.loose_or_corroded_wiring_connection": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.control_board_failure_or_fault": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.voltage_supply_problem_brownout_or_phase_loss": [
+      "commercial_rtu",
+      "chiller_ahu_system",
+      "vrf_system"
+    ],
+    "dx.blower_or_fan_motor_shorted_burned_out": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.compressor_thermal_overload_trip": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.thermostat_set_incorrectly_mode_or_temp": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.thermostat_unresponsive_or_malfunctioning": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace"
+    ],
+    "dx.thermostat_batteries_dead_or_no_power": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace"
+    ],
+    "dx.thermostat_wiring_misconfigured_or_loose": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.cooling_disabled_or_heat_on": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.thermostat_scheduling_issue": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.zone_damper_or_controller_malfunction": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.communication_failure": [
+      "vrf_system",
+      "commercial_rtu"
+    ],
+    "dx.thermostat_sensor_miscalibrated_or_poor_location": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace"
+    ],
+    "dx.faulty_temperature_sensor": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.faulty_pressure_sensor_or_switch": [
+      "commercial_rtu",
+      "vrf_system",
+      "chiller_ahu_system"
+    ],
+    "dx.faulty_humidity_sensor": [
+      "commercial_rtu",
+      "vrf_system"
+    ],
+    "dx.flame_sensor_dirty_or_failed": [
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.high_limit_switch_open_furnace_overheat": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.furnace_pressure_switch_failed_or_tubing_blocked": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.condensate_overflow_float_switch_triggered": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.low_water_cutoff_engaged": [
+      "boiler_hydronic"
+    ],
+    "dx.igniter_or_pilot_failure": [
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.gas_valve_not_opening_or_gas_supply_off": [
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.dirty_or_clogged_burners": [
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.cracked_heat_exchanger": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.blocked_flue_or_chimney": [
+      "residential_furnace",
+      "commercial_rtu",
+      "boiler_hydronic"
+    ],
+    "dx.draft_inducer_motor_failure": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.insufficient_combustion_air_flame_rollout": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.electric_heat_strips_not_working": [
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.heat_pump_auxiliary_heat_stuck_on_or_off": [
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.system_undersized_for_load_or_extreme_weather": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.system_oversized_short_cycles_high_humidity": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.refrigerant_lines_kinked_or_wrong_size": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.outdoor_unit_damaged_coil_fins": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ],
+    "dx.thermostat_off_user_error": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "residential_furnace",
+      "commercial_rtu"
+    ],
+    "dx.no_fault_system_normal_extreme_conditions": [
+      "residential_split_ac",
+      "residential_heat_pump",
+      "commercial_rtu"
+    ]
+  }
+}

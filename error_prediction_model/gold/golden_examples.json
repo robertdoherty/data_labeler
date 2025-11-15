@@ -1,0 +1,254 @@
+{
+  "dx.other_or_unclear": [
+    {
+      "post_id": "reddit-1omusaj",
+      "text": "motor blowing constantly; motor did not stop to spin when unit was off or reached temp; volt_120 uv light one line hooked up to the breaker and the other to ground",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": "Carrier"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1omt25n",
+      "text": "cracked heat exchanger; severe flame rollout; collection box gone",
+      "equip": {
+        "family": "furnace",
+        "subtype": "downflow",
+        "brand": "BDP"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olvexu",
+      "text": "incorrect thermostat wiring; furnace blower not running; steam humidifier condensing out ductwork seams",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olsepi",
+      "text": "electric water heater incorrectly used for in-floor heating; dangerous wiring/installation",
+      "equip": {
+        "family": "boiler",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olrnf3",
+      "text": "extremely dirty air filter; flex gas line rubbing on cabinet hole",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olpwkk",
+      "text": "barometric damper installed wrong direction; messy wiring; misdiagnosis of damper type; damper is a bypass not a zone; damper is in the return; initial misdiagnosis that barometric damper needed to be tied into control board; two barometric dampers one in supply and one in return for bypass; damper is pressure-activated no motor; bundle of random half labeled stat wires",
+      "equip": {
+        "family": "controls",
+        "subtype": "",
+        "brand": "Honeywell"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olfc1z",
+      "text": "improper outdoor unit installation on cage",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ole9nd",
+      "text": "motor failed; needs heat exchanger",
+      "equip": {
+        "family": "furnace",
+        "subtype": "truck wash bay",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ole6b2",
+      "text": "dead bat found in humidifier; potential openings in attic duct",
+      "equip": {
+        "family": "other",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olcyai",
+      "text": "excessively coiled line sets; potential oil traps; not meeting minimum line set length requirements",
+      "equip": {
+        "family": "mini_split",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1olbwss",
+      "text": "furnace not turning to second stage; second pressure switch cycling; gas valve cycling; flames widening and narrowing; pressure switch not staying closed; bouncing draft",
+      "equip": {
+        "family": "furnace",
+        "subtype": "high efficiency furnace",
+        "brand": "Carrier"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol9wdy",
+      "text": "unit won't start; incorrectly orientated phases rectified",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "ducted system",
+        "brand": "DAIKIN"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol9szi",
+      "text": "smelled gas; broken gas flex line",
+      "equip": {
+        "family": "furnace",
+        "subtype": "gas furnace",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol7efp",
+      "text": "no attempt to spark from spark pilot; bad ignition control module",
+      "equip": {
+        "family": "controls",
+        "subtype": "ignition control module",
+        "brand": "Honeywell"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol55lm",
+      "text": "outdoor unit won't come on; primary drain clogged; ss2 tripping; y circuit cut; bad run capacitor",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "outdoor unit",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol1smn",
+      "text": "damaged blower wheel; ac is toast",
+      "equip": {
+        "family": "split_ac",
+        "subtype": "blower wheel",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1ol00s5",
+      "text": "pressure switch issue; pressure switch reading borderline",
+      "equip": {
+        "family": "furnace",
+        "subtype": "high-efficiency condensing furnace",
+        "brand": "Lennox"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okzerd",
+      "text": "non-responsive taco valves; zone valve not working",
+      "equip": {
+        "family": "boiler",
+        "subtype": "hydronic heating system",
+        "brand": "TACO"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okyxsf",
+      "text": "cracked heat exchangers; .45 inwc coming into the hx",
+      "equip": {
+        "family": "furnace",
+        "subtype": "heat exchanger",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okx0s1",
+      "text": "cracked heat exchanger",
+      "equip": {
+        "family": "furnace",
+        "subtype": "heat exchanger",
+        "brand": "ICP"
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okrlvd",
+      "text": "noisy pump; something bouncing inside pump",
+      "equip": {
+        "family": "other",
+        "subtype": "pump",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okmqqr",
+      "text": "chiller failure",
+      "equip": {
+        "family": "chiller",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okiea8",
+      "text": "no heat; gas valve chattered; gas valve gave up; ignition control issue",
+      "equip": {
+        "family": "boiler",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okdo8q",
+      "text": "clogged drain; shot inducer; unit filled with water",
+      "equip": {
+        "family": "furnace",
+        "subtype": "",
+        "brand": ""
+      },
+      "hits": []
+    },
+    {
+      "post_id": "reddit-1okda6m",
+      "text": "unit goes into heat intermittently; insulation flapping around inside air handler; insulation touching terminal block",
+      "equip": {
+        "family": "air_handler",
+        "subtype": "",
+        "brand": "Trane"
+      },
+      "hits": []
+    }
+  ]
+}
